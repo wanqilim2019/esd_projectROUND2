@@ -9,7 +9,7 @@ Email VARCHAR(128),
 password VARCHAR(128),
 Paypal VARCHAR (128),
 BAddress VARCHAR (128),
-BDescription VARCHAR (128)
+BDescription VARCHAR (750)
 );
 
 
