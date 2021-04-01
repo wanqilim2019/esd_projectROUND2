@@ -18,8 +18,15 @@ USE `product`;
 
 CREATE TABLE product (
 PID INT  primary key AUTO_INCREMENT,
-PName VARCHAR (128),
-Price DECIMAL (5,2),
-BDescription VARCHAR (128)
+PName VARCHAR (128) NOT NULL,
+Price DECIMAL (5,2) NOT NULL,
+PDescription VARCHAR (128) NOT NULL,
+bizid INT NOT NULL
 );
 
+
+insert into product (PName,Price,PDescription,bizid)
+values('Product1', 1.00, "This is the description for product 1",1);
+
+
+select * from product;

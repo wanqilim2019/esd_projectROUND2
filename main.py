@@ -8,30 +8,12 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-CORS(app)
+CORS(app)  
 
-
-class Product(db.Model):
-    __tablename__ = 'product'
-
-    pid = db.Column(db.Integer, primary_key=True)
-    pname = db.Column(db.String(128), nullable=False)
-    price = db.Column(db.Float(precision=2), nullable=False)
-    pdescription = db.Column(db.String(128), nullable=False)
-    # bizid = db.Column(db.Integer, nullable=False)
-
-    def __init__(self, pid, pname, price, pdescription):
-        self.pid = pid
-        self.pname = pname
-        self.price = price
-        self.pdescription = pdescription
-
-    def json(self):
-        return {"pid": self.pid, "pname": self.pname, "price": self.price, "pdescription": self.pdescription}
 
 
 @app.route("/product")
-def get_all():
+def homepage():
     productlist = Product.query.all()
     if len(productlist):
         return jsonify(
@@ -68,34 +50,8 @@ def find_by_pid(pid):
     ), 404
 
 
-@app.route("/product" ,methods=['POST'])
-def create_product():
-    pname = request.json.get('pname', None)
-    pdesc = request.json.get('pdescription', None)
-    price = request.json.get('price', None)
-    
-    product = Product(pname=pname,price=price,pdescription=pdesc)
 
-    try:
-        db.session.add(product)
-        db.session.commit()
-    except Exception as e:
-        return jsonify(
-            {
-                "code": 500,
-                "message": "An error occurred while creating the product. " + str(e)
-            }
-        ), 500
-    
-    print(json.dumps(produc.json(), default=str)) # convert a JSON object to a string and print
-    print()
 
-    return jsonify(
-        {
-            "code": 201,
-            "data": product.json()
-        }
-    ), 201
 
 # @app.route("/book/<string:isbn13>", methods=['PUT'])
 # def update_book(isbn13):
@@ -107,7 +63,7 @@ def create_product():
 #         if data['price']:
 #             book.price = data['price']
 #         if data['availability']:
-#             book.availability = data['availability']
+#             book.availability = data['availability'] 
 #         db.session.commit()
 #         return jsonify(
 #             {
