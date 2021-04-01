@@ -1,3 +1,4 @@
+-- business
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
 START TRANSACTION;
@@ -14,18 +15,14 @@ SET time_zone = "+00:00";
 --
 CREATE DATABASE IF NOT EXISTS  `business` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 
-use business;
+USE `business`;
 
-create table business
-
-(
-BID INT primary key auto_increment,
+CREATE TABLE business (
+BID INT  primary key AUTO_INCREMENT,
 BName VARCHAR (128),
-Email VARCHAR(128),
-password VARCHAR(128),
+Email VARCHAR (128),
+Password VARCHAR (128),
 Paypal VARCHAR (128),
 BAddress VARCHAR (128),
-BDescription VARCHAR (750)
+BDescription VARCHAR (128)
 );
-
-
