@@ -70,11 +70,12 @@ def find_by_pid(pid):
 
 @app.route("/product" ,methods=['POST'])
 def create_product():
+    pid = request.json.get('pid', None)
     pname = request.json.get('pname', None)
     pdesc = request.json.get('pdescription', None)
     price = request.json.get('price', None)
     
-    product = Product(pname=pname,price=price,pdescription=pdesc)
+    product = Product(pid=pid,pname=pname,price=price,pdescription=pdesc)
 
     try:
         db.session.add(product)
@@ -87,8 +88,8 @@ def create_product():
             }
         ), 500
     
-    print(json.dumps(produc.json(), default=str)) # convert a JSON object to a string and print
-    print()
+    # print(json.dumps(product.json(), default=str)) # convert a JSON object to a string and print
+    # print()
 
     return jsonify(
         {
@@ -97,58 +98,58 @@ def create_product():
         }
     ), 201
 
-# @app.route("/book/<string:isbn13>", methods=['PUT'])
-# def update_book(isbn13):
-#     book = Book.query.filter_by(isbn13=isbn13).first()
-#     if book:
-#         data = request.get_json()
-#         if data['title']:
-#             book.title = data['title']
-#         if data['price']:
-#             book.price = data['price']
-#         if data['availability']:
-#             book.availability = data['availability']
-#         db.session.commit()
-#         return jsonify(
-#             {
-#                 "code": 200,
-#                 "data": book.json()
-#             }
-#         )
-#     return jsonify(
-#         {
-#             "code": 404,
-#             "data": {
-#                 "isbn13": isbn13
-#             },
-#             "message": "Book not found."
-#         }
-#     ), 404
+@app.route("/product/<string:pid>", methods=['PUT'])
+def update_product(pid):
+    product = Product.query.filter_by(pid=pid).first()
+    if product:
+        data = request.get_json()
+        if data['pname']:
+            product.pname = data['pname']
+        if data['price']:
+            product.price = data['price']
+        if data['pdescription']:
+            product.pdescription = data['pdescription']
+        db.session.commit()
+        return jsonify(
+            {
+                "code": 200,
+                "data": product.json()
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "data": {
+                "pid": pid
+            },
+            "message": "Product not found."
+        }
+    ), 404
 
 
-# @app.route("/book/<string:isbn13>", methods=['DELETE'])
-# def delete_book(isbn13):
-#     book = Book.query.filter_by(isbn13=isbn13).first()
-#     if book:
-#         db.session.delete(book)
-#         db.session.commit()
-#         return jsonify(
-#             {
-#                 "code": 200,
-#                 "data": {
-#                     "isbn13": isbn13
-#                 }
-#             }
-#         )
-#     return jsonify(
-#         {
-#             "code": 404,
-#             "data": {
-#                 "isbn13": isbn13
-#             },
-#             "message": "Book not found."
-#         }
-#     ), 404
+@app.route("/product/<string:pid>", methods=['DELETE'])
+def delete_product(pid):
+    product = Product.query.filter_by(pid=pid).first()
+    if product:
+        db.session.delete(product)
+        db.session.commit()
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "pid": pid
+                }
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "data": {
+                "pid": pid
+            },
+            "message": "Product not found."
+        }
+    ), 404
 
 
 if __name__ == '__main__':
