@@ -20,7 +20,8 @@ CREATE TABLE product (
 pid INT AUTO_INCREMENT PRIMARY KEY,
 pname VARCHAR (128) NOT NULL,
 price DECIMAL (5,2) NOT NULL,
-pdescription VARCHAR (128) NOT NULL
+pdescription VARCHAR (128) NOT NULL,
+pic VARCHAR (128)
 );
 
 
