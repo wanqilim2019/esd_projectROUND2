@@ -28,5 +28,8 @@ pdescription VARCHAR (128) NOT NULL
 insert into product (PName,Price,PDescription)
 values('Product2', 1.00, "This is the description for product 1");
 
+insert into product (PName,Price,PDescription)
+values('Product3', 2.00, "This is the description for product 1");
+
 
 select * from product;
