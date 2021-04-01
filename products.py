@@ -18,16 +18,19 @@ class Product(db.Model):
     pname = db.Column(db.String(128), nullable=False)
     price = db.Column(db.Float(precision=2), nullable=False)
     pdescription = db.Column(db.String(128), nullable=False)
-    # bizid = db.Column(db.Integer, nullable=False)
-
-    def __init__(self, pid, pname, price, pdescription):
-        self.pid = pid
-        self.pname = pname
-        self.price = price
-        self.pdescription = pdescription
+       
 
     def json(self):
-        return {"pid": self.pid, "pname": self.pname, "price": self.price, "pdescription": self.pdescription}
+        # self.pid = pid
+        # self.pname = pname
+        # self.price = price
+        # self.pdescription = pdescription
+        return {
+            "pid": self.pid,
+            "pname": self.pname, 
+            "price": self.price, 
+            "pdescription": self.pdescription
+        }
 
 
 @app.route("/product")
@@ -70,12 +73,12 @@ def find_by_pid(pid):
 
 @app.route("/product" ,methods=['POST'])
 def create_product():
-    pid = request.json.get('pid', None)
+    # pid = request.json.get('pid', None)
     pname = request.json.get('pname', None)
     pdesc = request.json.get('pdescription', None)
     price = request.json.get('price', None)
     
-    product = Product(pid=pid,pname=pname,price=price,pdescription=pdesc)
+    product = Product(pname=pname,price=price,pdescription=pdesc)
 
     try:
         db.session.add(product)

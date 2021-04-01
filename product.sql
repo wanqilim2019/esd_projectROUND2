@@ -17,14 +17,16 @@ CREATE DATABASE IF NOT EXISTS  `product` DEFAULT CHARACTER SET utf8 COLLATE utf8
 USE `product`;
 
 CREATE TABLE product (
-pid INT  primary key AUTO_INCREMENT,
+pid INT AUTO_INCREMENT PRIMARY KEY,
 pname VARCHAR (128) NOT NULL,
 price DECIMAL (5,2) NOT NULL,
-pdescription VARCHAR (128) NOT NULL);
+pdescription VARCHAR (128) NOT NULL
+);
+
 
 
 insert into product (PName,Price,PDescription)
-values('Product1', 1.00, "This is the description for product 1");
+values('Product2', 1.00, "This is the description for product 1");
 
 
 select * from product;
