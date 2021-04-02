@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html ng-app lang="en">
 
 <head>
     <!--Required Meta Tags-->
@@ -19,6 +19,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <script src="https://rawgit.com/moment/moment/2.2.1/min/moment.min.js"></script>
+
+    <!-- Angular Js Script -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
 
     <title>Marketplace</title>
 </head>
@@ -53,10 +56,28 @@
         </div>
     </nav>
 
-    <section id="Greeting">
-
+    <section id="Header" class="py-2">
+        <div class='container text-center'>
+            <h1>Your one stop Marketplace</h1>
+        </div>
     </section>
 
+    <!-- Implementing search bar with angular -->
+    <section id="searchBar">
+        <div class="container">
+            <div class="input-group mb-3 justify-content-center">
+                <input class="w-25 rounded text-center" type="text" ng-model="searchItem" class="form-control" placeholder="Search for something!"
+                    aria-label="Example text with button addon" aria-describedby="button-addon1">
+                
+            </div>
+
+            <div class="container text-center">
+                <h4>Displaying search results for: <span style="color:firebrick">{{searchItem}}</span></h4>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Angular templates to repeat cards of products -->
     <section id="market">
         <div>
 
