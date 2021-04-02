@@ -132,37 +132,61 @@ def update_customer(cid):
         {
             "code": 404,
             "data": {
-                "cid": cid
+               "cid": cid
             },
             "message": "Customer not found."
         }
     ), 404
 
 
-# @app.route("/customer/<string:cid>", methods=['DELETE'])
-# def delete_customer(cid):
-#     customer = Customer.query.filter_by(cid=cid).first()
-#     if customer:
-#         db.session.delete(customer)
-#         db.session.commit()
-#         return jsonify(
-#             {
-#                 "code": 200,
-#                 "data": {
-#                     "cid": cid
-#                 }
-#             }
-#         )
-#     return jsonify(
-#         {
-#             "code": 404,
-#             "data": {
-#                 "cid": cid
-#             },
-#             "message": "Customer not found."
-#         }
-#     ), 404
+ @app.route("/customer/<string:cid>", methods=['DELETE'])
+ def delete_customer(cid):
+     customer = Customer.query.filter_by(cid=cid).first()
+     if customer:
+         db.session.delete(customer)
+         db.session.commit()
+         return jsonify(
+             {
+                 "code": 200,
+                 "data": {
+                     "cid": cid
+                 }
+             }
+         )
+     return jsonify(
+         {
+             "code": 404,
+             "data": {
+                 "cid": cid
+             },
+             "message": "Customer not found."
+         }
+     ), 404
+
+@app.route("/customer/location/<string:cid>", methods=['GET'])
+def get_cus_address(cid):
+    cusaddress = Customer.query.filter_by(caddress=caddresss).first()
+    if customer:
+         db.session.get(customer)
+         db.session.commit()
+         return jsonify(
+             {
+                 "code": 200,
+                 "data": {
+                     "caddress": address
+                 }
+             }
+         )
+     return jsonify(
+         {
+             "code": 404,
+             "data": {
+                 "caddress": caddress
+             },
+             "message": "Customer not found."
+         }
+     ), 404
 
 
 if __name__ == '__main__':
-    app.run(port=5002, debug=True)
+    app.run(port=5003, debug=True)

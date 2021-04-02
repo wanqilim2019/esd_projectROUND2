@@ -11,83 +11,84 @@ db = SQLAlchemy(app)
 CORS(app)
 
 
-class Product(db.Model):
-    __tablename__ = 'product'
-
-    pid = db.Column(db.Integer, primary_key=True)
-    pname = db.Column(db.String(128), nullable=False)
-    price = db.Column(db.Float(precision=2), nullable=False)
-    pdescription = db.Column(db.String(128), nullable=False)
+class Order(db.Model):
+    __tablename__ = 'order'
+    
+    oid = db.Column(db.Integer, primary_key=True)
+    quantity = db.Column(dc.Integer, nullable=False)
+    datetime = db.Column(db.datetime, nullable=False)
+    ostatus = db.Column(db.Integer, nullable=False)
+    dstatus = db.Column(db.String(128), nullable=False)
+    presponse = db.Column(db.String(128), nullable=False)
        
 
     def json(self):
-        # self.pid = pid
-        # self.pname = pname
-        # self.price = price
-        # self.pdescription = pdescription
+    
         return {
-            "pid": self.pid,
-            "pname": self.pname, 
-            "price": self.price, 
-            "pdescription": self.pdescription
+            "oid": self.oid,
+            "quantiy":self.quantity,
+            "datetime": self.datetime, 
+            "ostatus": self.ostatus,
+            "dstatus": self.dstatus,
+            "preseponse": self.presponse
         }
 
 
-@app.route("/product")
+@app.route("/order")
 def get_all():
-    productlist = Product.query.all()
-    if len(productlist):
+    orderlist = order.query.all()
+    if len(orderlist):
         return jsonify(
             {
                 "code": 200,
                 "data": {
-                    "products": [product.json() for product in productlist]
+                    "order": [order.json() for order in orderlist]
                 }
             }
         )
     return jsonify(
         {
             "code": 404,
-            "message": "There are no products."
+            "message": "There are no order."
         }
     ), 404
 
 
-@app.route("/product/<string:pid>")
-def find_by_pid(pid):
-    product = Product.query.filter_by(pid=pid).first()
-    if product:
+@app.route("/order/<string:oid>")
+def find_by_oid(oid):
+    order = Order.query.filter_by(oid=oid).first()
+    if order:
         return jsonify(
             {
                 "code": 200,
-                "data": product.json()
+                "data": order.json()
             }
         )
     return jsonify(
         {
             "code": 404,
-            "message": "Product not found."
+            "message": "order not found."
         }
     ), 404
 
 
-@app.route("/product" ,methods=['POST'])
-def create_product():
-    # pid = request.json.get('pid', None)
-    pname = request.json.get('pname', None)
-    pdesc = request.json.get('pdescription', None)
-    price = request.json.get('price', None)
+@app.route("/order" ,methods=['POST'])
+def create_order():
+     # oid = request.json.get('oid', None)
+    quantity = request.json.get('quantity', None)
+    datetime = request.json.get('pdescription', None)
     
-    product = Product(pname=pname,price=price,pdescription=pdesc)
+    
+    order= Order(quantity=quantity,datetime=datetime)
 
     try:
-        db.session.add(product)
+        db.session.add(order)
         db.session.commit()
     except Exception as e:
         return jsonify(
             {
                 "code": 500,
-                "message": "An error occurred while creating the product. " + str(e)
+                "message": "An error occurred while creating the order. " + str(e)
             }
         ), 500
     
@@ -105,7 +106,7 @@ def create_product():
 def update_product(pid):
     product = Product.query.filter_by(pid=pid).first()
     if product:
-        data = request.get_json()
+       data = request.get_json()
         if data['pname']:
             product.pname = data['pname']
         if data['price']:
@@ -130,17 +131,17 @@ def update_product(pid):
     ), 404
 
 
-@app.route("/product/<string:pid>", methods=['DELETE'])
-def delete_product(pid):
-    product = Product.query.filter_by(pid=pid).first()
-    if product:
-        db.session.delete(product)
+@app.route("/order/<string:oid>", methods=['DELETE'])
+def delete_product(oid):
+    order = Order.query.filter_by(oid=oid).first()
+    if order:
+        db.session.delete(order)
         db.session.commit()
         return jsonify(
             {
                 "code": 200,
                 "data": {
-                    "pid": pid
+                    "oid": oid
                 }
             }
         )
@@ -148,12 +149,12 @@ def delete_product(pid):
         {
             "code": 404,
             "data": {
-                "pid": pid
+                "oid": oid
             },
-            "message": "Product not found."
+            "message": "Order not found."
         }
     ), 404
 
 
 if __name__ == '__main__':
-    app.run(port=5001, debug=True)
+    app.run(port=5002, debug=True)
