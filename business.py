@@ -5,7 +5,7 @@ import hashlib
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/product'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/business'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -27,7 +27,6 @@ class Business(db.Model):
        
 
     def json(self):
-      
         return {
             "bid": self.bid,
             "bname": self.bname, 
@@ -39,7 +38,7 @@ class Business(db.Model):
         }
 
 
-@app.route("/product")
+@app.route("/business")
 def get_all():
     businesslist = Business.query.all()
     if len(businesslist):
@@ -47,7 +46,7 @@ def get_all():
             {
                 "code": 200,
                 "data": {
-                    "products": [Business.json() for business in businesslist]
+                    "businesss": [Business.json() for business in businesslist]
                 }
             }
         )
@@ -59,37 +58,40 @@ def get_all():
     ), 404
 
 
-@app.route("/product/<string:bid>")
-def find_by_bid(bid):
-    business = query.filter(and_(Business.bid ==bid ,business.password == password)).first()
+@app.route("/business/<string:email>", methods=['POST'])
+def find_by_bemail(business):
+    password = request.json.get('password', None)
+    email = request.json.get('email', None)
+    business = db.session.query(Business).filter((Business.email == email) & (Business.password == password)).first()
     if business:
+        result = business.json()
+        del result['password']
         return jsonify(
             {
                 "code": 200,
-                "data": product.json()
+                "data": result
             }
         )
     return jsonify(
         {
             "code": 404,
-            "message": "Business not found."
+            "message": "Customer not found."
         }
     ), 404
 
 
-@app.route("/product" ,methods=['POST'])
-def create_product():
+@app.route("/business" ,methods=['POST'])
+def create_business():
     bname = request.json.get('bname', None)
     bdesc = request.json.get('bdescription', None)
     paypal = request.json.get('paypal', None)
     baddress = request.json.get('baddress', None)
     email = request.json.get('email', None)
     
-    
-    business = business(bname=bname,email=email,baddress=baddress,bdesc=bdescription))
+    business = business(bname=bname,email=email,baddress=baddress,bdesc=bdescription)
 
     try:
-        db.session.add(product)
+        db.session.add(business)
         db.session.commit()
     except Exception as e:
         return jsonify(
@@ -98,9 +100,6 @@ def create_product():
                 "message": "An error occurred while creating the business. " + str(e)
             }
         ), 500
-    
-    # print(json.dumps(product.json(), default=str)) # convert a JSON object to a string and print
-    # print()
 
     return jsonify(
         {
@@ -109,8 +108,8 @@ def create_product():
         }
     ), 201
 
-#@app.route("/product/<string:bid>", methods=['PUT'])
-#def update_product(bid):
+#@app.route("/business/<string:bid>", methods=['PUT'])
+#def update_business(bid):
 #    business = Business.query.filter_by(bid=bid).first()
 #    if business:
 #        data = request.get_json()
@@ -130,7 +129,7 @@ def create_product():
 #        return jsonify(
 #            {
 #                "code": 200,
-#                "data": product.json()
+#                "data": business.json()
 #            }
 #        )
 #    return jsonify(
@@ -145,9 +144,9 @@ def create_product():
 
 
 @app.route("/business/<string:bid>", methods=['DELETE'])
-def delete_product(bid):
+def delete_business(bid):
     business = Business.query.filter_by(bid=bid).first()
-    if product:
+    if business:
         db.session.delete(business)
         db.session.commit()
         return jsonify(
