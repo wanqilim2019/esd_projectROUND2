@@ -22,16 +22,15 @@ class Customer(db.Model):
     password = db.Column(db.String(128), nullable=False)
     paypal = db.Column(db.String(128), nullable=False)
     caddress = db.Column(db.String(128), nullable=False)
-       
 
     def json(self):
-        
+
         return {
             "cid": self.cid,
-            "cname": self.cname, 
-            "email": self.email, 
-            "password": self.password, 
-            "paypal": self.paypal, 
+            "cname": self.cname,
+            "email": self.email,
+            "password": self.password,
+            "paypal": self.paypal,
             "caddress": self.caddress
         }
 
@@ -56,14 +55,18 @@ def get_all():
     ), 404
 
 
-@app.route("/customer/<string:cid>")
-def find_by_cid(cid):
-    customer = query.filter(and_(Customer.cid ==cid ,Customer.password == password)).first()
+@app.route("/customer/<string:email>", methods=['POST'])
+def find_by_email(email):
+    password = request.json.get('password', None)
+    email = request.json.get('email', None)
+    customer = db.session.query(Customer).filter((Customer.email == email) & (Customer.password == password)).first()
     if customer:
+        result = customer.json()
+        del result['password']
         return jsonify(
             {
                 "code": 200,
-                "data": customer.json()
+                "data": result
             }
         )
     return jsonify(
@@ -74,7 +77,7 @@ def find_by_cid(cid):
     ), 404
 
 
-@app.route("/customer" ,methods=['POST'])
+@app.route("/customer", methods=['POST'])
 def create_customer():
     # cid = request.json.get('cid', None)
     cname = request.json.get('cname', None)
@@ -82,8 +85,8 @@ def create_customer():
     paypal = request.json.get('paypal', None)
     caddress = request.json.get('caddress', None)
     email = request.json.get('email', None)
-    
-    customer = Customer(cname=cname,email=email,caddress=caddress)
+
+    customer = Customer(cname=cname, email=email, caddress=caddress)
 
     try:
         db.session.add(customer)
@@ -95,7 +98,7 @@ def create_customer():
                 "message": "An error occurred while creating the customer. " + str(e)
             }
         ), 500
-    
+
     # print(json.dumps(customer.json(), default=str)) # convert a JSON object to a string and print
     # print()
 
@@ -105,6 +108,7 @@ def create_customer():
             "data": customer.json()
         }
     ), 201
+
 
 @app.route("/customer/<string:cid>", methods=['PUT'])
 def update_customer(cid):
@@ -139,29 +143,30 @@ def update_customer(cid):
     ), 404
 
 
- @app.route("/customer/<string:cid>", methods=['DELETE'])
- def delete_customer(cid):
-     customer = Customer.query.filter_by(cid=cid).first()
-     if customer:
-         db.session.delete(customer)
-         db.session.commit()
-         return jsonify(
-             {
-                 "code": 200,
-                 "data": {
-                     "cid": cid
-                 }
-             }
-         )
-     return jsonify(
-         {
-             "code": 404,
-             "data": {
-                 "cid": cid
-             },
-             "message": "Customer not found."
-         }
-     ), 404
+@app.route("/customer/<string:cid>", methods=['DELETE'])
+def delete_customer(cid):
+    customer = Customer.query.filter_by(cid=cid).first()
+    if customer:
+        db.session.delete(customer)
+        db.session.commit()
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "cid": cid
+                }
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "data": {
+                "cid": cid
+            },
+            "message": "Customer not found."
+        }
+    ), 404
+
 
 @app.route("/customer/location/<string:cid>", methods=['GET'])
 def get_cus_address(cid):
@@ -177,15 +182,15 @@ def get_cus_address(cid):
                  }
              }
          )
-     return jsonify(
-         {
-             "code": 404,
-             "data": {
-                 "caddress": caddress
-             },
-             "message": "Customer not found."
-         }
-     ), 404
+    return jsonify(
+        {
+            "code": 404,
+            "data": {
+                "caddress": caddress
+            },
+            "message": "Customer not found."
+        }
+    ), 404
 
 
 if __name__ == '__main__':
