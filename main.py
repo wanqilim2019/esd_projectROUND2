@@ -81,7 +81,7 @@ def configure_login():
 
             # Redirect to home page
             msg = 'Logged in successfully!'
-            
+
             if (account_type == "customer"):
                 return render_template("index1.html", user=session['data']['cname'])
             else:
@@ -90,15 +90,21 @@ def configure_login():
         msg = 'Incorrect username/password!'
         return render_template('Loginpage.html', msg=msg)
 
+@app.route('/market')
+def market():
+    # Redirect customer to marketplace to add products into cart
+    return render_template('marketplace.html')
+
 
 @app.route('/logout')
 def logout():
     # Remove session data, this will log the user out
-   session.pop('loggedin', None)
-   session.pop('acctType', None)
-   session.pop('data', None)
-   # Redirect to login page
-   return redirect(url_for('login'))
+    session.pop('loggedin', None)
+    session.pop('acctType', None)
+    session.pop('data', None)
+    # Redirect to login page
+    return redirect(url_for('login'))
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port="5000")
