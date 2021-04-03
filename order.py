@@ -13,21 +13,20 @@ CORS(app)
 
 class Order(db.Model):
     __tablename__ = 'order'
-    
+
     oid = db.Column(db.Integer, primary_key=True)
     quantity = db.Column(dc.Integer, nullable=False)
     datetime = db.Column(db.datetime, nullable=False)
     ostatus = db.Column(db.Integer, nullable=False)
     dstatus = db.Column(db.String(128), nullable=False)
     presponse = db.Column(db.String(128), nullable=False)
-       
 
     def json(self):
-    
+
         return {
             "oid": self.oid,
-            "quantiy":self.quantity,
-            "datetime": self.datetime, 
+            "quantiy": self.quantity,
+            "datetime": self.datetime,
             "ostatus": self.ostatus,
             "dstatus": self.dstatus,
             "preseponse": self.presponse
@@ -72,14 +71,13 @@ def find_by_oid(oid):
     ), 404
 
 
-@app.route("/order" ,methods=['POST'])
+@app.route("/order", methods=['POST'])
 def create_order():
-     # oid = request.json.get('oid', None)
+    # oid = request.json.get('oid', None)
     quantity = request.json.get('quantity', None)
     datetime = request.json.get('pdescription', None)
-    
-    
-    order= Order(quantity=quantity,datetime=datetime)
+
+    order = Order(quantity=quantity, datetime=datetime)
 
     try:
         db.session.add(order)
@@ -91,7 +89,7 @@ def create_order():
                 "message": "An error occurred while creating the order. " + str(e)
             }
         ), 500
-    
+
     # print(json.dumps(product.json(), default=str)) # convert a JSON object to a string and print
     # print()
 
@@ -102,11 +100,12 @@ def create_order():
         }
     ), 201
 
+
 @app.route("/product/<string:pid>", methods=['PUT'])
 def update_product(pid):
     product = Product.query.filter_by(pid=pid).first()
     if product:
-       data = request.get_json()
+        data = request.get_json()
         if data['pname']:
             product.pname = data['pname']
         if data['price']:
