@@ -18,7 +18,7 @@ class Product(db.Model):
     pname = db.Column(db.String(128), nullable=False)
     price = db.Column(db.Float(precision=2), nullable=False)
     pdescription = db.Column(db.String(128), nullable=False)
-    pimgsrc = db.Column(db.String(128), nullable=False)
+    imgname = db.Column(db.String(128), nullable=False)
     
 
     def json(self):
@@ -31,7 +31,7 @@ class Product(db.Model):
             "pname": self.pname, 
             "price": self.price, 
             "pdescription": self.pdescription,
-            "pimgsrc": self.pimgsrc
+            "imgname": self.imgname
         }
 
 
@@ -79,9 +79,9 @@ def create_product():
     pname = request.json.get('pname', None)
     pdesc = request.json.get('pdescription', None)
     price = request.json.get('price', None)
-    pimgsrc = request.json.get('pimgsrc', None)
+    imgname = request.json.get('imgname', None)
     
-    product = Product(pname=pname,price=price,pdescription=pdesc,pimgsrc=pimgsrc)
+    product = Product(pname=pname,price=price,pdescription=pdesc,imgname=imgname)
 
     try:
         db.session.add(product)
@@ -115,8 +115,8 @@ def update_product(pid):
             product.price = data['price']
         if data['pdescription']:
             product.pdescription = data['pdescription']
-        if data['pimgsrc']:
-            product.pimgsrc = data['pimgsrc']
+        if data['imgsrc']:
+            product.imgsrc = data['imgsrc']
         db.session.commit()
         return jsonify(
             {
