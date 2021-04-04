@@ -58,6 +58,27 @@ def get_all():
     ), 404
 
 
+@app.route("/business/<string:email>", methods=['GET'])
+def find_existingby_bemail(business):
+    password = request.json.get('password', None)
+    email = request.json.get('email', None)
+    business = db.session.query(Business).filter(Business.email == email).first()
+    if business:
+        result = business.json()
+        del result['password']
+        return jsonify(
+            {
+                "code": 200,
+                "data": result
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "Customer not found."
+        }
+    ), 404
+    
 @app.route("/business/<string:email>", methods=['POST'])
 def find_by_bemail(business):
     password = request.json.get('password', None)
@@ -82,10 +103,10 @@ def find_by_bemail(business):
 
 @app.route("/business" ,methods=['POST'])
 def create_business():
-    bname = request.json.get('bname', None)
-    bdesc = request.json.get('bdescription', None)
+    bname = request.json.get('name', None)
+    bdesc = request.json.get('description', None)
     paypal = request.json.get('paypal', None)
-    baddress = request.json.get('baddress', None)
+    baddress = request.json.get('address', None)
     email = request.json.get('email', None)
     
     business = business(bname=bname,email=email,baddress=baddress,bdesc=bdescription)

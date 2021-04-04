@@ -69,7 +69,8 @@ def configure_login():
                 bizlogin_URL+'/'+email, method='POST', json={"email": email, "password": password})
         else:
             msg = 'Please select a account type!'
-            return render_template('Loginpage.html', msg=msg)
+            
+            return redirect(url_for('.login',msg =msg))
 
         if login_result['code'] == 200:
             # Create session data, we can access this data in other routes
@@ -81,14 +82,54 @@ def configure_login():
 
             # Redirect to home page
             msg = 'Logged in successfully!'
-
-            if (account_type == "customer"):
-                return render_template("index1.html", user=session['data']['cname'])
-            else:
-                return render_template("index1.html", user=session['data']['bname'])
+            
+            return redirect(url_for('.home',msg =msg))
+            
 
         msg = 'Incorrect username/password!'
-        return render_template('Loginpage.html', msg=msg)
+        return redirect(url_for('.login',msg =msg))
+    
+    
+@app.route("/signup", methods=['POST'])
+def configure_signup():
+    msg = ''
+    account_type = request.form['acctType']
+    print(request.form)
+    if  'email' in request.form :
+
+        email = request.form['email']
+        password = hashlib.md5(
+            request.form['password'].encode('utf-8')).hexdigest()
+
+        if (account_type == "customer"):
+            result = invoke_http(
+                cuslogin_URL+'/'+email, method='GET', json={"email": email})
+            desc = ''
+        elif(account_type == "business"):
+            result = invoke_http(
+                bizlogin_URL+'/'+email, method='GET', json={"email": email})
+            desc = request.form['description'],
+        
+        
+
+        if result['code'] == 400:
+            # Redirect to home page
+            mydict = {
+                'name':request.form['name'],
+                'email':email,
+                'password':password,
+                'paypal':request.form['paypalemail'],
+                'address':request.form['address'],
+                'description': desc,
+            }
+            if (account_type == "customer"):
+                registerresult = invoke_http(cuslogin_URL, method='POST', json=mydict)
+            elif(account_type == "business"):
+                registerresult = invoke_http(bizlogin_URL, method='POST', json=mydict)
+        else:
+            return  redirect(url_for('.signup',msg ='Customer exists'))
+        
+
 
 
 @app.route('/logout')
