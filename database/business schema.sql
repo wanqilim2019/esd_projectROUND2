@@ -13,10 +13,11 @@ SET time_zone = "+00:00";
 --
 -- Database: `book`
 --
-CREATE SCHEMA IF NOT EXISTS  `business` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE DATABASE IF NOT EXISTS  `ESD` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 
-USE `business`;
+USE `ESD`;
 
+DROP TABLE IF EXISTS business;
 CREATE TABLE business (
 BID INT  primary key AUTO_INCREMENT,
 BName VARCHAR (128),

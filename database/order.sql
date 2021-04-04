@@ -12,10 +12,11 @@ SET time_zone = "+00:00";
 --
 -- Database: `book`
 --
-CREATE SCHEMA IF NOT EXISTS  `order` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE DATABASE IF NOT EXISTS  `ESD` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 
-USE `order`;
+USE `ESD`;
 
+DROP TABLE IF EXISTS orders;
 CREATE TABLE orders (
 OID INT  primary key AUTO_INCREMENT,
 PID INT  ,
