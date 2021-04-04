@@ -26,3 +26,6 @@ Paypal VARCHAR (128),
 BAddress VARCHAR (128),
 BDescription VARCHAR (128)
 );
+
+insert into business (bname, email, password, paypal , baddress,bdescription)
+VALUES ('Shopee', 'shopee@abc.com', MD5('newpassword'), 'shopee@adc.com', 'Blk 124 SMU Avenue 1','business desc');

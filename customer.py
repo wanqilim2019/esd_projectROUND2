@@ -55,6 +55,27 @@ def get_all():
     ), 404
 
 
+@app.route("/customer/<string:email>", methods=['GET'])
+def find_existingby_email(email):
+    password = request.json.get('password', None)
+    email = request.json.get('email', None)
+    customer = db.session.query(Customer).filter(Customer.email == email).first()
+    if customer:
+        result = customer.json()
+        del result['password']
+        return jsonify(
+            {
+                "code": 200,
+                "data": result
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "Customer not found."
+        }
+    ), 404
+    
 @app.route("/customer/<string:email>", methods=['POST'])
 def find_by_email(email):
     password = request.json.get('password', None)
@@ -80,10 +101,10 @@ def find_by_email(email):
 @app.route("/customer", methods=['POST'])
 def create_customer():
     # cid = request.json.get('cid', None)
-    cname = request.json.get('cname', None)
+    cname = request.json.get('name', None)
     password = request.json.get('password', None)
     paypal = request.json.get('paypal', None)
-    caddress = request.json.get('caddress', None)
+    caddress = request.json.get('address', None)
     email = request.json.get('email', None)
 
     customer = Customer(cname=cname, email=email, caddress=caddress)
