@@ -101,6 +101,7 @@ def find_by_email(email):
 @app.route("/customer", methods=['POST'])
 def create_customer():
     # cid = request.json.get('cid', None)
+    print(request.json, file=sys.stderr)
     cname = request.json.get('name', None)
     password = request.json.get('password', None)
     paypal = request.json.get('paypal', None)
@@ -119,9 +120,6 @@ def create_customer():
                 "message": "An error occurred while creating the customer. " + str(e)
             }
         ), 500
-
-    # print(json.dumps(customer.json(), default=str)) # convert a JSON object to a string and print
-    # print()
 
     return jsonify(
         {

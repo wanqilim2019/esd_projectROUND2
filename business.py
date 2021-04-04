@@ -109,7 +109,7 @@ def create_business():
     baddress = request.json.get('address', None)
     email = request.json.get('email', None)
     
-    business = business(bname=bname,email=email,baddress=baddress,bdesc=bdescription)
+    business = Business(bname=bname,email=email,baddress=baddress,bdesc=bdescription)
 
     try:
         db.session.add(business)
