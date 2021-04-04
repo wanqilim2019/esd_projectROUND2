@@ -13,9 +13,9 @@ app = Flask(__name__)
 CORS(app)
 
 
-order_URL = environ.get('order_URL') or "http://localhost:5001/order/" 
-product_URL = environ.get('product_URL') or "http://localhost:5002/product/" 
-customer_URL = environ.get('customer_URL') or "http://localhost:5003/customer/" 
+order_URL = environ.get('order_URL') or "http://localhost:5001/order" 
+product_URL = environ.get('product_URL') or "http://localhost:5002/product" 
+customer_URL = environ.get('customer_URL') or "http://localhost:5003/customer" 
 
 @app.route("/check_order_biz/<string:bid>", methods=['GET'])
 def check_order_biz(bid):
@@ -57,7 +57,7 @@ def processCheckOrder(bid):
     # 2. get pid based on bid
 
     product_result = invoke_http(
-        (product_URL + bid), method="GET" )
+        (product_URL + '/business/' + bid), method="GET" )
     print("product:", product_result, '\n')
 
     # Check the shipping result;
@@ -82,59 +82,68 @@ def processCheckOrder(bid):
     # 3. Get the order info base on pid
     # Invoke the order microservice
     print('\n-----Invoking order microservice-----')
+
+    order_result_list=list()
     
+    for product in product_result:
+        oid=product
+        order_result = invoke_http((order_URL + '/' + oid), method='GET')
+        print('order_result:', order_result)
+        order_result_list.append(order_result)
     
-    order_result = invoke_http(order_URL, method='GET', json=order)
-    print('order_result:', order_result)
-  
-    # Check the order result; if a failure, send it to the error microservice.
-    code = order_result["code"]
-    message = json.dumps(order_result)
+        # Check the order result; if a failure, print error.
+        code = order_result["code"]
+        message = json.dumps(order_result)
 
-    if code not in range(200, 300):
+        if code not in range(200, 300):
 
-        #  Return error
-        return {
-            "code": 400,
-            "data": {"order_result": order_result},
-            "message": "Order creation failure sent for error handling."
-        }
+            #  Return error
+            return {
+                "code": 400,
+                "data": {"order_result": order_result},
+                "message": "Order creation failure sent for error handling."
+            }
 
 
-    else:
-        # 4. Record new order
-        # record the activity log anyway
-        #print('\n\n-----Invoking activity_log microservice-----')
-        print('\n\n-----Publishing the (order info) message-----')        
+        else:
+            # 4. Record new order
+            print('\n\n-----Publishing the (order info) message-----')
 
-    # 5. Send PID order to product
-    # Invoke the product microservice
+
+
+        # 5. Send PID order to product
+        # Invoke the product microservice
 
 
     print('\n\n-----Invoking customer microservice-----')    
     
-    customer_result = invoke_http(
-        customer_URL, method="GET", json=order_result['data'])
-    print("customer:", customer_result, '\n')
+    customer_result_list=list()
 
-    # Check the shipping result;
-    # if a failure, send it to the error microservice.
-    code = customer_result["code"]
-    if code not in range(200, 300):
-        # Inform the error microservice
-        #print('\n\n-----Invoking error microservice as shipping fails-----')
-        print('\n\n-----Publishing the (customer error)')
-        
-        # 7. Return error
-        return {
-            "code": 400,
-            "data": {
-                "order_result": order_result,
-                "shipping_result": product_result,
-                "customer_result":customer_result
-            },
-            "message": "Simulated shipping record error sent for error handling."
-        }
+    for order in order_result_list:
+        cid=order
+        customer_result = invoke_http(
+            (customer_URL + '/' + cid), method="GET")
+        print("customer:", customer_result, '\n')
+        customer_result_list.append(customer_result)
+
+        # Check the customer result;
+        # if a failure, send it to the error microservice.
+        code = customer_result["code"]
+        if code not in range(200, 300):
+            # Inform the error microservice
+            #print('\n\n-----Invoking error microservice as shipping fails-----')
+            print('\n\n-----Publishing the (customer error)')
+            
+            # 7. Return error
+            return {
+                "code": 400,
+                "data": {
+                    "order_result": order_result,
+                    "shipping_result": product_result,
+                    "customer_result":customer_result
+                },
+                "message": "Simulated shipping record error sent for error handling."
+            }
 
 
 
@@ -142,9 +151,9 @@ def processCheckOrder(bid):
     return {
         "code": 201,
         "data": {
-            "order_result": order_result,
-            "shipping_result": product_result,
-            "customer_result":customer_result
+            "order_result": product_result,
+            "shipping_result": order_result_list,
+            "customer_result":customer_result_list
         }
     }
 

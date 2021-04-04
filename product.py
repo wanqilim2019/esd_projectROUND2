@@ -18,7 +18,7 @@ class Product(db.Model):
     pname = db.Column(db.String(128), nullable=False)
     price = db.Column(db.Float(precision=2), nullable=False)
     pdescription = db.Column(db.String(128), nullable=False)
-       
+    bid = db.Column(db.Integer, nullable=False)
 
     def json(self):
         # self.pid = pid
@@ -56,6 +56,24 @@ def get_all():
 @app.route("/product/<string:pid>")
 def find_by_pid(pid):
     product = Product.query.filter_by(pid=pid).first()
+    if product:
+        return jsonify(
+            {
+                "code": 200,
+                "data": product.json()
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "Product not found."
+        }
+    ), 404
+
+
+@app.route("/product/business/<string:bid>")
+def find_by_bid(bid):
+    product = Product.query.filter_by(bid=bid).first()
     if product:
         return jsonify(
             {
