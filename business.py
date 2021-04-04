@@ -5,7 +5,7 @@ import hashlib
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/business'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/ESD'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -24,7 +24,6 @@ class Business(db.Model):
     baddress = db.Column(db.String(128), nullable=False)
     bdescription = db.Column(db.String(128), nullable=False)
     
-       
 
     def json(self):
         return {
@@ -46,7 +45,7 @@ def get_all():
             {
                 "code": 200,
                 "data": {
-                    "businesss": [Business.json() for business in businesslist]
+                    "business": [business.json() for business in businesslist]
                 }
             }
         )

@@ -12,10 +12,11 @@ SET time_zone = "+00:00";
 
 --
 --
-CREATE SCHEMA IF NOT EXISTS  `customer` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE DATABASE IF NOT EXISTS  `ESD` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 
-USE `customer`;
+USE `ESD`;
 
+DROP TABLE IF EXISTS customer;
 CREATE TABLE customer (
 CID INT  primary key AUTO_INCREMENT,
 CName VARCHAR (128),
