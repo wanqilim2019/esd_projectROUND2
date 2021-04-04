@@ -28,10 +28,10 @@ def home():
     msg = ''
     if 'acctType' in session:
         if session['acctType'] == 'customer':
-            return render_template("index1.html", user=session['data']['cname'])
+            return render_template("marketplace.html", user=session['data']['cname'])
         else:
-            return render_template("index1.html", user=session['data']['bname'])
-    return render_template("index1.html", msg=msg)
+            return render_template("marketplace.html", user=session['data']['bname'])
+    return render_template("marketplace.html", msg=msg)
 
 
 @app.route("/signup")
@@ -130,11 +130,6 @@ def configure_signup():
             return  redirect(url_for('.signup',msg ='Customer exists'))
         
 
-
-@app.route('/market')
-def market():
-    # Redirect customer to marketplace to add products into cart
-    return render_template('marketplace.html')
 
 
 @app.route('/logout')
