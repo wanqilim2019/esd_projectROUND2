@@ -17,8 +17,8 @@ class Product(db.Model):
     pid = db.Column(db.Integer, primary_key=True)
     pname = db.Column(db.String(128), nullable=False)
     price = db.Column(db.Float(precision=2), nullable=False)
-    pdescription = db.Column(db.String(128), nullable=False)
-    imgname = db.Column(db.String(128), nullable=False)
+    pdescription = db.Column(db.String(225), nullable=False)
+    imgname = db.Column(db.String(225), nullable=False)
     
 
     def json(self):

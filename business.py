@@ -108,8 +108,9 @@ def create_business():
     paypal = request.json.get('paypal', None)
     baddress = request.json.get('address', None)
     email = request.json.get('email', None)
+    password = request.json.get('password', None)
     
-    business = Business(bname=bname,email=email,baddress=baddress,bdescription=bdescription,paypal=paypal,)
+    business = Business(bname=bname,email=email,baddress=baddress,bdescription=bdescription,paypal=paypal,password=password)
 
     try:
         db.session.add(business)
@@ -124,7 +125,7 @@ def create_business():
 
     return jsonify(
         {
-            "code": 201,
+            "code": 200,
             "data": business.json()
         }
     ), 201
