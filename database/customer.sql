@@ -27,5 +27,7 @@ CAddress VARCHAR (128)
 
 
 insert into customer (cname, email, password, paypal , caddress)
-VALUES ('Amy Tan', 'amy@abc.com', MD5('newpassword'), 123, 'Blk 123 SMU Avenue 1');
+VALUES ('Amy Tan', 'amy@abc.com', MD5('newpassword'), 'amy@abc.com', 'Blk 123 SMU Avenue 1');
 
+insert into customer (cname, email, password, paypal , caddress)
+VALUES ('Tommy Tan', 'tom@abc.com', MD5('newpassword'), "tom@abc.com", 'Blk 123 SMU Avenue 1');

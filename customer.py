@@ -107,7 +107,7 @@ def create_customer():
     caddress = request.json.get('address', None)
     email = request.json.get('email', None)
 
-    customer = Customer(cname=cname, email=email, caddress=caddress)
+    customer = Customer(cname=cname, email=email, caddress=caddress,password=password,paypal=paypal)
 
     try:
         db.session.add(customer)
@@ -119,9 +119,6 @@ def create_customer():
                 "message": "An error occurred while creating the customer. " + str(e)
             }
         ), 500
-
-    # print(json.dumps(customer.json(), default=str)) # convert a JSON object to a string and print
-    # print()
 
     return jsonify(
         {

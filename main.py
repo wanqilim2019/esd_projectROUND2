@@ -28,21 +28,15 @@ def home():
     msg = ''
     if 'acctType' in session:
         if session['acctType'] == 'customer':
-            return render_template("index1.html", user=session['data']['cname'])
+            return render_template("marketplace.html", user=session['data']['cname'])
         else:
-            return render_template("index1.html", user=session['data']['bname'])
-    return render_template("index1.html", msg=msg)
+            return render_template("marketplace.html", user=session['data']['bname'])
+    return render_template("marketplace.html", msg=msg)
 
 
 @app.route("/signup")
 def show_signuppage():
     return render_template('signup.html')
-
-
-@app.route("/market")
-def show_marketplace():
-    return render_template('marketplace.html')
-
 
 @app.route("/login")
 def login():
@@ -56,7 +50,7 @@ def configure_login():
     account_type = request.form['acctType']
     print(request.form)
     if request.method == 'POST' and 'email' in request.form and 'password' in request.form:
-
+        
         email = request.form['email']
         password = hashlib.md5(
             request.form['password'].encode('utf-8')).hexdigest()
@@ -77,8 +71,7 @@ def configure_login():
             session['loggedin'] = True
             session['acctType'] = account_type
             session['data'] = login_result['data']
-            # print(login_result, file=sys.stderr)
-            # print(session, file=sys.stderr)
+            
 
             # Redirect to home page
             msg = 'Logged in successfully!'
@@ -94,13 +87,11 @@ def configure_login():
 def configure_signup():
     msg = ''
     account_type = request.form['acctType']
-    print(request.form)
+    print(request.form, file=sys.stderr)
     if  'email' in request.form :
-
         email = request.form['email']
-        password = hashlib.md5(
-            request.form['password'].encode('utf-8')).hexdigest()
-
+        
+        password=request.form['password']
         if (account_type == "customer"):
             result = invoke_http(
                 cuslogin_URL+'/'+email, method='GET', json={"email": email})
@@ -108,12 +99,11 @@ def configure_signup():
         elif(account_type == "business"):
             result = invoke_http(
                 bizlogin_URL+'/'+email, method='GET', json={"email": email})
-            desc = request.form['description'],
-        
-        
+            desc = request.form['description']
 
-        if result['code'] == 400:
+        if result['code'] != 200:
             # Redirect to home page
+            password = hashlib.md5(password.encode('utf-8')).hexdigest()
             mydict = {
                 'name':request.form['name'],
                 'email':email,
@@ -122,19 +112,21 @@ def configure_signup():
                 'address':request.form['address'],
                 'description': desc,
             }
+            app.logger.info(mydict)
+            
             if (account_type == "customer"):
                 registerresult = invoke_http(cuslogin_URL, method='POST', json=mydict)
             elif(account_type == "business"):
                 registerresult = invoke_http(bizlogin_URL, method='POST', json=mydict)
+            
+            if registerresult['code'] == 200:
+                app.logger.info(registerresult)
+                return  redirect(url_for('.login',msg ='Signup sucessfully Please login'))
+            else:
+                return  redirect(url_for('.home',msg ='Signup is not sucessfull. Please try again later'))
         else:
-            return  redirect(url_for('.signup',msg ='Customer exists'))
+            return  redirect(url_for('.home',msg ='Customer exists'))
         
-
-
-@app.route('/market')
-def market():
-    # Redirect customer to marketplace to add products into cart
-    return render_template('marketplace.html')
 
 
 @app.route('/logout')

@@ -12,6 +12,14 @@
 
 
     <section id="Header" class="py-2">
+        <div class="text-center">
+            {% if 'loggedin' not in session %}
+            <p></p><a href="/signup">Signup</a></p>
+            <p><a href="/login">login</a></p>
+            {% else %}
+            <p>Welcome {{ user}}</p>
+            {% endif %}
+        </div>
         <div class='container text-center'>
             <h1>Your one stop Marketplace</h1>
         </div>
@@ -20,22 +28,20 @@
     <!-- Implementing search bar with Vue -->
     <div id="app">
         <div class="container">
+
             <div class="input-group mb-3 justify-content-center">
-                <input v-model="pName" class="w-25 rounded text-center" class="form-control"
+                <input v-model="sKey" class="w-25 rounded text-center" class="form-control"
                     placeholder="Search for something!" aria-label="Example text with button addon"
                     aria-describedby="button-addon1">
             </div>
 
             <div class="container text-center">
-                <h4>Displaying search results for: <span style="color:firebrick; text-transform:uppercase"> ((pName)) </span></h4>
+                <h4>Displaying search results for: <span style="color:firebrick; text-transform:uppercase"> ((sKey))
+                    </span></h4>
             </div>
 
             <div class="container">
-                <div class="row">
-                    <div class="col-md-4">
-                        
-                    </div>
-                </div>
+                <p-card></p-card>
             </div>
         </div>
 
@@ -45,9 +51,27 @@
         var app = new Vue({
             el: "#app",
             data: {
-                pName: "",
+                sKey: "",
             },
-            delimiters: ["((","))"]
+            delimiters: ["((", "))"]
+        })
+
+        Vue.component('p-card', {
+            props: ['pName', 'pDesc', 'price', 'pImg'],
+            data: function () {
+                return {
+                    isAdded: false
+                }
+            },
+            methods: {
+                toggleAdd: function () {
+                    this.isAdded = !this.isAdded
+                }
+            },
+            template: `
+            <div class='container text-center'>
+                <h1> Como Estas </h1>
+            </div>`
         })
     </script>
 
