@@ -104,12 +104,12 @@ def find_by_bemail(business):
 @app.route("/business" ,methods=['POST'])
 def create_business():
     bname = request.json.get('name', None)
-    bdesc = request.json.get('description', None)
+    bdescription = request.json.get('description', None)
     paypal = request.json.get('paypal', None)
     baddress = request.json.get('address', None)
     email = request.json.get('email', None)
     
-    business = Business(bname=bname,email=email,baddress=baddress,bdesc=bdescription)
+    business = Business(bname=bname,email=email,baddress=baddress,bdescription=bdescription,paypal=paypal,)
 
     try:
         db.session.add(business)

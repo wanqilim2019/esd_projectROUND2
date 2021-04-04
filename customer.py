@@ -101,14 +101,13 @@ def find_by_email(email):
 @app.route("/customer", methods=['POST'])
 def create_customer():
     # cid = request.json.get('cid', None)
-    print(request.json, file=sys.stderr)
     cname = request.json.get('name', None)
     password = request.json.get('password', None)
     paypal = request.json.get('paypal', None)
     caddress = request.json.get('address', None)
     email = request.json.get('email', None)
 
-    customer = Customer(cname=cname, email=email, caddress=caddress)
+    customer = Customer(cname=cname, email=email, caddress=caddress,password=password,paypal=paypal)
 
     try:
         db.session.add(customer)
