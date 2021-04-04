@@ -18,7 +18,7 @@ class Product(db.Model):
     pname = db.Column(db.String(128), nullable=False)
     price = db.Column(db.Float(precision=2), nullable=False)
     pdescription = db.Column(db.String(128), nullable=False)
-    pimgsrc = db.Column(db.Varchar(128), nullable=False)
+    pimgsrc = db.Column(db.String(128), nullable=False)
     
 
     def json(self):
