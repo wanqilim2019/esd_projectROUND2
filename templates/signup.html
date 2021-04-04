@@ -20,7 +20,6 @@
 <body>
     {% include 'nav.html' %}
 
-
     <div class="container">
         <h1> Registration Form</h1>
 
@@ -91,7 +90,7 @@
             <div class="center">
                 <button type="submit" class="btn btn-primary btn-lg" id='registerbtn' disabled>Register</button>
             </div>
-            <div id='msg'></div>
+            <div id='msg'>{{  msg }}</div>
             <script>
                 $('#descsection').hide();
                 $('input[type=radio][name=acctType]').change(function () {
@@ -126,10 +125,6 @@
                 //         $('#registerbtn').prop('disabled', false);
                 //     }
                 // });
-
-                
-
-
             </script>
         </form>
     </div>
