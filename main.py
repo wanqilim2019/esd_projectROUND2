@@ -38,6 +38,12 @@ def home():
 def show_signuppage():
     return render_template('signup.html')
 
+
+@app.route("/product/<string:pid>")
+def show_listing(pid):
+    return render_template('product_listing.html')
+
+
 @app.route("/login")
 def login():
     msg = ''

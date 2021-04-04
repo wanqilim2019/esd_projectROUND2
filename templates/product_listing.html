@@ -30,10 +30,10 @@
   <div class="container mx-auto">
     <h1>Add a new product</h1>
   </div>
-  
+
 
   <div class="container">
-    <form>
+    <form class="justify-content-center">
 
       <div class="row">
 
@@ -48,7 +48,7 @@
           <label for="exampleInputFile">Insert Image</label>
           <small id="fileHelp" class="form-text text-muted">Please upload an image of your product.</small>
           <input type='file' onchange="readImg(this);" />
-          <img id="imgname" src="#" alt="" aria-describedby="fileHelp" />
+          <img id="pic" src="#" alt="" aria-describedby="fileHelp" />
 
 
           <script>
@@ -57,7 +57,7 @@
                 var reader = new FileReader();
 
                 reader.onload = function (e) {
-                  $('#imgname')
+                  $('#pic')
                     .attr('src', e.target.result)
                     .width(500)
                     .height(500);
@@ -73,21 +73,25 @@
 
       <div class="row">
         <label for="Price">Product Price: </label>
-        <span class="input-group-text" id="addon-wrapping" style="margin-left:10px">S$</span>
-        <input type="text" placeholder="0.00" aria-label="Product Price" aria-describedby="addon-wrapping">
+
+        <span class="input-group-text col-1" id="addon-wrapping" style="margin-left:10px">S$</span>
+        <input type="text" class="col-3" placeholder="0.00" aria-label="Product Price"
+          aria-describedby="addon-wrapping">
       </div>
 
       <div class="row">
         <div class="form-group">
-          <label for="Description(">Product Description:</label>
+          <label for="Description">Product Description:</label>
           <textarea class="form-control" id="Description" placeholder="Write a short description about your product..."
             rows="3"></textarea>
         </div>
 
       </div>
-      <div class="center">
-        <button type="submit" class="btn btn-primary">Add/update Product</button>
-        <button type="submit" class="btn btn-secondary">Delete Product</button>
+    </br>
+      <div class="row" >
+        <button type="submit" class="btn btn-primary col-2" >Add/update Product</button>
+        
+        <button type="submit" class="btn btn-secondary col-2">Delete Product</button>
       </div>
     </form>
   </div>
