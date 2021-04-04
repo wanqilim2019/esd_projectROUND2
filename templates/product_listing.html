@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  {% include 'head.html' %}
+
+
+  <style>
+    .box {
+      width: 400px;
+      height: auto;
+    }
+
+    .form-group {
+      width: 400px;
+    }
+
+    .center {
+      margin-left: 350px;
+    }
+  </style>
+  <title>Product Listing</title>
+</head>
+
+<body>
+
+  {% include 'nav.html' %}
+
+
+  <div class="container mx-auto">
+    <h1>Add a new product</h1>
+  </div>
+  
+
+  <div class="container">
+    <form>
+
+      <div class="row">
+
+        <div class="form-group">
+          <label for="=PName">Product Name:</label>
+          <input type="text" class="form-control" id="Pname" placeholder=" Product Name">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="form-group">
+          <label for="exampleInputFile">Insert Image</label>
+          <small id="fileHelp" class="form-text text-muted">Please upload an image of your product.</small>
+          <input type='file' onchange="readImg(this);" />
+          <img id="imgname" src="#" alt="" aria-describedby="fileHelp" />
+
+
+          <script>
+            function readImg(input) {
+              if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                  $('#imgname')
+                    .attr('src', e.target.result)
+                    .width(500)
+                    .height(500);
+                };
+
+                reader.readAsDataURL(input.files[0]);
+              }
+            }
+          </script>
+
+        </div>
+      </div>
+
+      <div class="row">
+        <label for="Price">Product Price: </label>
+        <span class="input-group-text" id="addon-wrapping" style="margin-left:10px">S$</span>
+        <input type="text" placeholder="0.00" aria-label="Product Price" aria-describedby="addon-wrapping">
+      </div>
+
+      <div class="row">
+        <div class="form-group">
+          <label for="Description(">Product Description:</label>
+          <textarea class="form-control" id="Description" placeholder="Write a short description about your product..."
+            rows="3"></textarea>
+        </div>
+
+      </div>
+      <div class="center">
+        <button type="submit" class="btn btn-primary">Add/update Product</button>
+        <button type="submit" class="btn btn-secondary">Delete Product</button>
+      </div>
+    </form>
+  </div>
+  {% include 'footer.html' %}
+
+
+</body>
+
+</html>
