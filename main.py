@@ -38,12 +38,6 @@ def home():
 def show_signuppage():
     return render_template('signup.html')
 
-
-@app.route("/market")
-def show_marketplace():
-    return render_template('marketplace.html')
-
-
 @app.route("/login")
 def login():
     msg = ''
@@ -56,7 +50,7 @@ def configure_login():
     account_type = request.form['acctType']
     print(request.form)
     if request.method == 'POST' and 'email' in request.form and 'password' in request.form:
-
+        
         email = request.form['email']
         password = hashlib.md5(
             request.form['password'].encode('utf-8')).hexdigest()
@@ -77,8 +71,7 @@ def configure_login():
             session['loggedin'] = True
             session['acctType'] = account_type
             session['data'] = login_result['data']
-            # print(login_result, file=sys.stderr)
-            # print(session, file=sys.stderr)
+            
 
             # Redirect to home page
             msg = 'Logged in successfully!'
@@ -94,9 +87,8 @@ def configure_login():
 def configure_signup():
     msg = ''
     account_type = request.form['acctType']
-    print(request.form)
+    print(request.form, file=sys.stderr)
     if  'email' in request.form :
-
         email = request.form['email']
         password = hashlib.md5(
             request.form['password'].encode('utf-8')).hexdigest()
@@ -108,11 +100,9 @@ def configure_signup():
         elif(account_type == "business"):
             result = invoke_http(
                 bizlogin_URL+'/'+email, method='GET', json={"email": email})
-            desc = request.form['description'],
-        
-        
+            desc = request.form['description']
 
-        if result['code'] == 400:
+        if result['code'] != 200:
             # Redirect to home page
             mydict = {
                 'name':request.form['name'],
@@ -126,10 +116,17 @@ def configure_signup():
                 registerresult = invoke_http(cuslogin_URL, method='POST', json=mydict)
             elif(account_type == "business"):
                 registerresult = invoke_http(bizlogin_URL, method='POST', json=mydict)
+            
+            return  redirect(url_for('.login',msg ='Signup sucessfully Please login'))
         else:
-            return  redirect(url_for('.signup',msg ='Customer exists'))
+            return  redirect(url_for('.home',msg ='Customer exists'))
         
 
+
+# @app.route('/market')
+# def market():
+#     # Redirect customer to marketplace to add products into cart
+#     return render_template('marketplace.html')
 
 
 @app.route('/logout')
