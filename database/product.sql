@@ -62,5 +62,7 @@ values('Handmade Dinosaur Crayons', 6.80, " These Dinosaur Crayons are perfect f
 insert into product (PName,Price,PDescription,imgname)
 values('Knitted Handmade Bag', 97.86, "Your unique hand knitted bag that you will never find another same one!",img10.jpg);
 
+insert into product (PName,Price,PDescription,imgname)
+values('Clown Costume',20.93, "This is a clown costume perfect for starting circuses.",img11.jpg);
 
 select * from product;
