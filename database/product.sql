@@ -45,3 +45,5 @@ insert into product (PName,Price,PDescription,imgname,bid) values
 
 
 select * from product;
+
+
