@@ -88,7 +88,7 @@
           <label for="exampleInputFile">Insert Image</label>
           <small id="fileHelp" class="form-text text-muted">Please upload an image of your product.</small>
           <input type='file' onchange="readImg(this);" />
-          <img id="pic" src="#" alt="" aria-describedby="fileHelp" />
+          <img id="imgname" src="#" alt="" aria-describedby="fileHelp" />
 
 
           <script>
@@ -97,7 +97,7 @@
                 var reader = new FileReader();
 
                 reader.onload = function (e) {
-                  $('#pic')
+                  $('#imgname')
                     .attr('src', e.target.result)
                     .width(500)
                     .height(500);

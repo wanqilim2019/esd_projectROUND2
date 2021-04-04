@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app lang="en">
+<html lang="en">
 
 <head>
     {% include 'head.html' %}
@@ -17,30 +17,44 @@
         </div>
     </section>
 
-    <!-- Implementing search bar with angular -->
-    <section id="searchBar">
+    <!-- Implementing search bar with Vue -->
+    <div id="app">
         <div class="container">
             <div class="input-group mb-3 justify-content-center">
-                <input class="w-25 rounded text-center" type="text" ng-model="searchItem" class="form-control" placeholder="Search for something!"
-                    aria-label="Example text with button addon" aria-describedby="button-addon1">
-                
+                <input v-model="pName" class="w-25 rounded text-center" class="form-control"
+                    placeholder="Search for something!" aria-label="Example text with button addon"
+                    aria-describedby="button-addon1">
             </div>
 
             <div class="container text-center">
-                <h4>Displaying search results for: <span style="color:firebrick">{{searchItem}}</span></h4>
+                <h4>Displaying search results for: <span style="color:firebrick; text-transform:uppercase"> ((pName)) </span></h4>
+            </div>
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4">
+                        
+                    </div>
+                </div>
             </div>
         </div>
-    </section>
 
-    <!-- Use Angular templates to repeat cards of products -->
-    <section id="market">
-        <div>
+    </div>
 
-        </div>
-    </section>
+    <script>
+        var app = new Vue({
+            el: "#app",
+            data: {
+                pName: "",
+            },
+            delimiters: ["((","))"]
+        })
+    </script>
 
 
     {% include 'footer.html' %}
+
+
 
 </body>
 
