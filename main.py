@@ -38,12 +38,6 @@ def home():
 def show_signuppage():
     return render_template('signup.html')
 
-
-@app.route("/market")
-def show_marketplace():
-    return render_template('marketplace.html')
-
-
 @app.route("/login")
 def login():
     msg = ''
