@@ -133,8 +133,8 @@ def update_product(pid):
             product.price = data['price']
         if data['pdescription']:
             product.pdescription = data['pdescription']
-        if data['imgsrc']:
-            product.imgsrc = data['imgsrc']
+        if data['imgname']:
+            product.imgname = data['imgname']
         db.session.commit()
         return jsonify(
             {
