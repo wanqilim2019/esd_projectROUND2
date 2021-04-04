@@ -28,10 +28,10 @@ def home():
     msg = ''
     if 'acctType' in session:
         if session['acctType'] == 'customer':
-            return render_template("index1.html", user=session['data']['cname'])
+            return render_template("marketplace.html", user=session['data']['cname'])
         else:
-            return render_template("index1.html", user=session['data']['bname'])
-    return render_template("index1.html", msg=msg)
+            return render_template("marketplace.html", user=session['data']['bname'])
+    return render_template("marketplace.html", msg=msg)
 
 
 @app.route("/signup")
@@ -89,11 +89,6 @@ def configure_login():
 
         msg = 'Incorrect username/password!'
         return render_template('Loginpage.html', msg=msg)
-
-@app.route('/market')
-def market():
-    # Redirect customer to marketplace to add products into cart
-    return render_template('marketplace.html')
 
 
 @app.route('/logout')

@@ -21,21 +21,18 @@
     <div id="app">
         <div class="container">
             <div class="input-group mb-3 justify-content-center">
-                <input v-model="pName" class="w-25 rounded text-center" class="form-control"
+                <input v-model="sKey" class="w-25 rounded text-center" class="form-control"
                     placeholder="Search for something!" aria-label="Example text with button addon"
                     aria-describedby="button-addon1">
             </div>
 
             <div class="container text-center">
-                <h4>Displaying search results for: <span style="color:firebrick; text-transform:uppercase"> ((pName)) </span></h4>
+                <h4>Displaying search results for: <span style="color:firebrick; text-transform:uppercase"> ((sKey))
+                    </span></h4>
             </div>
 
             <div class="container">
-                <div class="row">
-                    <div class="col-md-4">
-                        
-                    </div>
-                </div>
+                <p-card></p-card>
             </div>
         </div>
 
@@ -45,9 +42,27 @@
         var app = new Vue({
             el: "#app",
             data: {
-                pName: "",
+                sKey: "",
             },
-            delimiters: ["((","))"]
+            delimiters: ["((", "))"]
+        })
+
+        Vue.component('p-card', {
+            props: ['pName', 'pDesc', 'price', 'pImg'],
+            data: function () {
+                return {
+                    isAdded: false
+                }
+            },
+            methods: {
+                toggleAdd: function () {
+                    this.isAdded = !this.isAdded
+                }
+            },
+            template: `
+            <div class='container text-center'>
+                <h1> Como Estas </h1>
+            </div>`
         })
     </script>
 
