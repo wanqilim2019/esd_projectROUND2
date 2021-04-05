@@ -78,8 +78,8 @@ def find_existingby_bemail(business):
         }
     ), 404
     
-@app.route("/business/<string:email>", methods=['POST'])
-def find_by_bemail(business):
+@app.route("/check/business", methods=['POST'])
+def find_by_bemail():
     password = request.json.get('password', None)
     email = request.json.get('email', None)
     business = db.session.query(Business).filter((Business.email == email) & (Business.password == password)).first()

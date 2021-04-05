@@ -17,6 +17,7 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
+CREATE DATABASE IF NOT EXISTS  `product` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 --
 -- Database: `product`
@@ -27,8 +28,7 @@ SET time_zone = "+00:00";
 --
 -- Table structure for table `product`
 --
-CREATE TABLE `product`.`product` ( `pid` INT NOT NULL AUTO_INCREMENT , `pname` VARCHAR(128) NOT NULL , `price` FLOAT(5,2) NOT NULL , `pdescription` VARCHAR(225) NOT NULL , `imgname` VARCHAR(225) NOT NULL , `bid` INT NOT NULL , PRIMARY KEY (`pid`)) ENGINE = InnoDB;
-
+use `product`;
 DROP TABLE IF EXISTS `product`;
 CREATE TABLE IF NOT EXISTS `product` (
   `pid` int(11) NOT NULL AUTO_INCREMENT,

@@ -11,7 +11,9 @@ from os import environ
 
 import requests
 from invokes import invoke_http
+from werkzeug.utils import secure_filename
 
+import time
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
@@ -20,8 +22,11 @@ app.secret_key = 'esdT6thebest'
 
 
 cuslogin_URL = environ.get('cuslogin_URL') or "http://localhost:5003/customer"
-bizlogin_URL = environ.get('bizlogin_URL') or "http://localhost:5004/business"
+bizlogin_URL = environ.get('bizlogin_URL') or "http://localhost:5004/"
+product_URL = environ.get('product_URL') or "http://localhost:5001/product"
 
+uploads_dir = os.path.join( 'static\\images\\uploads')
+# os.makedirs(uploads_dir)
 
 @app.route("/")
 def home():
@@ -39,9 +44,37 @@ def show_signuppage():
     return render_template('signup.html')
 
 
-@app.route("/product/<string:pid>")
-def show_listing(pid):
-    return render_template('product_listing.html')
+@app.route('/create/product', methods=['GET', 'POST'])
+def upload():
+    if session.get('loggedin') == True:    
+        if session.get('acctType') == 'business':
+            if request.method == 'POST':
+                # save the  file
+                img = request.files['imgfile']
+                fileext = img.filename.split('.')[-1]
+                
+                timestr = time.strftime("%Y%m%d-%H%M%S")
+                newfilename = str(timestr)+'.'+fileext 
+                img.save(os.path.join(uploads_dir, secure_filename(newfilename)))
+                
+                sendjson = {
+                    "pname": request.form['pname'], 
+                    "price": request.form['price'], 
+                    "pdescription": request.form['pdesc'],
+                    "imgname": newfilename,
+                    "bid": session['data']['bid']
+                }
+                result = invoke_http(
+                        product_URL, method='POST', json=sendjson)
+                
+                
+                return render_template('product_listing.html',msg='Upload Successfully')
+            # for normal get to create product listing page
+            return render_template('product_listing.html',msg='')
+        # if not business
+        return redirect(url_for('.home',msg='no such url'))
+    # if not logged in
+    return redirect(url_for('.login',msg='Please log in'))
 
 
 @app.route("/login")
@@ -66,7 +99,7 @@ def configure_login():
                 cuslogin_URL+'/'+email, method='POST', json={"email": email, "password": password})
         elif(account_type == "business"):
             login_result = invoke_http(
-                bizlogin_URL+'/'+email, method='POST', json={"email": email, "password": password})
+                bizlogin_URL+'check/business', method='POST', json={"email": email, "password": password})
         else:
             msg = 'Please select a account type!'
             
@@ -104,7 +137,7 @@ def configure_signup():
             desc = ''
         elif(account_type == "business"):
             result = invoke_http(
-                bizlogin_URL+'/'+email, method='GET', json={"email": email})
+                bizlogin_URL+'/business/'+email, method='GET', json={"email": email})
             desc = request.form['description']
 
         if result['code'] != 200:
@@ -123,7 +156,7 @@ def configure_signup():
             if (account_type == "customer"):
                 registerresult = invoke_http(cuslogin_URL, method='POST', json=mydict)
             elif(account_type == "business"):
-                registerresult = invoke_http(bizlogin_URL, method='POST', json=mydict)
+                registerresult = invoke_http(bizlogin_URL+'/business', method='POST', json=mydict)
             
             if registerresult['code'] == 200:
                 app.logger.info(registerresult)
