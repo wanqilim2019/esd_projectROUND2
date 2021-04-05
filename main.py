@@ -25,7 +25,7 @@ cuslogin_URL = environ.get('cuslogin_URL') or "http://localhost:5003/customer"
 bizlogin_URL = environ.get('bizlogin_URL') or "http://localhost:5004/"
 product_URL = environ.get('product_URL') or "http://localhost:5001/product"
 
-uploads_dir = os.path.join( 'static\\images\\uploads')
+uploads_dir = os.path.join( 'static\\images')
 # os.makedirs(uploads_dir)
 
 @app.route("/")
