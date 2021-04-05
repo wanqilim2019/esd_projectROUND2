@@ -20,13 +20,37 @@ customer_URL = environ.get('customer_URL') or "http://localhost:5003/customer"
 @app.route("/check_order_biz/<string:bid>", methods=['GET'])
 def check_order_biz(bid):
     # Simple check of input format and data of the request are JSON
-    # do the actual work
-    # 1. Send get order info
-    result = processCheckOrder(bid)
-    print('\n------------------------')
-    print('\nresult: ', result)
-    return jsonify(result), result["code"]
-    
+    if request.is_json:
+        try:
+            order = request.get_json()
+            print("\nReceived check order request order in JSON:", order)
+
+            # do the actual work
+            # 1. Send get order info
+            result = processCheckOrder(bid)
+            print('\n------------------------')
+            print('\nresult: ', result)
+            return jsonify(result), result["code"]
+
+        except Exception as e:
+            # Unexpected error in code
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            ex_str = str(e) + " at " + str(exc_type) + ": " + fname + ": line " + str(exc_tb.tb_lineno)
+            print(ex_str)
+
+            return jsonify({
+                "code": 500,
+                "message": "check_order_biz.py internal error: " + ex_str
+            }), 500
+
+    # if reached here, not a JSON request.
+    return jsonify({
+        "code": 400,
+        "message": "Invalid JSON input: " + str(request.get_data())
+    }), 400
+
+
 def processCheckOrder(bid):
 
     print('\n\n-----Invoking product microservice-----')

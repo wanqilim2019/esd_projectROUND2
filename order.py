@@ -15,7 +15,7 @@ class Order(db.Model):
     __tablename__ = 'order'
 
     oid = db.Column(db.Integer, primary_key=True)
-    quantity = db.Column(dc.Integer, nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)
     datetime = db.Column(db.datetime, nullable=False)
     ostatus = db.Column(db.Integer, nullable=False)
     dstatus = db.Column(db.String(128), nullable=False)
