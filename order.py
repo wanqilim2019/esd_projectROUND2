@@ -71,6 +71,25 @@ def find_by_oid(oid):
     ), 404
 
 
+@app.route("/order/product/<string:pid>")
+def find_by_pid(pid):
+    orderlist = Product.query.filter_by(pid=pid).all()
+    if len(orderlist):
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "order": [order.json() for order in orderlist]
+                }
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "There are no orders."
+        }
+    ), 404
+
 @app.route("/order", methods=['POST'])
 def create_order():
     # oid = request.json.get('oid', None)

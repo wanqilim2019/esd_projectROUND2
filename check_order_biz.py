@@ -26,7 +26,7 @@ def check_order_biz(bid):
     print('\n------------------------')
     print('\nresult: ', result)
     return jsonify(result), result["code"]
-    
+
 def processCheckOrder(bid):
 
     print('\n\n-----Invoking product microservice-----')
@@ -57,13 +57,16 @@ def processCheckOrder(bid):
 
     # 3. Get the order info base on pid
     # Invoke the order microservice
+    product_result_list = product_result['data']['products']
+    print(product_result_list)
     print('\n-----Invoking order microservice-----')
+    
 
     order_result_list=list()
     
-    for product in product_result:
-        oid=product
-        order_result = invoke_http((order_URL + '/' + oid), method='GET')
+    for product in product_result_list:
+        pid=product['pid']
+        order_result = invoke_http((order_URL + '/' + pid), method='GET')
         print('order_result:', order_result)
         order_result_list.append(order_result)
     
@@ -77,7 +80,7 @@ def processCheckOrder(bid):
             return {
                 "code": 400,
                 "data": {"order_result": order_result},
-                "message": "Order creation failure sent for error handling."
+                "message": "Order retrival fail. "
             }
 
 
@@ -118,7 +121,7 @@ def processCheckOrder(bid):
                     "shipping_result": product_result,
                     "customer_result":customer_result
                 },
-                "message": "Simulated shipping record error sent for error handling."
+                "message": "Customer retrival fail."
             }
 
 
