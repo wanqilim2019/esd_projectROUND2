@@ -41,12 +41,10 @@
                     </span></h4>
             </div>
 
-            <div class="container">
+            <div class="container" id="marketSpace">
                 <div class="row">
                     <!-- Test template, use v-for later on -->
-                    <p-card></p-card>
-                    <p-card></p-card>
-                    <p-card></p-card>
+                    <p-card v-for="p in prodArr" :name="p.pname" :desc="p.pdescription" :price="p.price" :imgsrc="p.imgname"></p-card>
                 </div>
             </div>
         </div>
@@ -58,17 +56,32 @@
             el: "#app",
             data: {
                 sKey: "",
+                prodArr: []
             },
-            delimiters: ["((", "))"]
-        })
+            delimiters: ["((", "))"],
+            async mounted() {
+                // anonymous async function 
+                // - using await requires the function that calls it to be async
+
+                try {
+                    var response = await axios.get("http://127.0.0.1:5001/product")
+                    console.log(response.data.data.products)
+                    this.prodArr = response.data.data.products
+                } catch (error) {
+                    console.log(error)
+                }
+            }
+        });
+
 
         Vue.component('p-card', {
-            props: ['pName', 'pDesc', 'pPrice', 'imgSrc'],
+            props: ['name', 'desc', 'price', 'imgsrc'],
             data: function () {
                 return {
                     isAdded: false
                 }
             },
+            delimiters: ["((", "))"],
             methods: {
                 toggleAdd: function () {
                     this.isAdded = !this.isAdded
@@ -77,16 +90,15 @@
             template: `
             <div class="col-lg-4 col-md-6 mb-3">
                 <div class="card" style="width: 15rem;">
-                    <img src="../static/images/img1.jpg" class="card-img-top">
+                    <img :src="imgsrc" class="card-img-top">
                     <div class="card-body">
-                        <h5 class="card-title">((pName))</h5>
-                        <p class="card-text">((pDesc))</p>
-                        <p class="card-text">SGD((pPrice))</p>
+                        <h5 class="card-title">(( name ))</h5>
+                        <p class="card-text">(( desc ))</p>
+                        <p class="card-text">SGD$(( price ))</p>
                     </div>
                 </div>
             </div>`
         })
-
     </script>
 
 
