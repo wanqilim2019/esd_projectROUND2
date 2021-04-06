@@ -2,9 +2,14 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
+from datetime import datetime
+import json
+from os import environ
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/order'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
 db = SQLAlchemy(app)
 
@@ -18,7 +23,7 @@ class Order(db.Model):
     pid = db.Column(db.Integer, nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
     cid = db.Column(db.Integer, nullable=False)
-    datetime = db.Column(db.DateTime, nullable=False)
+    datetime = db.Column(db.DateTime, nullable=False, default=datetime.now)
     oStatus = db.Column(db.Integer, nullable=False)
     dStatus = db.Column(db.String(128), nullable=False)
     pResponse = db.Column(db.String(128), nullable=False)
@@ -28,7 +33,7 @@ class Order(db.Model):
         return {
             "oid": self.oid,
             "pid": self.pid,
-            "quantiy": self.quantity,
+            "quantity": self.quantity,
             "cid": self.cid,
             "datetime": self.datetime,
             "oStatus": self.oStatus,
@@ -99,8 +104,14 @@ def create_order():
     # oid = request.json.get('oid', None)
     quantity = request.json.get('quantity', None)
     datetime = request.json.get('datetime', None)
+    pid = request.json.get('pid', None)
+    cid = request.json.get('cid', None)
+    oStatus = 0
+    dStatus = "Undelivered"
+    pResponse = request.json.get('pResponse', None)
 
-    order = Order(quantity=quantity, datetime=datetime)
+
+    order = Order(quantity=quantity, datetime=datetime, pid=pid, cid=cid, oStatus=oStatus, dStatus=dStatus, pResponse=pResponse)
 
     try:
         db.session.add(order)
@@ -119,7 +130,7 @@ def create_order():
     return jsonify(
         {
             "code": 201,
-            "data": Order.json()
+            "data": order.json()
         }
     ), 201
 

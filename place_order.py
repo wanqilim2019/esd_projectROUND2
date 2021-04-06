@@ -55,6 +55,7 @@ def processPlaceOrder(order):
 
         # Invoke the order microservice
     print('\n-----Invoking order microservice-----')
+    print(order)
     order_result = invoke_http(order_URL, method='POST', json=order)
     print('order_result:', order_result)
   
@@ -83,7 +84,8 @@ def processPlaceOrder(order):
         # 4. Record new order
         # record the activity log anyway
         #print('\n\n-----Invoking activity_log microservice-----')
-        print('\n\n-----order placed-----')        
+        print('\n\n-----order placed-----')
+        return order_result
 
 
 

@@ -58,7 +58,7 @@ def processCheckOrder(bid):
     # 3. Get the order info base on pid
     # Invoke the order microservice
     product_result_list = product_result['data']['products']
-    print(product_result_list)
+    #print(product_result_list)
     print('\n-----Invoking order microservice-----')
     
 
@@ -66,7 +66,9 @@ def processCheckOrder(bid):
     
     for product in product_result_list:
         pid=product['pid']
-        order_result = invoke_http((order_URL + '/' + pid), method='GET')
+        print('pid')
+        print(pid)
+        order_result = invoke_http(order_URL + '/product/' + str(pid))
         print('order_result:', order_result)
         order_result_list.append(order_result)
     
@@ -77,12 +79,7 @@ def processCheckOrder(bid):
         if code not in range(200, 300):
 
             #  Return error
-            return {
-                "code": 400,
-                "data": {"order_result": order_result},
-                "message": "Order retrival fail. "
-            }
-
+            print('-----No order-----')
 
         else:
             # 4. Record new order
@@ -94,9 +91,10 @@ def processCheckOrder(bid):
         # Invoke the product microservice
 
 
-    print('\n\n-----Invoking customer microservice-----')    
+    print('\n\n-----Invoking customer microservice-----')
     
     customer_result_list=list()
+    print(order_result_list)
 
     for order in order_result_list:
         cid=order
