@@ -71,7 +71,7 @@
 
             <div class="container" id="marketSpace">
                 <div class="row">
-                    <p-card v-for="p in prodArr" :name="p.pname" :desc="p.pdesc" :price="p.price" :imgsrc="`http://127.0.0.1:5000/static/images/${p.imgname}`"></p-card>
+                    <p-card v-for="p in prodArr" :name="p.pname" :desc="p.pdescription" :price="p.price" :imgsrc="`http://127.0.0.1:5000/static/images/${p.imgname}`"></p-card>
                     <!-- end of vfor -->
                 </div>
             </div>
@@ -80,6 +80,9 @@
     </div>
 
     <script>
+        let pCardArr = document.getElementsByTagName('p-card');
+        console.log(pCardArr)
+
         var app = new Vue({
             el: "#app",
             data: {
