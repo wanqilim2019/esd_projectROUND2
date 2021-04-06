@@ -12,9 +12,9 @@ SET time_zone = "+00:00";
 --
 -- Database: `book`
 --
-CREATE DATABASE IF NOT EXISTS  `ESD` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE DATABASE IF NOT EXISTS  `product` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 
-USE `ESD`;
+USE `product`;
 
 DROP TABLE IF EXISTS product;
 CREATE TABLE IF NOT EXISTS product (
