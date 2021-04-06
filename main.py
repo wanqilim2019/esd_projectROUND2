@@ -43,6 +43,10 @@ def home():
 def show_signuppage():
     return render_template('signup.html')
 
+@app.route("/payment")
+def show_payment():
+    return render_template('signup.html')
+
 
 @app.route('/create/product', methods=['GET', 'POST'])
 def upload():
@@ -96,10 +100,10 @@ def configure_login():
 
         if (account_type == "customer"):
             login_result = invoke_http(
-                cuslogin_URL+'/'+email, method='POST', json={"cemail": email, "cpassword": password})
+                cuslogin_URL+'/'+email, method='POST', json={"email": email, "password": password})
         elif(account_type == "business"):
             login_result = invoke_http(
-                bizlogin_URL+'check/business', method='POST', json={"bemail": email, "bpassword": password})
+                bizlogin_URL+'check/business', method='POST', json={"email": email, "password": password})
         else:
             msg = 'Please select a account type!'
             
@@ -133,33 +137,24 @@ def configure_signup():
         password=request.form['password']
         if (account_type == "customer"):
             result = invoke_http(
-                cuslogin_URL+'/'+email, method='GET', json={"cemail": email})
+                cuslogin_URL+'/'+email, method='GET', json={"email": email})
             desc = ''
         elif(account_type == "business"):
             result = invoke_http(
-                bizlogin_URL+'/business/'+email, method='GET', json={"bemail": email})
+                bizlogin_URL+'/business/'+email, method='GET', json={"email": email})
             desc = request.form['description']
 
         if result['code'] != 200:
             # Redirect to home page
             password = hashlib.md5(password.encode('utf-8')).hexdigest()
-            if (account_type == "customer"):
-                mydict = {
-                    'cname':request.form['name'],
-                    'cemail':email,
-                    'cpassword':password,
-                    'cpaypal':request.form['paypalemail'],
-                    'caddress':request.form['address']
-                }
-            else:
-                 mydict = {
-                    'bname':request.form['name'],
-                    'bemail':email,
-                    'bpassword':password,
-                    'bpaypal':request.form['paypalemail'],
-                    'baddress':request.form['address'],
-                    'bdescription': desc,
-                }
+            mydict = {
+                'name':request.form['name'],
+                'email':email,
+                'password':password,
+                'paypal':request.form['paypalemail'],
+                'address':request.form['address'],
+                'description': desc,
+            }
             app.logger.info(mydict)
             
             if (account_type == "customer"):

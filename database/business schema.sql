@@ -20,20 +20,20 @@ DROP TABLE IF EXISTS `business`;
 CREATE TABLE IF NOT EXISTS `business` (
     `bid` INT(11) NOT NULL AUTO_INCREMENT,
     `bname` VARCHAR (128),
-    `bemail` VARCHAR (128),
-    `bpassword` VARCHAR (128),
-    `bpaypal` VARCHAR (128),
-    `baddress` VARCHAR (128),
+    `email` VARCHAR (128),
+    `password` VARCHAR (128),
+    `paypal` VARCHAR (128),
+    `address` VARCHAR (128),
     `bdescription` VARCHAR (128),
     PRIMARY KEY (`bid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-insert into `business` (`bid`, `bname`, `bemail`, `bpassword`, `bpaypal`, `baddress`, `bdescription`)
+insert into `business` (`bid`, `bname`, `email`, `password`, `paypal`, `address`, `bdescription`)
 VALUES (1, 'Shopee', 'shopee@abc.com', MD5('newpassword'), 'shopee@adc.com', 'Blk 124 SMU Avenue 1','business desc');
 
-insert into `business` (`bid`, `bname`, `bemail`, `bpassword`, `bpaypal`, `baddress`, `bdescription`)
+insert into `business` (`bid`, `bname`, `email`, `password`, `paypal`, `address`, `bdescription`)
 VALUES (2, 'Scentopia', 'scent@def.com', MD5('newpassword'), 'scent@def.com', 'Blk 300 SMU Avenue 1','We sell handmade soap and scented candles made with natual ingredients.');
 
-insert into `business` (`bid`, `bname`, `bemail`, `bpassword`, `bpaypal`, `baddress`, `bdescription`)
+insert into `business` (`bid`, `bname`, `email`, `password`, `paypal`, `address`, `bdescription`)
 VALUES (3, 'Circus wholeseller', 'clownclown@123.com', MD5('newpassword'), 'clown123@def.com', 'Blk 90 Yishun Avenue 1','We supply inventory for one-mancircus startup.');
 COMMIT;
