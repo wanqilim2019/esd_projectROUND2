@@ -22,12 +22,12 @@ def check_order_biz(bid):
     # Simple check of input format and data of the request are JSON
     # do the actual work
     # 1. Send get order info
-    result = processCheckOrder(bid)
+    result = processCheckOrderBiz(bid)
     print('\n------------------------')
     print('\nresult: ', result)
     return jsonify(result), result["code"]
 
-def processCheckOrder(bid):
+def processCheckOrderBiz(bid):
 
     print('\n\n-----Invoking product microservice-----')
     # 2. get pid based on bid
@@ -82,7 +82,7 @@ def processCheckOrder(bid):
             print('-----No order-----')
 
         else:
-            # 4. Record new order
+            # 4. Confirm success
             print('\n\n-----Publishing the (order info) message-----')
 
 
