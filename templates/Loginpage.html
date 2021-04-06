@@ -9,10 +9,6 @@
             height: auto;
         }
 
-        h1 {
-            text-align: center;
-        }
-
         .form-group {
             width: 400px;
         }
@@ -27,8 +23,10 @@
 
 <body>
     {% include 'nav.html' %}
-    <h1>Log In</h1>
+    
     <div class="container">
+        <h1>Log In</h1>
+        <br>
 
         <div class="row mx-auto">
             <form action="{{ url_for('configure_login') }}" method="POST">

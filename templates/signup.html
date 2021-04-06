@@ -21,7 +21,8 @@
     {% include 'nav.html' %}
 
     <div class="container">
-        <h1> Registration Form</h1>
+        <h1> Register an account with us </h1>
+        <br>
 
         <form action="{{ url_for('configure_signup') }}" method="POST">
 
@@ -37,8 +38,12 @@
                         <input class="form-check-input" type="radio" name="acctType" id="acctType2" value="customer">
                         <label class="form-check-label" for="acctType">Member Account</label>
                     </div>
+
                 </div>
             </div>
+
+            <br>
+
             <div class="row">
                 <div class="form-group">
                     <label for="name">Name:</label>
@@ -49,6 +54,9 @@
                     <input type="email" class="form-control" id="email" name="email" placeholder="Email">
                 </div>
             </div>
+
+            <br>
+
             <div class="row">
                 <div class="form-group" style="width:300px;">
                     <label for="pwd">Password:</label>
@@ -62,6 +70,9 @@
                         placeholder="Confirm Password">
                 </div>
             </div>
+
+            <br>
+
             <div class="row">
                 <div class="form-group">
                     <label for="email">Paypal account Email address:</label>
@@ -74,6 +85,9 @@
                         placeholder="Paypal Email">
                 </div>
             </div>
+
+            <br>
+
             <div class="row">
                 <div class="form-group">
                     <label for="address">Address:</label>
@@ -87,6 +101,9 @@
                         rows="3"></textarea>
                 </div>
             </div>
+
+            <br>
+            
             <div class="center">
                 <button type="submit" class="btn btn-primary btn-lg" id='registerbtn' disabled>Register</button>
             </div>
