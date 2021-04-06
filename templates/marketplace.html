@@ -69,8 +69,8 @@
                     </span></h4>
             </div>
 
-            <div class="container" id="marketSpace">
-                <div class="row">
+            <div class="container">
+                <div class="row" id="marketSpace">
                     <p-card v-for="p in prodArr" :name="p.pname" :desc="p.pdescription" :price="p.price" :imgsrc="`http://127.0.0.1:5000/static/images/${p.imgname}`"></p-card>
                     <!-- end of vfor -->
                 </div>
@@ -80,10 +80,12 @@
     </div>
 
     <script>
-        let cardBodyArr = document.getElementsByClassName('card-body');
+        let marketSpace = document.getElementById('marketSpace')
         let displayCart = document.getElementById('displayCart')
 
-        console.log(cardBodyArr)
+        console.log(marketSpace)
+
+        
 
 
         /*function addCart() {
