@@ -126,7 +126,7 @@ def create_order():
     pid = request.json.get('pid', None)
     cid = request.json.get('cid', None)
     oStatus = 0
-    dStatus = "Undelivered"
+    dStatus = "Unfulfilled"
     pResponse = request.json.get('pResponse', None)
 
 
@@ -154,33 +154,42 @@ def create_order():
     ), 201
 
 
-@app.route("/product/<string:pid>", methods=['PUT'])
-def update_product(pid):
-    product = Order.query.filter_by(pid=pid).first()
-    if product:
+@app.route("/order/<string:oid>", methods=['PUT'])
+def update_order(oid):
+    try:
+        order = Order.query.filter_by(oid=oid).first()
+        if not order:
+            return jsonify(
+                {
+                    "code": 404,
+                    "data": {
+                        "oid": oid
+                    },
+                    "message": "Order not found."
+                }
+            ), 404
+
+        # update status
         data = request.get_json()
-        if data['pname']:
-            product.pname = data['pname']
-        if data['price']:
-            product.price = data['price']
-        if data['pdescription']:
-            product.pdescription = data['pdescription']
-        db.session.commit()
+        if data['dStatus']:
+            order.dStatus = data['dStatus']
+            db.session.commit()
+            return jsonify(
+                {
+                    "code": 200,
+                    "data": order.json()
+                }
+            ), 200
+    except Exception as e:
         return jsonify(
             {
-                "code": 200,
-                "data": product.json()
+                "code": 500,
+                "data": {
+                    "order_id": oid
+                },
+                "message": "An error occurred while updating the order. " + str(e)
             }
-        )
-    return jsonify(
-        {
-            "code": 404,
-            "data": {
-                "pid": pid
-            },
-            "message": "Product not found."
-        }
-    ), 404
+        ), 500
 
 
 @app.route("/order/<string:oid>", methods=['DELETE'])
