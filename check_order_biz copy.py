@@ -20,12 +20,36 @@ customer_URL = environ.get('customer_URL') or "http://localhost:5003/customer"
 @app.route("/check_order_biz/<string:bid>", methods=['GET'])
 def check_order_biz(bid):
     # Simple check of input format and data of the request are JSON
-    # do the actual work
-    # 1. Send get order info
-    result = processCheckOrder(bid)
-    print('\n------------------------')
-    print('\nresult: ', result)
-    return jsonify(result), result["code"]
+    if request.is_json:
+        try:
+            order = request.get_json()
+            print("\nReceived check order request order in JSON:", order)
+
+            # do the actual work
+            # 1. Send get order info
+            result = processCheckOrder(bid)
+            print('\n------------------------')
+            print('\nresult: ', result)
+            return jsonify(result), result["code"]
+
+        except Exception as e:
+            # Unexpected error in code
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            ex_str = str(e) + " at " + str(exc_type) + ": " + fname + ": line " + str(exc_tb.tb_lineno)
+            print(ex_str)
+
+            return jsonify({
+                "code": 500,
+                "message": "check_order_biz.py internal error: " + ex_str
+            }), 500
+
+    # if reached here, not a JSON request.
+    return jsonify({
+        "code": 400,
+        "message": "Invalid JSON input: " + str(request.get_data())
+    }), 400
+
 
 def processCheckOrder(bid):
 
@@ -57,16 +81,13 @@ def processCheckOrder(bid):
 
     # 3. Get the order info base on pid
     # Invoke the order microservice
-    product_result_list = product_result['data']['products']
-    print(product_result_list)
     print('\n-----Invoking order microservice-----')
-    
 
     order_result_list=list()
     
-    for product in product_result_list:
-        pid=product['pid']
-        order_result = invoke_http((order_URL + '/' + pid), method='GET')
+    for product in product_result:
+        oid=product
+        order_result = invoke_http((order_URL + '/' + oid), method='GET')
         print('order_result:', order_result)
         order_result_list.append(order_result)
     
@@ -80,7 +101,7 @@ def processCheckOrder(bid):
             return {
                 "code": 400,
                 "data": {"order_result": order_result},
-                "message": "Order retrival fail. "
+                "message": "Order creation failure sent for error handling."
             }
 
 
@@ -121,7 +142,7 @@ def processCheckOrder(bid):
                     "shipping_result": product_result,
                     "customer_result":customer_result
                 },
-                "message": "Customer retrival fail."
+                "message": "Simulated shipping record error sent for error handling."
             }
 
 

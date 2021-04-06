@@ -77,18 +77,20 @@ def find_by_pid(pid):
 
 @app.route("/product/business/<string:bid>")
 def find_by_bid(bid):
-    product = Product.query.filter_by(bid=bid).first()
-    if product:
+    productlist = Product.query.filter_by(bid=bid).all()
+    if len(productlist):
         return jsonify(
             {
                 "code": 200,
-                "data": product.json()
+                "data": {
+                    "products": [product.json() for product in productlist]
+                }
             }
         )
     return jsonify(
         {
             "code": 404,
-            "message": "Product not found."
+            "message": "There are no products."
         }
     ), 404
 
