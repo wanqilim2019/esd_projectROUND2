@@ -191,7 +191,7 @@ def delete_customer(cid):
 
 @app.route("/customer/location/<string:cid>", methods=['GET'])
 def get_cus_address(cid):
-    cus_address = Customer.query.filter_by(cAddress=cAddress).first()
+    cus_address = Customer.query.filter_by(cid=cid).first()
     if cus_address:
         db.session.get(cus_address)
         db.session.commit()
@@ -199,7 +199,7 @@ def get_cus_address(cid):
             {
                 "code": 200,
                 "data": {
-                    "cAddress": cAddress
+                    "cAddress": cus_address.cAddress
                 }
             }
         )
@@ -207,7 +207,7 @@ def get_cus_address(cid):
         {
             "code": 404,
             "data": {
-                "caddress": caddress
+                "cid": cid
             },
             "message": "Customer not found."
         }

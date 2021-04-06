@@ -21,9 +21,37 @@
             {% endif %}
             <p></p><a href="/create/product"> create product</a></p>
         </div>
-        <div class='container text-center'>
-            <h1>Your one stop Marketplace</h1>
+        <div class='container'>
+            <div class="row">
+                <div class="col-lg-4 col-md-6 col-sm-12">
+
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-12 text-center">
+                    <h1>Marketplace</h1>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-12 text-center">
+                    <div class="container">
+                        <p>
+                            <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseCart" aria-expanded="false" aria-controls="shopCollapse">
+                                Show Cart
+                            </button>
+                        </p>
+                        <div class="collapse" id="collapseCart">
+                            <div class="card card-body">
+                                <table>
+                                    <tr>
+
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+
+
     </section>
 
     <!-- Implementing search bar with Vue -->
@@ -43,8 +71,8 @@
 
             <div class="container" id="marketSpace">
                 <div class="row">
-                    <!-- Test template, use v-for later on -->
-                    <p-card v-for="p in prodArr" :name="p.pname" :desc="p.pdescription" :price="p.price" :imgsrc="p.imgname"></p-card>
+                    <p-card v-for="p in prodArr" :name="p.pname" :desc="p.pdesc" :price="p.price" :imgsrc="`http://127.0.0.1:5000/static/images/${p.imgname}`"></p-card>
+                    <!-- end of vfor -->
                 </div>
             </div>
         </div>
@@ -65,7 +93,7 @@
 
                 try {
                     var response = await axios.get("http://127.0.0.1:5001/product")
-                    console.log(response.data.data.products)
+                    //console.log(response.data.data.products)
                     this.prodArr = response.data.data.products
                 } catch (error) {
                     console.log(error)
@@ -78,23 +106,30 @@
             props: ['name', 'desc', 'price', 'imgsrc'],
             data: function () {
                 return {
-                    isAdded: false
+                    isClicked: false
                 }
             },
             delimiters: ["((", "))"],
             methods: {
-                toggleAdd: function () {
-                    this.isAdded = !this.isAdded
+                toggleClick: function () {
+                    this.isClicked = !this.isClicked;
+                },
+            },
+            computed: {
+                getURL: function() {
+
                 }
             },
             template: `
-            <div class="col-lg-4 col-md-6 mb-3">
-                <div class="card" style="width: 15rem;">
-                    <img :src="imgsrc" class="card-img-top">
+            <div class="col-lg-4 col-md-6 mb-3 d-flex justify-content-center text-center">
+                <div class="card" style="width: 20rem;">
+                    <img style="" :src="imgsrc" class="card-img-top">
                     <div class="card-body">
                         <h5 class="card-title">(( name ))</h5>
                         <p class="card-text">(( desc ))</p>
                         <p class="card-text">SGD$(( price ))</p>
+                        <button class="badge rounded-pill bg-success" v-if="isClicked" @click="toggleClick" style="cursor: pointer;">Added!</button>
+                        <button class="badge rounded-pill bg-light text-dark" v-else @click="toggleClick" style="cursor: pointer;">Add to cart</button>
                     </div>
                 </div>
             </div>`
