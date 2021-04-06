@@ -39,7 +39,7 @@
                         </p>
                         <div class="collapse" id="collapseCart">
                             <div class="card card-body">
-                                <table>
+                                <table id="displayCart">
                                     <tr>
 
                                     </tr>
@@ -80,8 +80,20 @@
     </div>
 
     <script>
-        let pCardArr = document.getElementsByTagName('p-card');
-        console.log(pCardArr)
+        let cardBodyArr = document.getElementsByClassName('card-body');
+        let displayCart = document.getElementById('displayCart')
+
+        console.log(cardBodyArr)
+
+
+        /*function addCart() {
+            for(let i=0; i < pCardArr.length; i++) {
+                if (pCardArr[i].isClicked == true) {
+                    
+                }
+            }
+        }*/
+        
 
         var app = new Vue({
             el: "#app",
@@ -117,11 +129,6 @@
                 toggleClick: function () {
                     this.isClicked = !this.isClicked;
                 },
-            },
-            computed: {
-                getURL: function() {
-
-                }
             },
             template: `
             <div class="col-lg-4 col-md-6 mb-3 d-flex justify-content-center text-center">
