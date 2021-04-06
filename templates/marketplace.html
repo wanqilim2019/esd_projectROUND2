@@ -80,10 +80,11 @@
     </div>
 
     <script>
-        let marketSpace = document.getElementById('marketSpace')
+        let buttonArr = document.getElementsByTagName('button')
         let displayCart = document.getElementById('displayCart')
 
-        console.log(marketSpace)
+        console.log(buttonArr)
+        
 
         
 
@@ -123,7 +124,7 @@
             props: ['name', 'desc', 'price', 'imgsrc'],
             data: function () {
                 return {
-                    isClicked: false
+                    isClicked: false,
                 }
             },
             delimiters: ["((", "))"],
@@ -135,7 +136,7 @@
             template: `
             <div class="col-lg-4 col-md-6 mb-3 d-flex justify-content-center text-center">
                 <div class="card" style="width: 20rem;">
-                    <img style="" :src="imgsrc" class="card-img-top">
+                    <img :src="imgsrc" class="card-img-top">
                     <div class="card-body">
                         <h5 class="card-title">(( name ))</h5>
                         <p class="card-text">(( desc ))</p>
