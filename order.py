@@ -15,27 +15,31 @@ class Order(db.Model):
     __tablename__ = 'order'
 
     oid = db.Column(db.Integer, primary_key=True)
+    pid = db.Column(db.Integer, nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
-    datetime = db.Column(db.datetime, nullable=False)
-    ostatus = db.Column(db.Integer, nullable=False)
-    dstatus = db.Column(db.String(128), nullable=False)
-    presponse = db.Column(db.String(128), nullable=False)
+    cid = db.Column(db.Integer, nullable=False)
+    datetime = db.Column(db.DateTime, nullable=False)
+    oStatus = db.Column(db.Integer, nullable=False)
+    dStatus = db.Column(db.String(128), nullable=False)
+    pResponse = db.Column(db.String(128), nullable=False)
 
     def json(self):
 
         return {
             "oid": self.oid,
+            "pid": self.pid,
             "quantiy": self.quantity,
+            "cid": self.cid,
             "datetime": self.datetime,
-            "ostatus": self.ostatus,
-            "dstatus": self.dstatus,
-            "preseponse": self.presponse
+            "oStatus": self.oStatus,
+            "dStatus": self.dStatus,
+            "pResponse": self.pResponse
         }
 
 
 @app.route("/order")
 def get_all():
-    orderlist = order.query.all()
+    orderlist = Order.query.all()
     if len(orderlist):
         return jsonify(
             {
@@ -48,7 +52,7 @@ def get_all():
     return jsonify(
         {
             "code": 404,
-            "message": "There are no order."
+            "message": "There are no orders."
         }
     ), 404
 
@@ -73,7 +77,7 @@ def find_by_oid(oid):
 
 @app.route("/order/product/<string:pid>")
 def find_by_pid(pid):
-    orderlist = Product.query.filter_by(pid=pid).all()
+    orderlist = Order.query.filter_by(pid=pid).all()
     if len(orderlist):
         return jsonify(
             {
@@ -94,7 +98,7 @@ def find_by_pid(pid):
 def create_order():
     # oid = request.json.get('oid', None)
     quantity = request.json.get('quantity', None)
-    datetime = request.json.get('pdescription', None)
+    datetime = request.json.get('datetime', None)
 
     order = Order(quantity=quantity, datetime=datetime)
 
@@ -115,14 +119,14 @@ def create_order():
     return jsonify(
         {
             "code": 201,
-            "data": product.json()
+            "data": Order.json()
         }
     ), 201
 
 
 @app.route("/product/<string:pid>", methods=['PUT'])
 def update_product(pid):
-    product = Product.query.filter_by(pid=pid).first()
+    product = Order.query.filter_by(pid=pid).first()
     if product:
         data = request.get_json()
         if data['pname']:
