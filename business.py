@@ -18,21 +18,20 @@ class Business(db.Model):
 
     bid = db.Column(db.Integer, primary_key=True)
     bname = db.Column(db.String(128), nullable=False)
-    email = db.Column(db.String(128), nullable=False)
-    password = db.Column(db.String(128), nullable=False)
-    paypal = db.Column(db.String(128), nullable=False)
+    bemail = db.Column(db.String(128), nullable=False)
+    bpassword = db.Column(db.String(128), nullable=False)
+    bpaypal = db.Column(db.String(128), nullable=False)
     baddress = db.Column(db.String(128), nullable=False)
     bdescription = db.Column(db.String(128), nullable=False)
     
-       
 
     def json(self):
         return {
             "bid": self.bid,
             "bname": self.bname, 
-            "email": self.email, 
-            "password": self.password, 
-            "paypal": self.paypal, 
+            "bemail": self.bemail, 
+            "bpassword": self.bpassword, 
+            "bpaypal": self.bpaypal, 
             "baddress": self.baddress,
             "bdescription": self.bdescription
         }
@@ -46,7 +45,7 @@ def get_all():
             {
                 "code": 200,
                 "data": {
-                    "businesss": [Business.json() for business in businesslist]
+                    "business": [business.json() for business in businesslist]
                 }
             }
         )
@@ -58,14 +57,14 @@ def get_all():
     ), 404
 
 
-@app.route("/business/<string:email>", methods=['GET'])
+@app.route("/business/<string:bemail>", methods=['GET'])
 def find_existingby_bemail(business):
-    password = request.json.get('password', None)
-    email = request.json.get('email', None)
+    password = request.json.get('bpassword', None)
+    email = request.json.get('bemail', None)
     business = db.session.query(Business).filter(Business.email == email).first()
     if business:
         result = business.json()
-        del result['password']
+        del result['bpassword']
         return jsonify(
             {
                 "code": 200,
@@ -79,10 +78,10 @@ def find_existingby_bemail(business):
         }
     ), 404
     
-@app.route("/business/<string:email>", methods=['POST'])
-def find_by_bemail(business):
-    password = request.json.get('password', None)
-    email = request.json.get('email', None)
+@app.route("/check/business", methods=['POST'])
+def find_by_bemail():
+    password = request.json.get('bpassword', None)
+    email = request.json.get('bemail', None)
     business = db.session.query(Business).filter((Business.email == email) & (Business.password == password)).first()
     if business:
         result = business.json()
@@ -103,13 +102,14 @@ def find_by_bemail(business):
 
 @app.route("/business" ,methods=['POST'])
 def create_business():
-    bname = request.json.get('name', None)
-    bdescription = request.json.get('description', None)
-    paypal = request.json.get('paypal', None)
-    baddress = request.json.get('address', None)
-    email = request.json.get('email', None)
+    bname = request.json.get('bname', None)
+    bdescription = request.json.get('bdescription', None)
+    paypal = request.json.get('bpaypal', None)
+    baddress = request.json.get('baddress', None)
+    email = request.json.get('bemail', None)
+    password = request.json.get('bpassword', None)
     
-    business = Business(bname=bname,email=email,baddress=baddress,bdescription=bdescription,paypal=paypal,)
+    business = Business(bname=bname,email=email,baddress=baddress,bdescription=bdescription,paypal=paypal,password=password)
 
     try:
         db.session.add(business)
@@ -124,7 +124,7 @@ def create_business():
 
     return jsonify(
         {
-            "code": 201,
+            "code": 200,
             "data": business.json()
         }
     ), 201
@@ -174,7 +174,7 @@ def delete_business(bid):
             {
                 "code": 200,
                 "data": {
-                    "big": bid
+                    "bid": bid
                 }
             }
         )

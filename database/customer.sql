@@ -16,16 +16,20 @@ CREATE DATABASE IF NOT EXISTS  `customer` DEFAULT CHARACTER SET utf8 COLLATE utf
 
 USE `customer`;
 
-CREATE TABLE customer (
-CID INT  primary key AUTO_INCREMENT,
-CName VARCHAR (128),
-Email VARCHAR (128),
-Password VARCHAR (128),
-Paypal VARCHAR (128),
-CAddress VARCHAR (128)
-);
+DROP TABLE IF EXISTS `customer`;
+CREATE TABLE IF NOT EXISTS `customer` (
+    `cid` INT(11) AUTO_INCREMENT,
+    `cName` VARCHAR (128),
+    `cEmail` VARCHAR (128),
+    `cPassword` VARCHAR (128),
+    `cPaypal` VARCHAR (128),
+    `cAddress` VARCHAR (128),
+    PRIMARY KEY (`cid`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci; 
 
 
-insert into customer (cname, email, password, paypal , caddress)
-VALUES ('Amy Tan', 'amy@abc.com', MD5('newpassword'), 123, 'Blk 123 SMU Avenue 1');
+insert into `customer` (`cid`, `cName`, `cEmail`, `cPassword`, `cPaypal` , `cAddress`)
+VALUES (1, 'Amy Tan', 'amy@abc.com', MD5('newpassword'), 'amy@abc.com', 'Blk 123 SMU Avenue 1');
 
+insert into `customer` (`cid`, `cName`, `cEmail`, `cPassword`, `cPaypal` , `cAddress`)
+VALUES (2, 'Tommy Tan', 'tom@abc.com', MD5('newpassword'), "tom@abc.com", 'Blk 123 SMU Avenue 1');

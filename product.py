@@ -17,8 +17,9 @@ class Product(db.Model):
     pid = db.Column(db.Integer, primary_key=True)
     pname = db.Column(db.String(128), nullable=False)
     price = db.Column(db.Float(precision=2), nullable=False)
-    pdescription = db.Column(db.String(128), nullable=False)
-    imgname = db.Column(db.String(128), nullable=False)
+    pdescription = db.Column(db.String(225), nullable=False)
+    imgname = db.Column(db.String(225), nullable=False)
+    bid = db.Column(db.Integer, nullable=False)
     
 
     def json(self):
@@ -31,7 +32,8 @@ class Product(db.Model):
             "pname": self.pname, 
             "price": self.price, 
             "pdescription": self.pdescription,
-            "imgname": self.imgname
+            "imgname": self.imgname,
+            "bid": self.bid
         }
 
 
@@ -73,6 +75,26 @@ def find_by_pid(pid):
     ), 404
 
 
+@app.route("/product/business/<string:bid>")
+def find_by_bid(bid):
+    productlist = Product.query.filter_by(bid=bid).all()
+    if len(productlist):
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "products": [product.json() for product in productlist]
+                }
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "There are no products."
+        }
+    ), 404
+
+
 @app.route("/product" ,methods=['POST'])
 def create_product():
     # pid = request.json.get('pid', None)
@@ -80,8 +102,9 @@ def create_product():
     pdesc = request.json.get('pdescription', None)
     price = request.json.get('price', None)
     imgname = request.json.get('imgname', None)
+    bid = request.json.get('bid', None)
     
-    product = Product(pname=pname,price=price,pdescription=pdesc,imgname=imgname)
+    product = Product(pname=pname,price=price,pdescription=pdesc,imgname=imgname, bid=bid)
 
     try:
         db.session.add(product)
@@ -115,8 +138,10 @@ def update_product(pid):
             product.price = data['price']
         if data['pdescription']:
             product.pdescription = data['pdescription']
-        if data['imgsrc']:
-            product.imgsrc = data['imgsrc']
+        if data['imgname']:
+            product.imgname = data['imgname']
+        if data['bid']:
+            product.bid = data['bid']
         db.session.commit()
         return jsonify(
             {
@@ -161,4 +186,4 @@ def delete_product(pid):
 
 
 if __name__ == '__main__':
-    app.run(port=5001, debug=True)
+    app.run(host="0.0.0.0",port=5001, debug=True)

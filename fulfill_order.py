@@ -14,25 +14,52 @@ CORS(app)
 
 
 order_URL = environ.get('order_URL') or "http://localhost:5002/order" 
-product_URL = environ.get('product_URL') or "http://localhost:5001/product" 
 
-@app.route("/check_order_cust/<string:cid>", methods=['GET'])
-def check_order_cust(cid):
+
+@app.route("/fulfill_order", methods=['PUT'])
+def fulfill_order():
     # Simple check of input format and data of the request are JSON
         # Simple check of input format and data of the request are JSON
     # do the actual work
     # 1. Send get order info
-    result = processCheckOrderCust(cid)
-    print('\n------------------------')
-    print('\nresult: ', result)
-    return jsonify(result), result["code"]
+
+    if request.is_json:
+        try:
+            order = request.get_json()
+            print("\nReceived an order change in JSON:", order)
+
+            # do the actual work
+            # 1. Send order info {cart items}
+            result = processFulfillOrder(order)
+            print('\n------------------------')
+            print('\nresult: ', result)
+            return jsonify(result), result["code"]
+
+        except Exception as e:
+            # Unexpected error in code
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            ex_str = str(e) + " at " + str(exc_type) + ": " + fname + ": line " + str(exc_tb.tb_lineno)
+            print(ex_str)
+
+            return jsonify({
+                "code": 500,
+                "message": "place_order.py internal error: " + ex_str
+            }), 500
+
+    # if reached here, not a JSON request.
+    return jsonify({
+        "code": 400,
+        "message": "Invalid JSON input: " + str(request.get_data())
+    }), 400
 
 
-def processCheckOrderCust(cid):
+def processFulfillOrder(order):
     # 2. Get the order info
     # Invoke the order microservice
     print('\n-----Invoking order microservice-----')
-    order_result = invoke_http(order_URL + '/customer/' + str(cid), method='GET')
+    oid=order['oid']
+    order_result = invoke_http(order_URL + '/' + str(oid), method='PUT', json=order)
     print('order_result:', order_result)
   
     code = order_result["code"]
@@ -48,50 +75,13 @@ def processCheckOrderCust(cid):
             "data": {"order_result": order_result},
             "message": "Order retrival fail."
         }
-
-    order_result_list=order_result['data']['order']
-    print(order_result_list)
-    product_result_list=list()
-    # Invoke the shipping record microservice
-    print('\n\n-----Invoking product microservice-----')
-
-    for order in order_result_list: 
-        pid=order['pid']
-    
-        product_result = invoke_http(
-            product_URL + '/' + str(pid), method="GET")
-        print("product:", product_result, '\n')
-        product_result_list.append(product_result)
-
-        # Check the shipping result;
-        # if a failure, send it to the error microservice.
-        code = product_result["code"]
-        if code not in range(200, 300):
-            # Inform the error microservice
-            #print('\n\n-----Invoking error microservice as shipping fails-----')
-            print('\n\n-----product error')
-
-        else:
-            # 4. confirm success
-            print('\n\n-----Publishing the (product info) message-----')
-
-    print(product_result_list)
-            
-
-    # 7. Return created order, shipping record
-    return {
-        "code": 201,
-        "data": {
-            "order_result": order_result,
-            "product_result": product_result_list
-        }
-    }
-
+    else:
+        return order_result
 
 # Execute this program if it is run as a main script (not by 'import')
 if __name__ == "__main__":
     print("This is flask " + os.path.basename(__file__) + " for placing an order...")
-    app.run(host="0.0.0.0", port=5300, debug=True)
+    app.run(host="0.0.0.0", port=5400, debug=True)
     # Notes for the parameters: 
     # - debug=True will reload the program automatically if a change is detected;
     #   -- it in fact starts two instances of the same flask program, and uses one of the instances to monitor the program changes;

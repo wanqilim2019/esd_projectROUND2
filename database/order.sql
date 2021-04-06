@@ -16,15 +16,17 @@ CREATE DATABASE IF NOT EXISTS  `order` DEFAULT CHARACTER SET utf8 COLLATE utf8_g
 
 USE `order`;
 
-CREATE TABLE orders (
-OID INT  primary key AUTO_INCREMENT,
-PID INT  ,
-Quantity INT,
-CID INT,
-Date_time TIMESTAMP,
-OStatus INT,
-DStatus VARCHAR (128),
-PResponse VARCHAR (128)
-);
+DROP TABLE IF EXISTS `order`;
+CREATE TABLE IF NOT EXISTS `order` (
+    `oid` INT(11) NOT NULL AUTO_INCREMENT,
+    `pid` INT  ,
+    `quantity` INT,
+    `cid` INT,
+    `datetime` TIMESTAMP,
+    `oStatus` INT,
+    `dStatus` VARCHAR (128),
+    `pResponse` VARCHAR (128),
+    PRIMARY KEY (`oid`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci; 
 
 
