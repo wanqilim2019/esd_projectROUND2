@@ -28,12 +28,12 @@ CREATE TABLE IF NOT EXISTS `business` (
     PRIMARY KEY (`bid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-insert into `business` (`bid`, `bname`, `bemail`, `password`, `bpaypal`, `baddress`, `bdescription`)
+insert into `business` (`bid`, `bname`, `bemail`, `bpassword`, `bpaypal`, `baddress`, `bdescription`)
 VALUES (1, 'Shopee', 'shopee@abc.com', MD5('newpassword'), 'shopee@adc.com', 'Blk 124 SMU Avenue 1','business desc');
 
-insert into `business` (`bid`, `bname`, `bemail`, `password`, `bpaypal`, `baddress`, `bdescription`)
+insert into `business` (`bid`, `bname`, `bemail`, `bpassword`, `bpaypal`, `baddress`, `bdescription`)
 VALUES (2, 'Scentopia', 'scent@def.com', MD5('newpassword'), 'scent@def.com', 'Blk 300 SMU Avenue 1','We sell handmade soap and scented candles made with natual ingredients.');
 
-insert into `business` (`bid`, `bname`, `bemail`, `password`, `bpaypal`, `baddress`, `bdescription`)
+insert into `business` (`bid`, `bname`, `bemail`, `bpassword`, `bpaypal`, `baddress`, `bdescription`)
 VALUES (3, 'Circus wholeseller', 'clownclown@123.com', MD5('newpassword'), 'clown123@def.com', 'Blk 90 Yishun Avenue 1','We supply inventory for one-mancircus startup.');
 COMMIT;
