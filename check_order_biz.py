@@ -99,7 +99,7 @@ def processCheckOrderBiz(bid):
     for order in order_result_list:
         cid=order
         customer_result = invoke_http(
-            (customer_URL + '/' + cid), method="GET")
+            (customer_URL + '/' + str(cid)), method="GET")
         print("customer:", customer_result, '\n')
         customer_result_list.append(customer_result)
 

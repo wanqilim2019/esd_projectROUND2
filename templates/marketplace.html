@@ -13,12 +13,7 @@
 
     <section id="Header" class="py-2">
         <div class="text-center">
-            {% if 'loggedin' not in session %}
-            <!-- <p></p><a href="/signup">Signup</a></p>
-            <p><a href="/login">login</a></p> -->
-            {% else %}
-            <p>Welcome {{ user}}</p>
-            {% endif %}
+           
             <p></p><a href="/create/product"> create product</a></p>
         </div>
     </section>
@@ -92,7 +87,7 @@
     <script>
 
         let totalCostDisp = document.getElementById("totalCost")
-        totalCostDisp.innerText = "Your current total is " + 10;
+        // totalCostDisp.innerText = "Your current total is " + 10;
 
         var app = new Vue({
             el: "#app",
