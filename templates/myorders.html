@@ -10,16 +10,9 @@
 <body>
     {% include 'nav.html' %}
 
-
     <section id="Header" class="py-2">
         <div class="text-center">
-            {% if 'loggedin' not in session %}
-            <!-- <p></p><a href="/signup">Signup</a></p>
-            <p><a href="/login">login</a></p> -->
-            {% else %}
-            <p>Welcome {{ user}}</p>
-            {% endif %}
-            <p></p><a href="/create/product"> create product</a></p>
+
         </div>
     </section>
 
@@ -31,7 +24,7 @@
 
                 </div>
                 <div class="col-lg-4 col-md-6 col-sm-12 text-center">
-                    <h1>Marketplace</h1>
+                    <h1>My Orders</h1>
                 </div>
                 <div class="col-lg-4 col-md-6 col-sm-12 text-center">
                     <div class="container">
@@ -41,6 +34,9 @@
                                 Show Cart
                             </button>
                         </p>
+                        <input type='text' id='id' value="{{ session['data']['bid'] |tojson|safe }}" />
+
+
 
                     </div>
                 </div>
@@ -50,49 +46,43 @@
         <div class="container">
             <div class="row" id="marketSpace">
                 <div v-for="p in prodArr" class="col-lg-4 col-md-6 mb-3 d-flex justify-content-center text-center">
-                    <div class="card" style="width: 20rem;">
-                        <img :src="`http://127.0.0.1:5000/static/images/${p.imgname}`" class="card-img-top">
-                        <div class="card-body">
-                            <h5 class="card-title">(( p.pname ))</h5>
-                            <p class="card-text">(( p.pdescription ))</p>
-                            <p class="card-text">SGD$(( p.price ))</p>
-                            <input type="checkbox" :value="p" v-model="cart">
-                        </div>
-                    </div>
+
                 </div>
             </div>
 
         </div>
 
     </div>
-
     <script>
+        var id_session = String(document.getElementById("id").value);
+        let totalCostDisp = document.getElementById("totalCost")
+        // totalCostDisp.innerText = "Your current total is " + 10;
 
-        // let totalCostDisp = document.getElementById("totalCost")
-        // // totalCostDisp.innerText = "Your current total is " + 10;
+        var app = new Vue({
+            el: "#app",
+            data: {
+                sKey: "",
+                prodArr: [],
+                cart: [],
+                total: 0,
+                id: id_session
+            },
+            delimiters: ["((", "))"],
+            async mounted() {
+                // anonymous async function 
+                // - using await requires the function that calls it to be async
 
-        // var app = new Vue({
-        //     el: "#app",
-        //     data: {
-        //         sKey: "",
-        //         prodArr: [],
-        //         cart: [],
-        //         total: 0,
-        //     },
-        //     delimiters: ["((", "))"],
-        //     async mounted() {
-        //         // anonymous async function 
-        //         // - using await requires the function that calls it to be async
-
-        //         try {
-        //             var response = await axios.get("http://127.0.0.1:5001/product")
-        //             //console.log(response.data.data.products)
-        //             this.prodArr = response.data.data.products
-        //         } catch (error) {
-        //             console.log(error)
-        //         }
-        //     },
-        // });
+                try {
+                    var id_session = String(document.getElementById("id").value);
+                    console.log(id_session);
+                    var response = await axios.get("http://localhost:5100/check_order_biz/" + id)
+                    console.log(response.data.data.products)
+                    // this.prodArr = response.data.data
+                } catch (error) {
+                    console.log(error)
+                }
+            },
+        });
     </script>
 
 
