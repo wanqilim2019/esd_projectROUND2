@@ -43,9 +43,15 @@ def home():
 def show_signuppage():
     return render_template('signup.html')
 
+@app.route("/myorders")
+def show_existingorders():
+    # tb adding code to verify login
+    return render_template('myorders.html', user=session['data']['email'])
+
 @app.route("/payment")
 def show_payment():
-    return render_template('signup.html')
+    # tb adding code to verify login
+    return render_template('payment-example.html', user=session['data']['email'])
 
 
 @app.route('/create/product', methods=['GET', 'POST'])

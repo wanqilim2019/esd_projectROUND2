@@ -54,7 +54,6 @@ def processCheckOrderBiz(bid):
             "message": "Product retrival fail."
         }
 
-
     # 3. Get the order info base on pid
     # Invoke the order microservice
     product_result_list = product_result['data']['products']
@@ -99,7 +98,7 @@ def processCheckOrderBiz(bid):
     for order in order_result_list:
         cid=order
         customer_result = invoke_http(
-            (customer_URL + '/' + cid), method="GET")
+            (customer_URL + '/' + str(cid)), method="GET")
         print("customer:", customer_result, '\n')
         customer_result_list.append(customer_result)
 
