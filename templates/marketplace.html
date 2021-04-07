@@ -5,6 +5,10 @@
     {% include 'head.html' %}
 
     <title>Marketplace</title>
+    <script
+        src="https://www.paypal.com/sdk/js?client-id=AVL3t_B9WIEb-CdLDHYK1sW8nXEtp7GM8Qk9m29QTvb-OYyb2dxdo_PapsHFT5KI08OyWiWDNtuL9tI0&currency=SGD">
+        // Required. Replace YOUR_CLIENT_ID with your sandbox client ID.
+    </script>
 </head>
 
 <body>
@@ -22,69 +26,42 @@
     <div id="app">
         <div class='container'>
             <div class="row">
-                <div class="col-lg-4 col-md-6 col-sm-12">
-
-                </div>
-                <div class="col-lg-4 col-md-6 col-sm-12 text-center">
+                <div class="col-12 text-center">
                     <h1>Marketplace</h1>
-                </div>
-                <div class="col-lg-4 col-md-6 col-sm-12 text-center">
-                    <div class="container pb-3">
-                        <p>
-                            <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseCart" aria-expanded="false" aria-controls="shopCollapse">
-                                Show Cart
-                            </button>
-                        </p>
-                        <div class="collapse" id="collapseCart">
-                            <div class="card card-body">
-                                <h4>Items Currently in your Cart</h4>
-                                <table border-collapse: collapse id="displayCart">
-                                    <tr style="background-color: #9E3D40;color: white;">
-                                        <th>Item</th>
-                                        <th>Price</th>
-                                    </tr>
-                                    <tr v-for="item in cart">
-                                        <td>((item.pname))</td>
-                                        <td>$((item.price))</td>
-                                    </tr>
-                                    <tr></tr>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
+
         <div class="container">
-
-            <!-- <div class="input-group mb-3 justify-content-center">
-                <input v-model="sKey" class="w-25 rounded text-center" class="form-control"
-                    placeholder="Search for something!" aria-label="Example text with button addon"
-                    aria-describedby="button-addon1">
-            </div> -->
-
-            <!-- <div class="container text-center">
-                <h4>Displaying search results for: <span style="color:firebrick; text-transform:uppercase"> ((sKey))
-                    </span></h4>
-            </div> -->
 
             <div class="container">
                 <div class="row" id="marketSpace">
                     <div v-for="p in prodArr" class="col-lg-4 col-md-6 mb-3 d-flex justify-content-center text-center">
                         <div class="card w3-hover-shadow" style="width: 20rem; border-radius: 20px;">
-                            <img :src="`http://127.0.0.1:5000/static/images/${p.imgname}`" class="card-img-top" style="border-top-left-radius: 20px;border-top-right-radius: 20px">
+                            <img :src="`http://127.0.0.1:5000/static/images/${p.imgname}`" class="card-img-top"
+                                style="border-top-left-radius: 20px;border-top-right-radius: 20px">
                             <div class="card-body">
                                 <h5 class="card-title">(( p.pname ))</h5>
                                 <p class="card-text">(( p.pdescription ))</p>
                                 <p class="card-text">SGD$(( p.price ))</p>
-                                <input type="checkbox" :value="p" v-model="cart">
+                                <input type="radio" :value="p" v-model="cart">
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <div id="paymentContainer" class="container text-center">
+                <h3>You are about to purchase: <span style="color:darkcyan"> ((cart.pname)) </span></h3>
+                <br> <br>
+                <div id="container">
+                    <pay></pay>
+                </div>
+                <!-- <div style='text-align:center;' id="paypal-button-container"></div> -->
+                <!-- <div class="center" id='alert'></div> -->
+            </div>
         </div>
+    </div>
 
     </div>
 
@@ -94,7 +71,7 @@
             data: {
                 sKey: "",
                 prodArr: [],
-                cart: [],
+                cart: []
             },
             delimiters: ["((", "))"],
             async mounted() {
@@ -109,9 +86,43 @@
                     console.log(error)
                 }
             },
-            computed: {
+        });
 
-            }
+        var PAYPAL_CLIENT = 'AVL3t_B9WIEb-CdLDHYK1sW8nXEtp7GM8Qk9m29QTvb-OYyb2dxdo_PapsHFT5KI08OyWiWDNtuL9tI0';
+        var PAYPAL_SECRET = 'EF1n5ItUXHKwB8qI7HRGzLtN9M5U9omdMKYTRm0BSvUkRgCr5LLyQvThBN4OJMl3a09yGFU8oXVf8Jpb';
+        var PAYPAL_ORDER_API = 'https://api-m.paypal.com/v2/checkout/orders/';
+
+        const PayPalButton = paypal.Buttons.driver("vue", window.Vue);
+
+        Vue.component("pay", {
+            template: `
+            <paypal-buttons [props]="{
+                createOrder: createOrder,
+                onApprove: onApprove
+            }"></paypal-buttons>
+            `,
+            components: {
+                "paypal-buttons": PayPalButton,
+            },
+
+            computed: {
+                createOrder: function (data, actions) {
+                    return actions.order.create({
+                        purchase_units: [{
+                            amount: {
+                                value: "0.01",
+                            },
+                        }, ],
+                    });
+                },
+                onAuthorize: function (data, actions) {
+                    return actions.order.capture();
+                },
+            },
+        });
+
+        var vm = new Vue({
+            el: "#container",
         });
     </script>
 

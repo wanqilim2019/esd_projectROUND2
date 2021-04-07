@@ -74,11 +74,11 @@ def find_existingby_bemail(email):
     return jsonify(
         {
             "code": 404,
-            "message": "Customer not found."
+            "message": "Business not found."
         }
     ), 404
     
-@app.route("/business/check", methods=['POST'])
+@app.route("/check/business", methods=['POST'])
 def find_by_bemail():
     password = request.json.get('password', None)
     email = request.json.get('email', None)
@@ -95,7 +95,7 @@ def find_by_bemail():
     return jsonify(
         {
             "code": 404,
-            "message": "Customer not found."
+            "message": "Business not found."
         }
     ), 404
 

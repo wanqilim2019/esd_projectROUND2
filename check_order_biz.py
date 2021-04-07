@@ -68,7 +68,6 @@ def processCheckOrderBiz(bid):
             "message": "Product retrival fail."
         }
 
-
     else:
         # 4. Record new order
         # record the activity log anyway
@@ -162,7 +161,6 @@ def processCheckOrderBiz(bid):
                     amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="customer.info", 
                     body=message)
                     final_result_list.append({'pname':product['pname'], 'dStatus': order['dStatus'], 'datetime':order['datetime'], 'oStatus': order['oStatus'], 'quantity': order['quantity'], 'dStatus': order['dStatus'], 'address': customer_result['data']['address']})
-
 
 
 
