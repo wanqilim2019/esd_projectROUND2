@@ -160,7 +160,7 @@ def processCheckOrderBiz(bid):
                     print('\n\n-----Publishing the (order info) message-----')
                     amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="customer.info", 
                     body=message)
-                    final_result_list.append({'pname':product['pname'], 'dStatus': order['dStatus'], 'datetime':order['datetime'], 'oStatus': order['oStatus'], 'quantity': order['quantity'], 'dStatus': order['dStatus'], 'address': customer_result['data']['address']})
+                    final_result_list.append({'pname':product['pname'], 'imgname':product['imgname'], 'dStatus': order['dStatus'], 'datetime':order['datetime'], 'oStatus': order['oStatus'], 'quantity': order['quantity'], 'dStatus': order['dStatus'], 'address': customer_result['data']['address']})
 
 
 
