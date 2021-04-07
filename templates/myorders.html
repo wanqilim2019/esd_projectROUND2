@@ -26,65 +26,81 @@
                 <div class="col-lg-4 col-md-6 col-sm-12 text-center">
                     <h1>My Orders</h1>
                 </div>
-                <div class="col-lg-4 col-md-6 col-sm-12 text-center">
-                    <div class="container">
-                        <p>
-                            <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseCart" aria-expanded="false" aria-controls="shopCollapse">
-                                Show Cart
-                            </button>
-                        </p>
-                        <input type='text' id='id' value="{{ session['data']['bid'] |tojson|safe }}" />
+                <div class="container">
+                    {% if data[0].required_info|length > 0 %}
+                    <ul class="list-group">
 
-
-
+                        {% for d in data[0].required_info %}
+                        <li class="list-group-item">
+                            <div class="row">
+                                <img class="col-3" src="{{ url_for('static', filename='images/') }}{{ d.imgname }}"
+                                    style="border-top-left-radius: 20px;border-top-right-radius: 20px">
+                                <div class="col-3">
+                                    <h2>{{ d.pname }}</h2>
+                                    {% if session['acctType'] == 'business' %}
+                                    <h5>{{ d.address }}</h5>
+                                    {% endif %}
+                                    <h5 id='statusline'>{{ d.dStatus }}</h5>
+                                </div>
+                                <div class="col-2"></div>
+                                <div class="col-3">
+                                    <h5>{{ d.datetime }}</h5>
+                                    <h2>Quantity: {{ d.quantity }}</h2>
+                                    <!-- button to fulfill order -->
+                                    {% if session['acctType'] == 'business' and d.dStatus == 'Unfulfilled' %}
+                                    <input type="hidden" id="oid" name="oid" value="{{d.oid}}" />
+                                    <input type="hidden" id="dstatus" name="dstatus" value="{{d.dStatus}}" />
+                                    <button id='submit' class="btn btn-warning">Fulfil Order</button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <div>
+                        <h1>No Orders!</h1>
+                        <h2>You have not order anything.</h2>
+                        <p><a href="{{url_for('.home')}}"> Shop here now</a></p>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="container">
-            <div class="row" id="marketSpace">
-                <div v-for="p in prodArr" class="col-lg-4 col-md-6 mb-3 d-flex justify-content-center text-center">
+                    {% endif %}
 
                 </div>
-            </div>
 
+            </div>
         </div>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('#submit').click(function () {
+                    console.log("click");
+                    var oid = String($('#oid').val());
+                    console.log(oid);
+                    var dstatus = $('#dstatus').val();
+                    if (dstatus == 'Unfulfilled') {
+                        $.ajax({
+                            url: 'http://localhost:5400/fulfill_order',    //Your api url
+                            type: 'PUT',   //type is any HTTP method
+                            data: {
+                                data: {
+                                    'oid': oid,
+                                    'dStatus': 'Fulfilled'
+                            }
+                            },      //Data as js object
+                            success: function () {
+                                $('#statusline').innerText = 'Fulfilled';
+                            }
+                        })
+                            ;
+                    }
+
+
+                });
+            });
+
+        </script>
+
 
     </div>
-    <script>
-        var id_session = String(document.getElementById("id").value);
-        let totalCostDisp = document.getElementById("totalCost")
-        // totalCostDisp.innerText = "Your current total is " + 10;
-
-        var app = new Vue({
-            el: "#app",
-            data: {
-                sKey: "",
-                prodArr: [],
-                cart: [],
-                total: 0,
-                id: id_session
-            },
-            delimiters: ["((", "))"],
-            async mounted() {
-                // anonymous async function 
-                // - using await requires the function that calls it to be async
-
-                try {
-                    var id_session = String(document.getElementById("id").value);
-                    console.log(id_session);
-                    var response = await axios.get("http://localhost:5100/check_order_biz/" + id)
-                    console.log(response.data.data.products)
-                    // this.prodArr = response.data.data
-                } catch (error) {
-                    console.log(error)
-                }
-            },
-        });
-    </script>
-
 
     {% include 'footer.html' %}
 

@@ -41,6 +41,7 @@ def processCheckOrderCust(cid):
     message = json.dumps(order_result)
 
     amqp_setup.check_setup()
+    final_result_list=list()
 
     if code not in range(200, 300):
         # Inform the error microservice
@@ -71,52 +72,52 @@ def processCheckOrderCust(cid):
             body=message)
 
 
-    order_result_list=order_result['data']['order']
-    print(order_result_list)
-    product_result_list=list()
-    # Invoke the shipping record microservice
-    print('\n\n-----Invoking product microservice-----')
+        order_result_list=order_result['data']['order']
+        print(order_result_list)
+        
+        # Invoke the shipping record microservice
+        print('\n\n-----Invoking product microservice-----')
 
-    for order in order_result_list: 
-        pid=order['pid']
-    
-        product_result = invoke_http(
-            product_URL + '/' + str(pid), method="GET")
-        print("product:", product_result, '\n')
-        product_result_list.append(product_result)
+        for order in order_result_list: 
+            print(order)
+            pid=order['pid']
+        
+            product_result = invoke_http(
+                product_URL + '/' + str(pid), method="GET")
+            print("product:", product_result, '\n')
 
-        # Check the shipping result;
-        # if a failure, send it to the error microservice.
-        code = product_result["code"]
-        if code not in range(200, 300):
-            # Inform the error microservice
-            #print('\n\n-----Invoking error microservice as shipping fails-----')
-            print('\n\n-----product error')
-            message = json.dumps(product_result)
-            amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="product.error", 
-                body=message, properties=pika.BasicProperties(delivery_mode = 2))
+            # Check the shipping result;
+            # if a failure, send it to the error microservice.
+            code = product_result["code"]
+            if code not in range(200, 300):
+                # Inform the error microservice
+                #print('\n\n-----Invoking error microservice as shipping fails-----')
+                print('\n\n-----product error')
+                message = json.dumps(product_result)
+                amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="product.error", 
+                    body=message, properties=pika.BasicProperties(delivery_mode = 2))
 
-            print("\nProduct status ({:d}) published to the RabbitMQ Exchange:".format(
-                code), product_result)
+                print("\nProduct status ({:d}) published to the RabbitMQ Exchange:".format(
+                    code), product_result)
 
-        else:
-            # 4. confirm success
-            print('\n\n-----Publishing the (product info) message-----')
-            amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="product.info", 
-            body=message)
+            else:
+                # 4. confirm success
+                print('\n\n-----Publishing the (product info) message-----')
+                amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="product.info", 
+                body=message)
+                final_result_list.append({'pname':product_result['data']['pname'],'oid': order['oid'], 'imgname':product_result['data']['imgname'], 'dStatus': order['dStatus'], 'datetime':order['datetime'], 'oStatus': order['oStatus'], 'quantity': order['quantity'], 'dStatus': order['dStatus'] })
 
 
-    print(product_result_list)
-            
+        print(final_result_list)
+                
 
-    # 7. Return created order, shipping record
-    return {
-        "code": 201,
-        "data": {
-            "order_result": order_result,
-            "product_result": product_result_list
+        # 7. Return created order, shipping record
+        return {
+            "code": 201,
+            "data": {
+                "required_info": final_result_list
+            }
         }
-    }
 
 
 # Execute this program if it is run as a main script (not by 'import')
