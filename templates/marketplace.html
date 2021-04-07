@@ -38,8 +38,12 @@
                         </p>
                         <div class="collapse" id="collapseCart">
                             <div class="card card-body">
-                                <h3>Items Currently in your cart</h3>
-                                <table class="table-bordered table-light" id="displayCart">
+                                <h4>Items Currently in your Cart</h4>
+                                <table border-collapse: collapse id="displayCart">
+                                    <tr style="background-color: #9E3D40;color: white;">
+                                        <th>Item</th>
+                                        <th>Price</th>
+                                    </tr>
                                     <tr v-for="item in cart">
                                         <td>((item.pname))</td>
                                         <td>$((item.price))</td>
