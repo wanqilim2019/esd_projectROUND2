@@ -69,6 +69,7 @@ def processCheckOrderBiz(bid):
             "message": "Product retrival fail."
         }
 
+<<<<<<< HEAD
     else:
         # 4. Record new order
         # record the activity log anyway
@@ -79,6 +80,8 @@ def processCheckOrderBiz(bid):
         #amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="product.info", body=message)
 
 
+=======
+>>>>>>> 0a9a064d2d713d3c20521aaaf04e0f5923de625a
     # 3. Get the order info base on pid
     # Invoke the order microservice
     product_result_list = product_result['data']['products']
@@ -171,10 +174,38 @@ def processCheckOrderBiz(bid):
                     "message": "Customer retrival fail."
                 }
 
+<<<<<<< HEAD
         else:
             print('\n\n-----Publishing the (order info) message-----')
             """amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="customer.info", 
             body=message) """
+=======
+    for order in order_result_list:
+        cid=order
+        customer_result = invoke_http(
+            (customer_URL + '/' + str(cid)), method="GET")
+        print("customer:", customer_result, '\n')
+        customer_result_list.append(customer_result)
+
+        # Check the customer result;
+        # if a failure, send it to the error microservice.
+        code = customer_result["code"]
+        if code not in range(200, 300):
+            # Inform the error microservice
+            #print('\n\n-----Invoking error microservice as shipping fails-----')
+            print('\n\n-----Publishing the (customer error)')
+            
+            # 7. Return error
+            return {
+                "code": 400,
+                "data": {
+                    "order_result": order_result,
+                    "shipping_result": product_result,
+                    "customer_result":customer_result
+                },
+                "message": "Customer retrival fail."
+            }
+>>>>>>> 0a9a064d2d713d3c20521aaaf04e0f5923de625a
 
 
 
