@@ -24,6 +24,8 @@ app.secret_key = 'esdT6thebest'
 cuslogin_URL = environ.get('cuslogin_URL') or "http://localhost:5003/customer"
 bizlogin_URL = environ.get('bizlogin_URL') or "http://localhost:5004/"
 product_URL = environ.get('product_URL') or "http://localhost:5001/product"
+checkorder_biz_URL = environ.get('checkorder_biz_URL') or "http://localhost:5100/check_order_biz/"
+checkorder_cust_URL = environ.get('checkorder_cust_URL') or "http://localhost:5300/check_order_cust/"
 
 uploads_dir = os.path.join( 'static\\images')
 # os.makedirs(uploads_dir)
@@ -47,12 +49,19 @@ def show_signuppage():
 def show_existingorders():
     # tb adding code to verify login
     print(session)
+    
     if 'acctType' in session:
         if session['acctType'] == 'customer':
-            return render_template('myorders.html',id=str(session['data']['cid']))
-        else:
-                return render_template('myorders.html',id=str(session['data']['bid']))
-    return render_template('myorders.html')
+            result = invoke_http(
+                checkorder_cust_URL+'/'+str(session['data']['cid']), method='GET')
+            return render_template('myorders.html',data=[result['data']])
+        
+        elif  session['acctType'] == 'business':
+            result = invoke_http(
+                checkorder_biz_URL+'/'+str(session['data']['bid']), method='GET')
+            return render_template('myorders.html',data=[result['data']])
+        
+    return redirect(url_for('.login',msg='Please log in'))
 
 @app.route("/payment")
 def show_payment():
