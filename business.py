@@ -78,7 +78,7 @@ def find_existingby_bemail(business):
         }
     ), 404
     
-@app.route("/check/business", methods=['POST'])
+@app.route("/business/check", methods=['POST'])
 def find_by_bemail():
     password = request.json.get('bpassword', None)
     email = request.json.get('bemail', None)
