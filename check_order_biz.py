@@ -78,7 +78,6 @@ def processCheckOrderBiz(bid):
         # invoke_http(activity_log_URL, method="POST", json=order_result)            
         #amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="product.info", body=message)
 
-
     # 3. Get the order info base on pid
     # Invoke the order microservice
     product_result_list = product_result['data']['products']
