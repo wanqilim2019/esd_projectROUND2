@@ -7,7 +7,7 @@ from os import environ
 import requests
 from invokes import invoke_http
 
-#import amqp_setup
+import amqp_setup
 import pika
 import json
 
@@ -50,7 +50,6 @@ def processCheckOrderBiz(bid):
         #print('\n\n-----Invoking error microservice as shipping fails-----')
         print('\n\n-----Publishing the (product error)')
 
-        # invoke_http(error_URL, method="POST", json=order_result)
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="product.error", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
         # make message persistent within the matching queues until it is received by some receiver 
@@ -69,15 +68,13 @@ def processCheckOrderBiz(bid):
             "message": "Product retrival fail."
         }
 
-
     else:
         # 4. Record new order
         # record the activity log anyway
         #print('\n\n-----Invoking activity_log microservice-----')
         print('\n\n-----Publishing the (product info) message with routing_key=product.info-----')        
-
-        # invoke_http(activity_log_URL, method="POST", json=order_result)            
-        #amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="product.info", body=message)
+          
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="product.info", body=message)
 
     # 3. Get the order info base on pid
     # Invoke the order microservice
@@ -86,7 +83,7 @@ def processCheckOrderBiz(bid):
     print('\n-----Invoking order microservice-----')
     
 
-    order_result_list=list()
+    final_result_list=list()
     
     for product in product_result_list:
         pid=product['pid']
@@ -97,7 +94,6 @@ def processCheckOrderBiz(bid):
     
         # Check the order result; if a failure, print error.
         code = order_result["code"]
-        message = json.dumps(order_result)
 
         if code not in range(200, 300):
             if code != 404:
@@ -107,8 +103,8 @@ def processCheckOrderBiz(bid):
 
                 # invoke_http(error_URL, method="POST", json=shipping_result)
                 message = json.dumps(order_result)
-                """ amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="order.error", 
-                    body=message, properties=pika.BasicProperties(delivery_mode = 2)) """
+                amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="order.error", 
+                    body=message, properties=pika.BasicProperties(delivery_mode = 2))
 
                 print("\nOder status ({:d}) published to the RabbitMQ Exchange:".format(
                     code), order_result)
@@ -116,66 +112,55 @@ def processCheckOrderBiz(bid):
         else:
             # 4. Confirm success
             print('\n\n-----Publishing the (order info) message-----')
-            """ amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="order.info", 
-            body=message) """
-            order_result_list.append(order_result)
-            print(order_result_list)
+            amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="order.info", 
+            body=message)
+            #print(order_result_list)
 
 
+            # 5. Send PID order to product
+            # Invoke the product microservice
 
+            print('\n\n-----Invoking customer microservice-----')
 
-        # 5. Send PID order to product
-        # Invoke the product microservice
+            print(product)
+            orders=order_result['data']['order']
+            print(2)
+            print(orders)
+            for order in orders:
+                print(3)
+                print(order)
+                cid=order['cid']
+                customer_result = invoke_http(
+                    (customer_URL + '/location/' + str(cid)), method="GET")
+                print("customer:", customer_result, '\n')
+                
+                # Check the customer result;
+                # if a failure, send it to the error microservice.
+                code = customer_result["code"]
+                if code not in range(200, 300):
+                    # Inform the error microservice
+                    #print('\n\n-----Invoking error microservice as shipping fails-----')
+                    print('\n\n-----Publishing the (customer error)')
+                    message = json.dumps(customer_result)
+                    amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="customer.error", 
+                        body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
+                    print("\nCustomer status ({:d}) published to the RabbitMQ Exchange:".format(code), customer_result)            
+                    # 7. Return error
+                    return {
+                        "code": 400,
+                        "data": {
+                            "order_result": order_result,
+                            "shipping_result": product_result,
+                            "customer_result":customer_result
+                        },
+                        "message": "Customer retrival fail."
+                    }
 
-
-    print('\n\n-----Invoking customer microservice-----')
-    
-    customer_result_list=list()
-    print(order_result_list)
-    print()
-
-    for product in order_result_list:
-        print(1)
-        print(product)
-        orders=product['data']['order']
-        print(2)
-        print(orders)
-        for order in orders:
-            print(3)
-            print(order)
-            cid=order['cid']
-            customer_result = invoke_http(
-                (customer_URL + '/location/' + str(cid)), method="GET")
-            print("customer:", customer_result, '\n')
-            customer_result_list.append(customer_result)
-
-            # Check the customer result;
-            # if a failure, send it to the error microservice.
-            code = customer_result["code"]
-            if code not in range(200, 300):
-                # Inform the error microservice
-                #print('\n\n-----Invoking error microservice as shipping fails-----')
-                print('\n\n-----Publishing the (customer error)')
-                message = json.dumps(customer_result)
-                """amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="customer.error", 
-                    body=message, properties=pika.BasicProperties(delivery_mode = 2)) """
-                print("\nCustomer status ({:d}) published to the RabbitMQ Exchange:".format(code), customer_result)            
-                # 7. Return error
-                return {
-                    "code": 400,
-                    "data": {
-                        "order_result": order_result,
-                        "shipping_result": product_result,
-                        "customer_result":customer_result
-                    },
-                    "message": "Customer retrival fail."
-                }
-
-        else:
-            print('\n\n-----Publishing the (order info) message-----')
-            """amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="customer.info", 
-            body=message) """
-
+                else:
+                    print('\n\n-----Publishing the (order info) message-----')
+                    amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="customer.info", 
+                    body=message)
+                    final_result_list.append({'pname':product['pname'], 'dStatus': order['dStatus'], 'datetime':order['datetime'], 'oStatus': order['oStatus'], 'quantity': order['quantity'], 'dStatus': order['dStatus'], 'address': customer_result['data']['address']})
 
 
 
@@ -183,9 +168,7 @@ def processCheckOrderBiz(bid):
     return {
         "code": 201,
         "data": {
-            "order_result": product_result,
-            "shipping_result": order_result_list,
-            "customer_result":customer_result_list
+            "required_info": final_result_list
         }
     }
 
