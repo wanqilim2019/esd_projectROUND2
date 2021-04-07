@@ -19,17 +19,17 @@ USE `customer`;
 DROP TABLE IF EXISTS `customer`;
 CREATE TABLE IF NOT EXISTS `customer` (
     `cid` INT(11) AUTO_INCREMENT,
-    `cName` VARCHAR (128),
-    `cEmail` VARCHAR (128),
-    `cPassword` VARCHAR (128),
-    `cPaypal` VARCHAR (128),
-    `cAddress` VARCHAR (128),
+    `cname` VARCHAR (128),
+    `email` VARCHAR (128),
+    `password` VARCHAR (128),
+    `paypal` VARCHAR (128),
+    `address` VARCHAR (128),
     PRIMARY KEY (`cid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci; 
 
 
-insert into `customer` (`cid`, `cName`, `cEmail`, `cPassword`, `cPaypal` , `cAddress`)
+insert into `customer` (`cid`, `cname`, `email`, `password`, `paypal` , `address`)
 VALUES (1, 'Amy Tan', 'amy@abc.com', MD5('newpassword'), 'amy@abc.com', 'Blk 123 SMU Avenue 1');
 
-insert into `customer` (`cid`, `cName`, `cEmail`, `cPassword`, `cPaypal` , `cAddress`)
+insert into `customer` (`cid`, `cname`, `email`, `password`, `paypal` , `address`)
 VALUES (2, 'Tommy Tan', 'tom@abc.com', MD5('newpassword'), "tom@abc.com", 'Blk 123 SMU Avenue 1');
