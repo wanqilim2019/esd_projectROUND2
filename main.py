@@ -43,6 +43,10 @@ def home():
 def show_signuppage():
     return render_template('signup.html')
 
+@app.route("/payment")
+def show_payment():
+    return render_template('signup.html')
+
 
 @app.route('/create/product', methods=['GET', 'POST'])
 def upload():

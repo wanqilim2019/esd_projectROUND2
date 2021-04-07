@@ -17,21 +17,21 @@ class Customer(db.Model):
     __tablename__ = 'customer'
 
     cid = db.Column(db.Integer, primary_key=True)
-    cName = db.Column(db.String(128), nullable=False)
-    cEmail = db.Column(db.String(128), nullable=False)
-    cPassword = db.Column(db.String(128), nullable=False)
-    cPaypal = db.Column(db.String(128), nullable=False)
-    cAddress = db.Column(db.String(128), nullable=False)
+    cname = db.Column(db.String(128), nullable=False)
+    email = db.Column(db.String(128), nullable=False)
+    password = db.Column(db.String(128), nullable=False)
+    paypal = db.Column(db.String(128), nullable=False)
+    address = db.Column(db.String(128), nullable=False)
 
     def json(self):
 
         return {
             "cid": self.cid,
-            "cName": self.cName,
-            "cEmail": self.cEmail,
-            "cPassword": self.cPassword,
-            "cPaypal": self.cPaypal,
-            "cAddress": self.cAddress
+            "cname": self.cname,
+            "email": self.email,
+            "password": self.password,
+            "paypal": self.paypal,
+            "address": self.address
         }
 
 
@@ -54,38 +54,36 @@ def get_all():
         }
     ), 404
 
-# Duplicated function
-# @app.route("/customer/<string:email>", methods=['GET'])
-# def find_existingby_email(email):
-#     password = request.json.get('cPassword', None)
-#     email = request.json.get('cEmail', None)
-#     customer = db.session.query(Customer).filter(Customer.email == email).first()
-#     if customer:
-#         result = customer.json()
-#         del result['cPassword']
-#         return jsonify(
-#             {
-#                 "code": 200,
-#                 "data": result
-#             }
-#         )
-#     return jsonify(
-#         {
-#             "code": 404,
-#             "message": "Customer not found."
-#         }
-#     ), 404
 
-
-@app.route("/customer/<string:email>", methods=['POST'])
-def find_by_email(email):
-    password = request.json.get('cPassword', None)
-    email = request.json.get('cEmail', None)
-    customer = db.session.query(Customer).filter(
-        (Customer.email == email) & (Customer.password == password)).first()
+@app.route("/customer/<string:email>", methods=['GET'])
+def find_existingby_email(email):
+    password = request.json.get('password', None)
+    email = request.json.get('email', None)
+    customer = db.session.query(Customer).filter(Customer.email == email).first()
     if customer:
         result = customer.json()
-        del result['cPassword']
+        del result['password']
+        return jsonify(
+            {
+                "code": 200,
+                "data": result
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "Customer not found."
+        }
+    ), 404
+    
+@app.route("/customer/<string:email>", methods=['POST'])
+def find_by_email(email):
+    password = request.json.get('password', None)
+    email = request.json.get('email', None)
+    customer = db.session.query(Customer).filter((Customer.email == email) & (Customer.password == password)).first()
+    if customer:
+        result = customer.json()
+        del result['password']
         return jsonify(
             {
                 "code": 200,
@@ -106,11 +104,10 @@ def create_customer():
     cname = request.json.get('name', None)
     password = request.json.get('password', None)
     paypal = request.json.get('paypal', None)
-    caddress = request.json.get('address', None)
+    address = request.json.get('address', None)
     email = request.json.get('email', None)
 
-    customer = Customer(cName=cname, cEmail=email,
-                        cPassword=password, cPaypal=paypal, cAddress=caddress)
+    customer = Customer(cname=cname, email=email, address=address,password=password,paypal=paypal)
 
     try:
         db.session.add(customer)
@@ -136,16 +133,16 @@ def update_customer(cid):
     customer = Customer.query.filter_by(cid=cid).first()
     if customer:
         data = request.get_json()
-        if data['cName']:
-            customer.cname = data['cName']
-        if data['cEmail']:
-            customer.email = data['cEmail']
-        if data['cPaypal']:
-            customer.paypal = data['cPaypal']
-        if data['cPassword']:
-            customer.password = data['cPassword']
-        if data['cAddress']:
-            customer.caddress = data['cAddress']
+        if data['cname']:
+            customer.cname = data['cname']
+        if data['email']:
+            customer.email = data['email']
+        if data['paypal']:
+            customer.paypal = data['paypal']
+        if data['password']:
+            customer.password = data['password']
+        if data['address']:
+            customer.address = data['address']
         db.session.commit()
         return jsonify(
             {
@@ -157,7 +154,7 @@ def update_customer(cid):
         {
             "code": 404,
             "data": {
-                "cid": cid
+               "cid": cid
             },
             "message": "Customer not found."
         }
@@ -191,23 +188,23 @@ def delete_customer(cid):
 
 @app.route("/customer/location/<string:cid>", methods=['GET'])
 def get_cus_address(cid):
-    cus_address = Customer.query.filter_by(cid=cid).first()
-    if cus_address:
-        db.session.get(cus_address)
-        db.session.commit()
-        return jsonify(
-            {
-                "code": 200,
-                "data": {
-                    "cAddress": cus_address.cAddress
-                }
-            }
-        )
+    cusaddress = Customer.query.filter_by(address=addresss).first()
+    if customer:
+         db.session.get(customer)
+         db.session.commit()
+         return jsonify(
+             {
+                 "code": 200,
+                 "data": {
+                     "address": address
+                 }
+             }
+         )
     return jsonify(
         {
             "code": 404,
             "data": {
-                "cid": cid
+                "address": address
             },
             "message": "Customer not found."
         }
