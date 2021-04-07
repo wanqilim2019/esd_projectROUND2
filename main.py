@@ -46,7 +46,13 @@ def show_signuppage():
 @app.route("/myorders")
 def show_existingorders():
     # tb adding code to verify login
-    return render_template('myorders.html', user=session['data']['email'])
+    print(session)
+    if 'acctType' in session:
+        if session['acctType'] == 'customer':
+            return render_template('myorders.html',id=str(session['data']['cid']))
+        else:
+                return render_template('myorders.html',id=str(session['data']['bid']))
+    return render_template('myorders.html')
 
 @app.route("/payment")
 def show_payment():

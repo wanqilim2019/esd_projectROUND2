@@ -188,15 +188,14 @@ def delete_customer(cid):
 
 @app.route("/customer/location/<string:cid>", methods=['GET'])
 def get_cus_address(cid):
-    cusaddress = Customer.query.filter_by(address=addresss).first()
+    customer = Customer.query.filter_by(cid=cid).first()
     if customer:
-         db.session.get(customer)
-         db.session.commit()
          return jsonify(
              {
                  "code": 200,
                  "data": {
-                     "address": address
+                     "cid": cid,
+                     "address": customer.address
                  }
              }
          )

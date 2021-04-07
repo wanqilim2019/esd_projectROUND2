@@ -7,6 +7,8 @@ from os import environ
 import requests
 from invokes import invoke_http
 
+import amqp_setup
+import pika
 import json
 
 app = Flask(__name__)
@@ -36,10 +38,23 @@ def processCheckOrderCust(cid):
     print('order_result:', order_result)
   
     code = order_result["code"]
+    message = json.dumps(order_result)
+
+    amqp_setup.check_setup()
 
     if code not in range(200, 300):
         # Inform the error microservice
         print('\n\n-----Order microservice fails-----')
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="product.error", 
+            body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
+        # make message persistent within the matching queues until it is received by some receiver 
+        # (the matching queues have to exist and be durable and bound to the exchange)
+
+        # - reply from the invocation is not used;
+        # continue even if this invocation fails        
+        print("\nOrder status ({:d}) published to the RabbitMQ Exchange:".format(
+            code), order_result)
+
 
 
         # 7. Return error
@@ -48,6 +63,13 @@ def processCheckOrderCust(cid):
             "data": {"order_result": order_result},
             "message": "Order retrival fail."
         }
+    else:
+        print('\n\n-----Publishing the (product info) message with routing_key=order.info-----')        
+
+        # invoke_http(activity_log_URL, method="POST", json=order_result)            
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="order.info", 
+            body=message)
+
 
     order_result_list=order_result['data']['order']
     print(order_result_list)
@@ -70,10 +92,19 @@ def processCheckOrderCust(cid):
             # Inform the error microservice
             #print('\n\n-----Invoking error microservice as shipping fails-----')
             print('\n\n-----product error')
+            message = json.dumps(product_result)
+            amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="product.error", 
+                body=message, properties=pika.BasicProperties(delivery_mode = 2))
+
+            print("\nProduct status ({:d}) published to the RabbitMQ Exchange:".format(
+                code), product_result)
 
         else:
             # 4. confirm success
             print('\n\n-----Publishing the (product info) message-----')
+            amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="product.info", 
+            body=message)
+
 
     print(product_result_list)
             
