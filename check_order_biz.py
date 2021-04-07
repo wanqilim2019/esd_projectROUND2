@@ -54,7 +54,6 @@ def processCheckOrderBiz(bid):
             "message": "Product retrival fail."
         }
 
-
     # 3. Get the order info base on pid
     # Invoke the order microservice
     product_result_list = product_result['data']['products']
