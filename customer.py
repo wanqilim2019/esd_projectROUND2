@@ -57,8 +57,8 @@ def get_all():
 
 @app.route("/customer/<string:email>", methods=['GET'])
 def find_existingby_email(email):
-    password = request.json.get('password', None)
-    email = request.json.get('email', None)
+    # password = request.json.get('password', None)
+    # email = request.json.get('email', None)
     customer = db.session.query(Customer).filter(Customer.email == email).first()
     if customer:
         result = customer.json()
