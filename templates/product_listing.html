@@ -33,7 +33,11 @@
 
 
     <form class="justify-content-center" method="POST" enctype="multipart/form-data">
-
+      {% if pid %}
+      <div class="alert alert-success" role="alert">
+        Product Created! PID: {{pid}}
+      </div>      
+      {% endif %}
       <div class="row justify-content-center">
 
         <div class="form-group">

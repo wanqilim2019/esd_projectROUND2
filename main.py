@@ -92,8 +92,8 @@ def upload():
                 result = invoke_http(
                         product_URL, method='POST', json=sendjson)
                 
-                
-                return render_template('product_listing.html',msg='Upload Successfully')
+                print(result)
+                return render_template('product_listing.html',pid=result['data']['pid'])
             # for normal get to create product listing page
             return render_template('product_listing.html',msg='')
         # if not business

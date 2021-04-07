@@ -73,7 +73,8 @@
             $(document).ready(function () {
                 $('#submit').click(function () {
                     console.log("click");
-                    var oid = $('#oid').val();
+                    var oid = String($('#oid').val());
+                    console.log(oid);
                     var dstatus = $('#dstatus').val();
                     if (dstatus == 'Unfulfilled') {
                         $.ajax({
