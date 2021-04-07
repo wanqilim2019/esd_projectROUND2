@@ -7,6 +7,8 @@ from os import environ
 import requests
 from invokes import invoke_http
 
+import amqp_setup
+import pika
 import json
 
 app = Flask(__name__)
@@ -66,7 +68,17 @@ def processPlaceOrder(order):
         # Inform the error microservice
         #print('\n\n-----Invoking error microservice as order fails-----')
         print('\n\n-----Publishing the (order error) message with order.error-----')
-        print(order_result)
+
+        # invoke_http(error_URL, method="POST", json=order_result)
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="order.error", 
+            body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
+        # make message persistent within the matching queues until it is received by some receiver 
+        # (the matching queues have to exist and be durable and bound to the exchange)
+
+        # - reply from the invocation is not used;
+        # continue even if this invocation fails        
+        print("\nOrder status ({:d}) published to the RabbitMQ Exchange:".format(
+            code), order_result)
        
         # 7. Return error
         return {
@@ -83,6 +95,12 @@ def processPlaceOrder(order):
     else:
         # 4. Record new order
         # record the activity log anyway
+
+        print('\n\n-----Publishing the (order info) message with routing_key=order.info-----')        
+
+        # invoke_http(activity_log_URL, method="POST", json=order_result)            
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="order.info", 
+            body=message)
         #print('\n\n-----Invoking activity_log microservice-----')
         print('\n\n-----order placed-----')
         return order_result

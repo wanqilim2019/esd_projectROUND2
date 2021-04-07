@@ -7,6 +7,8 @@ from os import environ
 import requests
 from invokes import invoke_http
 
+#import amqp_setup
+import pika
 import json
 
 app = Flask(__name__)
@@ -39,21 +41,47 @@ def processCheckOrderBiz(bid):
     # Check the shipping result;
     # if a failure, send it to the error microservice.
     code = product_result["code"]
+    message = json.dumps(product_result)
+
+    #amqp_setup.check_setup()
 
     if code not in range(200, 300):
         # Inform the error microservice
         #print('\n\n-----Invoking error microservice as shipping fails-----')
         print('\n\n-----Publishing the (product error)')
-        
+
+        # invoke_http(error_URL, method="POST", json=order_result)
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="product.error", 
+            body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
+        # make message persistent within the matching queues until it is received by some receiver 
+        # (the matching queues have to exist and be durable and bound to the exchange)
+
+        # - reply from the invocation is not used;
+        # continue even if this invocation fails        
+        print("\nProduct status ({:d}) published to the RabbitMQ Exchange:".format(
+            code), product_result)
+
         # 7. Return error
         return {
             "code": 500,
             "data": {
-                "product_result": product_result
-            },
+                "product_result": product_result},
             "message": "Product retrival fail."
         }
 
+<<<<<<< HEAD
+    else:
+        # 4. Record new order
+        # record the activity log anyway
+        #print('\n\n-----Invoking activity_log microservice-----')
+        print('\n\n-----Publishing the (product info) message with routing_key=product.info-----')        
+
+        # invoke_http(activity_log_URL, method="POST", json=order_result)            
+        #amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="product.info", body=message)
+
+
+=======
+>>>>>>> 0a9a064d2d713d3c20521aaaf04e0f5923de625a
     # 3. Get the order info base on pid
     # Invoke the order microservice
     product_result_list = product_result['data']['products']
@@ -69,20 +97,33 @@ def processCheckOrderBiz(bid):
         print(pid)
         order_result = invoke_http(order_URL + '/product/' + str(pid))
         print('order_result:', order_result)
-        order_result_list.append(order_result)
     
         # Check the order result; if a failure, print error.
         code = order_result["code"]
         message = json.dumps(order_result)
 
         if code not in range(200, 300):
+            if code != 404:
 
-            #  Return error
-            print('-----No order-----')
+                #  Return error
+                print('\n\n-----Publishing the (order error) message with routing_key=order.error-----')
+
+                # invoke_http(error_URL, method="POST", json=shipping_result)
+                message = json.dumps(order_result)
+                """ amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="order.error", 
+                    body=message, properties=pika.BasicProperties(delivery_mode = 2)) """
+
+                print("\nOder status ({:d}) published to the RabbitMQ Exchange:".format(
+                    code), order_result)
 
         else:
             # 4. Confirm success
             print('\n\n-----Publishing the (order info) message-----')
+            """ amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="order.info", 
+            body=message) """
+            order_result_list.append(order_result)
+            print(order_result_list)
+
 
 
 
@@ -94,7 +135,51 @@ def processCheckOrderBiz(bid):
     
     customer_result_list=list()
     print(order_result_list)
+    print()
 
+    for product in order_result_list:
+        print(1)
+        print(product)
+        orders=product['data']['order']
+        print(2)
+        print(orders)
+        for order in orders:
+            print(3)
+            print(order)
+            cid=order['cid']
+            customer_result = invoke_http(
+                (customer_URL + '/location/' + str(cid)), method="GET")
+            print("customer:", customer_result, '\n')
+            customer_result_list.append(customer_result)
+
+            # Check the customer result;
+            # if a failure, send it to the error microservice.
+            code = customer_result["code"]
+            if code not in range(200, 300):
+                # Inform the error microservice
+                #print('\n\n-----Invoking error microservice as shipping fails-----')
+                print('\n\n-----Publishing the (customer error)')
+                message = json.dumps(customer_result)
+                """amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="customer.error", 
+                    body=message, properties=pika.BasicProperties(delivery_mode = 2)) """
+                print("\nCustomer status ({:d}) published to the RabbitMQ Exchange:".format(code), customer_result)            
+                # 7. Return error
+                return {
+                    "code": 400,
+                    "data": {
+                        "order_result": order_result,
+                        "shipping_result": product_result,
+                        "customer_result":customer_result
+                    },
+                    "message": "Customer retrival fail."
+                }
+
+<<<<<<< HEAD
+        else:
+            print('\n\n-----Publishing the (order info) message-----')
+            """amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="customer.info", 
+            body=message) """
+=======
     for order in order_result_list:
         cid=order
         customer_result = invoke_http(
@@ -120,6 +205,7 @@ def processCheckOrderBiz(bid):
                 },
                 "message": "Customer retrival fail."
             }
+>>>>>>> 0a9a064d2d713d3c20521aaaf04e0f5923de625a
 
 
 
