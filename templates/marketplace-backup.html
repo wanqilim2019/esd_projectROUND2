@@ -77,6 +77,30 @@
             </div>
         </div>
 
+        <div class="container pb-3">
+            <p>
+                <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseCart" aria-expanded="false" aria-controls="shopCollapse">
+                    Show Cart
+                </button>
+            </p>
+            <!-- Shopping cart with Vue -->
+            <div class="collapse" id="collapseCart">
+                <div class="card card-body">
+                    <h3>Items Currently in your cart</h3>
+                    <table class="table-bordered table-light" id="displayCart">
+                        <tr v-for="item in cart">
+                            <td>((item.pname))</td>
+                            <td>$((item.price))</td>
+                        </tr>
+                        <tr v-if="total <= 0"> 
+                            <td colspan="2"> Subtotal: $((total)) </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script>
