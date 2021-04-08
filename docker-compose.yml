@@ -4,6 +4,18 @@ volumes:
   rabbitmq_data:
 
 services:
+ ###################################
+  # AMQP: AMQP Setup
+  ###################################
+  amqp_setup:
+    build:
+      context: ./
+      dockerfile: amqp_setup.Dockerfile
+    image: ebenezerphua/amqp_setup:esd
+    restart: always
+    environment:
+      dbURL: mysql+mysqlconnector://root@localhost:3306/order
+      PYTHONUNBUFFERED: 1
  
   ###################################
   # Order: The Order microservice
@@ -12,7 +24,7 @@ services:
     build:
       context: ./
       dockerfile: order.Dockerfile
-    image: wanqilim2019/order:esd
+    image: ebenezerphua/order:esd
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://root@localhost:3306/order
@@ -25,7 +37,7 @@ services:
     build:
       context: ./
       dockerfile: business.Dockerfile
-    image: wanqilim2019/shipping_record:esd
+    image: ebenezerphua/business:esd
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://root@localhost:3306/business
@@ -51,7 +63,7 @@ services:
     build:
       context: ./
       dockerfile: customer.Dockerfile
-    image: wanqilim2019/customer:esd
+    image: ebenezerphua/customer:esd
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://root@localhost:3306/customer
@@ -64,7 +76,7 @@ services:
     build:
       context: ./
       dockerfile: product.Dockerfile
-    image: wanqilim2019/product:esd
+    image: ebenezerphua/product:esd
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://root@localhost:3306/product
@@ -73,16 +85,16 @@ services:
   ###################################
   # Make biz: make biz microservice
   ###################################
-  error:
-    build:
-      context: ./
-      dockerfile: make_business.Dockerfile
-    image: wanqilim2019/make_business:esd
-    restart: always
-    depends_on:
-      - rabbitmq
-    environment:
-      PYTHONUNBUFFERED: 1
+  #:
+  #  build:
+  #    context: ./
+  #    dockerfile: make_business.Dockerfile
+  #  image: wanqilim2019/make_business:esd
+  #  restart: always
+  #  depends_on:
+  #    - rabbitmq
+  #  environment:
+  #    PYTHONUNBUFFERED: 1
 
   
   #################################################
@@ -92,7 +104,7 @@ services:
     build:
       context: ./
       dockerfile: activity_log.Dockerfile
-    image: wanqilim2019/activity_log:esd
+    image: ebenezerphua/activity_log:esd
     restart: always
     depends_on:
       - rabbitmq
@@ -108,7 +120,7 @@ services:
     build:
       context: ./
       dockerfile: error.Dockerfile
-    image: wanqilim2019/error:esd
+    image: ebenezerphua/error:esd
     restart: always
     depends_on:
       - rabbitmq
@@ -117,22 +129,22 @@ services:
       rabbit_port: 5672
       PYTHONUNBUFFERED: 1
 
- ##################################
+  ##################################
   # Business Upload Product: Upload Product microservice
   ##################################
   product_listing:
     build:
       context: ./
       dockerfile: product_listing.Dockerfile
-    image: wanqilim2019/product_listing:esd
+    image: ebenezerphua/product_listing:esd
     restart: always
     depends_on:
-      - order
-      - activity_log
-      - error
-      - product
-      - business
-      - rabbitmq
+     - order
+     - activity_log
+     - error
+     - product
+     - business
+     - rabbitmq
     environment:
       rabbit_host: rabbitmq
       rabbit_port: 5672
@@ -142,7 +154,7 @@ services:
       PYTHONUNBUFFERED: 1
     ports:
       - "5500:5500"
-      #random number i put in
+     #random number i put in
         
   ###############################################
   # Place Order: The Place Order microservice
@@ -151,7 +163,7 @@ services:
     build:
       context: ./
       dockerfile: place_order.Dockerfile
-    image: wanqilim2019/place_order:esd
+    image: ebenezerphua/place_order:esd
     restart: always
     depends_on:
       - order
@@ -177,7 +189,7 @@ services:
     build:
       context: ./
       dockerfile: check_order_cust.Dockerfile
-    image: wanqilim2019/check_order_cust:esd
+    image: ebenezerphua/check_order_cust:esd
     restart: always
     depends_on:
       - order
@@ -204,7 +216,7 @@ services:
     build:
       context: ./
       dockerfile:  check_order_biz.Dockerfile
-    image: wanqilim2019/check_order_biz:esd
+    image: ebenezerphua/check_order_biz:esd
     restart: always
     depends_on:
       - order
@@ -232,7 +244,7 @@ services:
     build:
       context: ./
       dockerfile: fulfill_order.Dockerfile
-    image: wanqilim.2019/fulfill_order:esd
+    image: ebenezerphua/fulfill_order:esd
     restart: always
     depends_on:
       - order
