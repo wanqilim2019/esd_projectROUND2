@@ -15,29 +15,26 @@
         id="navbarSupportedContent">
         {% if 'loggedin' in session %}
         <ul class="navbar-nav ml-auto">
-
             <li class="nav-item">
-                <a class="nav-link" href="#">Profile</a>
+                <a class="nav-link" href="{{ url_for('show_existingorders') }}">My Orders</a>
             </li>
+            {% if session['acctType'] == 'business' %}
             <li class="nav-item">
-                <a class="nav-link" href="#">My Orders</a>
+                <a class="nav-link" href="{{ url_for('upload') }}">List Product</a>
             </li>
-
+            {% endif %}
             <li class="nav-item">
-                <a class="nav-link" href="">List Product</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/logout">Log Out</a>
+                <a class="nav-link" href="{{url_for('logout')}}">Log Out</a>
             </li>
         </ul>
         {% else %}
         <ul class="navbar-nav ml-auto">
 
             <li class="nav-item">
-                <a class="nav-link" href="/login">Login</a>
+                <a class="nav-link" href="{{ url_for('login')}}">Login</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/signup">Signup</a>
+                <a class="nav-link" href="{{ url_for('show_signuppage')}}">Signup</a>
             </li>
         </ul>
         {% endif %}
