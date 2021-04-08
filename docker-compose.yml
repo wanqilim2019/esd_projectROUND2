@@ -261,3 +261,32 @@ services:
       PYTHONUNBUFFERED: 1
     ports:
       - "5400:5400"
+  ###############################################
+  # Fulfil Order: Business Fulfill Order microservice
+  ###############################################
+  main:
+    build:
+      context: ./
+      dockerfile: main.Dockerfile
+    image: ebenezerphua/main:esd
+    restart: always
+    depends_on:
+      - product
+      - activity_log
+      - error
+      - business
+      - customer
+      - check_order_biz
+      - check_order_cust
+      - rabbitmq
+    environment:
+      rabbit_host: rabbitmq
+      rabbit_port: 5672
+      product_URL: http://localhost:5001/product
+      business_URL: http://localhost:5004/business
+      customer_URL: http://localhost:5003/customer
+      check_order_biz_URL: http://localhost:5100/check_order_biz
+      check_order_cus_URL: http://localhost:5300/check_order_cust
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5000:5000"   
