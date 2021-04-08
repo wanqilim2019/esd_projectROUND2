@@ -19,13 +19,11 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
 
-with app.app_context():
-    db = SQLAlchemy(app)
+db = SQLAlchemy(app)
 
 CORS(app)
 
 monitorBindingKey='#'
-
 
 class Activity(db.Model):
     __tablename__ = 'activity'
@@ -35,16 +33,19 @@ class Activity(db.Model):
     aDescription = db.Column(db.String(4000), nullable=False)
     source = db.Column(db.String(128), nullable=False)
 
+    def __init__(self, aDescription, source):
+        self.aDescription = aDescription
+        self.source = source
 
-    with app.app_context():
-        def json(self):
 
-            return {
-                "activity_id": self.activity_id,
-                "datetime": self.datetime,
-                "aDescription": self.aDescription,
-                "source" : self.source
-            }
+    def json(self):
+
+        return {
+            "activity_id": self.activity_id,
+            "datetime": self.datetime,
+            "aDescription": self.aDescription,
+            "source" : self.source
+        }
 
 def receiveOrderLog():
     amqp_setup.check_setup()
@@ -63,27 +64,37 @@ def callback(channel, method, properties, body): # required signature for the ca
     print() # print a new line feed
 
 def processOrderLog(order,file):
+
     print("Recording an order log:")
     print(order)
     print("-----------------")
-    print(file)
+    print(app)
     aDescription = order
     source = file
 
-    activity = Activity(aDescription = aDescription, source = source)
+    testing = Activity.query.filter_by(aDescription = 'ab' ).all()
+    print(testing)
+    print(456)
+    print(Activity)
+    activity = Activity(aDescription=aDescription, source=source)
+
     try:
-        with app.app_context():
-            db.session.add(activity)
-            print(123)
-            db.session.commit()
-            print(321)
+
+        print(app)
+        print(type(activity))
+        activity = Activity(aDescription=aDescription, source=source)
+        print(type(activity))
+        print(db)
+        print(db.session)
+        db.session.add(activity)
+        print(123)
+        print(type(activity))
+        db.session.commit()
+        print(321)
+
     except Exception as e:
-        return jsonify(
-            {
-                "code": 500,
-                "message": "An error occurred while log. " + str(e)
-            }
-        ), 500
+        print('Fail to upload')
+            
 
 
 
@@ -91,5 +102,5 @@ if __name__ == "__main__":  # execute this program only if it is run as a script
     print("\nThis is " + os.path.basename(__file__), end='')
     print(": monitoring routing key '{}' in exchange '{}' ...".format(monitorBindingKey, amqp_setup.exchangename))
     receiveOrderLog()
-    app.run(port=5500, debug=True)
+    app.run(port=5500, debug=False)
     
