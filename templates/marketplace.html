@@ -36,34 +36,20 @@
 
             <div class="container">
                 <div class="row" id="marketSpace">
-                    <div v-for="p in prodArr" class="col-lg-4 col-md-6 mb-3 d-flex justify-content-center text-center">
-                        <div class="card w3-hover-shadow" style="width: 20rem; border-radius: 20px;">
-                            <img :src="`http://127.0.0.1:5000/static/images/${p.imgname}`" class="card-img-top"
-                                style="border-top-left-radius: 20px;border-top-right-radius: 20px">
-                            <div class="card-body">
-                                <h5 class="card-title">(( p.pname ))</h5>
-                                <p class="card-text">(( p.pdescription ))</p>
-                                <p class="card-text">SGD$(( p.price ))</p>
-                                Select me to purchase <input type="radio" :value="p" v-model="cart"> <br> <br>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
             </div>
 
             <div id="paymentContainer" class="container text-center">
                 <span style="font-size:150%" id="Quantity">Input quantity (Keep the value to less than 11): &nbsp;
-                </span><input style="width: 4em; text-align:center;" type="number" v-model="selectedQuantity"
-                    @change="checkAmt">
-                <h3>You are about to purchase: <span v-if="cart.length != 0" style="color:darkcyan">((selectedQuantity))
-                        x </span> <span style="color:darkcyan"> ((cart.pname)) </span></h3>
+                </span><input onchange="getQuantity()" id="prodQ" style="width: 4em; text-align:center;" type="number"
+                    v-model="selectedQuantity" @change="checkAmt">
                 <br> <br>
                 <!-- Using Vue Paypal Template -->
                 <!-- <div id="container">
                     <pay></pay>
                 </div> -->
-                <div style='text-align:center;' id="paypal-button-container"></div> 
-                <!-- <div class="center" id='alert'></div> -->
+                <div style='text-align:center;' id="paypal-button-container"></div>
             </div>
         </div>
     </div>
@@ -71,29 +57,16 @@
     </div>
 
     <script>
+        let user = `{{user}}`
+
         var app = new Vue({
             el: "#app",
             data: {
-                sKey: "",
-                prodArr: [],
-                cart: [],
                 selectedQuantity: 1,
                 lower: 1,
                 upper: 10,
             },
             delimiters: ["((", "))"],
-            async mounted() {
-                // anonymous async function 
-                // - using await requires the function that calls it to be async
-
-                try {
-                    var response = await axios.get("http://127.0.0.1:5001/product")
-                    //console.log(response.data.data.products)
-                    this.prodArr = response.data.data.products
-                } catch (error) {
-                    console.log(error)
-                }
-            },
             methods: {
                 checkAmt: function () {
                     let amt = this.selectedQuantity
@@ -104,22 +77,81 @@
                         alert("Please have a quantity of less than or equal to 10");
                         this.selectedQuantity = this.upper;
                     }
-                }
+                },
             }
         });
+
+        function getQuantity() {
+            let prodQ = document.getElementById("prodQ").value
+            //console.log(prodQ)
+            return prodQ
+        }
+
+        // Get quantity of products 
+        let theItem = "";
+
+        let thePrice = "";
+
+        let thePName = "";
+
+        function getData() {
+            // This should retrieve an JSON object of the item selected
+            itemSelected = document.getElementsByName("product");
+
+            for (item of itemSelected) {
+                if (item.checked == true) {
+                    // This should retrive pid of the selected item
+                    //console.log(item.item)
+                    theItem = item.value
+                }
+            }
+            let pid_url = "http://127.0.0.1:5001/product/" + theItem;
+
+            retrieveByPid(pid_url);
+
+            //console.log(theItem)
+        }
+
+        async function retrieveByPid(query) {
+            try {
+                const response = await fetch(query);
+                if (!response.ok) {
+                    alert("There has been an error in retrieving products, please refresh and try again");
+                } else {
+                    const data = await response.json();
+                    //console.log(data);
+                    if (data.code == 200) {
+
+                        let productArr = data.data;
+                        //console.log(productArr);
+                        thePrice = parseFloat(productArr.price).toFixed(2)
+                        theDescrip = productArr.pname
+
+                        //console.log(thePrice)
+                        //console.log(theDescrip)
+                    }
+                }
+            } catch (error) {
+
+                alert(error)
+            }
+        }
+
 
         var PAYPAL_CLIENT = 'AVL3t_B9WIEb-CdLDHYK1sW8nXEtp7GM8Qk9m29QTvb-OYyb2dxdo_PapsHFT5KI08OyWiWDNtuL9tI0';
         var PAYPAL_SECRET = 'EF1n5ItUXHKwB8qI7HRGzLtN9M5U9omdMKYTRm0BSvUkRgCr5LLyQvThBN4OJMl3a09yGFU8oXVf8Jpb';
         var PAYPAL_ORDER_API = 'https://api-m.paypal.com/v2/checkout/orders/';
 
+
+
         paypal.Buttons({
             createOrder: function (data, actions) {
-
+                var new_q = getQuantity()
                 return actions.order.create({
                     purchase_units: [{
-                        description: 'Order for ABC',
+                        description: thePName,
                         amount: {
-                            value: 2.00 // change to order price
+                            value: thePrice * parseInt(new_q) // change to order price
                         }
                     }] //end of purchase units
                 }); //end of return
@@ -130,19 +162,88 @@
                     // This function shows a transaction success message to your buyer.
                     alert('Transaction completed by ' + details.payer.name.given_name);
                     console.log(details)
-                    // Send update Data to orders
-                    // subscription_url = 'http://localhost:5200'
-                    // let useremail = document.getElementById("customer").value;
-                    // let jsonSuccess = JSON.stringify({
-                    //   code: 200,
-                    //   email: useremail
-                    // });
+                    //console.log(user)
+                    async function send_Request() {
+                        let placeOrder_url = "http://127.0.0.1:5200/place_order"
+                        new_q = getQuantity();
+                        try {
+                            const response = await fetch((placeOrder_url), {
+                                method: 'POST',
+                                headers: {
+                                    "Content-type": "application/json"
+                                },
+                                body: JSON.stringify({quantity: new_q, pid: theItem, cid: user, pRes: details})
+                            });
+                            //console.log(response)
+                            if (!response.ok) {
+                                //console.log("Error when returning.")
+                                alert("Problem uploading data onto Order")
+                            } else {
+                                const data = await response.json();
+                                //console.log(data);
+                                if (data.code == 200) {
+                                    window.location.replace("myorders.html");
+                                } else {
+                                    
+                                }
+                            }
+                        } catch (error) {
+                            alert(error)
+                        }
+
+                    }
                 }); //end of return
 
             } // end of onApprove
 
             // render in the paypal button container
         }).render('#paypal-button-container');
+
+        var product_url = "http://127.0.0.1:5001/product"
+
+        async function getProducts() {
+            try {
+                const response = await fetch(product_url);
+                if (!response.ok) {
+                    alert("There has been an error in retrieving products, please refresh and try again");
+                } else {
+                    const data = await response.json();
+                    //console.log(data);
+                    if (data.code == 200) {
+                        let marketSpace = document.getElementById("marketSpace")
+
+                        let prodArr = data.data.products;
+                        //console.log(prodArr);
+
+                        for (item of prodArr) {
+
+                            marketSpace.innerHTML += `
+                            <div class="col-lg-4 col-md-6 mb-3 d-flex justify-content-center text-center">
+                                <div class="card w3-hover-shadow" style="width: 20rem; border-radius: 20px;">
+                                    <img src="http://127.0.0.1:5000/static/images/${item.imgname}" class="card-img-top"
+                                        style="border-top-left-radius: 20px;border-top-right-radius: 20px">
+                                    <div class="card-body">
+                                        <h5 class="card-title">${item.pname}</h5>
+                                        <p class="card-text">${item.pdescription}</p>
+                                        <p class="card-text">SGD$${item.price.toFixed(2)}</p>
+                                        Select me to purchase <input type="radio" name="product" value="${item.pid}" onclick="getData()">
+                                        
+                                        <br> <br>
+                                    </div>
+                                </div>
+                            </div>`
+                        }
+
+                    }
+                }
+            } catch (error) {
+
+                alert(error)
+            }
+
+        }
+
+        getProducts()
     </script>
 
 

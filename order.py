@@ -122,7 +122,7 @@ def find_by_cid(cid):
 def create_order():
     # oid = request.json.get('oid', None)
     quantity = request.json.get('quantity', None)
-    datetime = request.json.get('datetime', None)
+    # datetime = request.json.get('datetime', None)
     pid = request.json.get('pid', None)
     cid = request.json.get('cid', None)
     oStatus = 0
@@ -130,7 +130,7 @@ def create_order():
     pResponse = request.json.get('pResponse', None)
 
 
-    order = Order(quantity=quantity, datetime=datetime, pid=pid, cid=cid, oStatus=oStatus, dStatus=dStatus, pResponse=pResponse)
+    order = Order(quantity=quantity, pid=pid, cid=cid, oStatus=oStatus, dStatus=dStatus, pResponse=pResponse)
 
     try:
         db.session.add(order)
