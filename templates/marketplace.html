@@ -162,7 +162,9 @@
                     // This function shows a transaction success message to your buyer.
                     alert('Transaction completed by ' + details.payer.name.given_name);
                     console.log(details)
+                    window.location.href = "{{url_for('home')}}";
                     //console.log(user)
+                    /*send_Request();
                     async function send_Request() {
                         let placeOrder_url = "http://127.0.0.1:5200/place_order"
                         new_q = getQuantity();
@@ -172,7 +174,7 @@
                                 headers: {
                                     "Content-type": "application/json"
                                 },
-                                body: JSON.stringify({quantity: new_q, pid: theItem, cid: user, pRes: details})
+                                body: JSON.stringify([new_q, theItem, user, details])
                             });
                             //console.log(response)
                             if (!response.ok) {
@@ -191,7 +193,7 @@
                             alert(error)
                         }
 
-                    }
+                    }*/
                 }); //end of return
 
             } // end of onApprove
