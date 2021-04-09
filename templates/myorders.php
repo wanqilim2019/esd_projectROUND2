@@ -2,13 +2,13 @@
 <html lang="en">
 
 <head>
-    {% include 'head.html' %}
+    <?php include "head.html" ?>
 
     <title>Marketplace</title>
 </head>
 
 <body>
-    {% include 'nav.html' %}
+<?php include "nav.html" ?>
 
     <section id="Header" class="py-2">
         <div class="text-center">
@@ -102,7 +102,7 @@
 
     </div>
 
-    {% include 'footer.html' %}
+    <?php include "footer.html" ?>
 
 
 

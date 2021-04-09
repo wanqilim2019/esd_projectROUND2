@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  {% include 'head.html' %}
+  <?php include "head.html" ?>
 
 
   <style>
@@ -24,7 +24,7 @@
 
 <body>
 
-  {% include 'nav.html' %}
+<?php include "nav.html" ?>
 
 
   <div class="container mx-auto text-center justify-content-center">
@@ -32,12 +32,12 @@
 
 
 
-    <form class="justify-content-center" method="POST" enctype="multipart/form-data">
-      {% if pid %}
-      <div class="alert alert-success" role="alert">
-        Product Created! PID: {{pid}}
+    <form class="justify-content-center" method="POST" action="http://localhost:5001/product">
+    <?php if( $_GET['pid']) {?>
+    <div class="alert alert-success" role="alert">
+        Product Created! PID: <?php echo $_GET['pid'] ?>
       </div>      
-      {% endif %}
+      <?php } ?>
       <div class="row justify-content-center">
 
         <div class="form-group">
@@ -99,7 +99,7 @@
     </form>
 
   </div>
-  {% include 'footer.html' %}
+  <?php include "footer.html" ?>
 
 
 </body>

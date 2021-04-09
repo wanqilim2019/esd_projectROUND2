@@ -76,7 +76,7 @@ def find_existingby_email(email):
         }
     ), 404
     
-@app.route("/customer/<string:email>", methods=['POST'])
+@app.route("/check/customer/", methods=['POST'])
 def find_by_email(email):
     password = request.json.get('password', None)
     email = request.json.get('email', None)

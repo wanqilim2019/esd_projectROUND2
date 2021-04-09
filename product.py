@@ -101,8 +101,12 @@ def create_product():
     pname = request.json.get('pname', None)
     pdesc = request.json.get('pdescription', None)
     price = request.json.get('price', None)
-    imgname = request.json.get('imgname', None)
     bid = request.json.get('bid', None)
+    img = request.files['imgfile']
+    fileext = img.filename.split('.')[-1]
+    timestr = time.strftime("%Y%m%d-%H%M%S")
+    imgname = str(timestr)+'.'+fileext 
+    img.save(os.path.join(uploads_dir, secure_filename(imgname)))
     
     product = Product(pname=pname,price=price,pdescription=pdesc,imgname=imgname, bid=bid)
 

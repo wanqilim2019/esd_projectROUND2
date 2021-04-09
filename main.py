@@ -35,10 +35,10 @@ def home():
     msg = ''
     if 'acctType' in session:
         if session['acctType'] == 'customer':
-            return render_template("marketplace.html", user=session['data']['cname'])
+            return render_template("marketplace.php", user=session['data']['cname'])
         else:
-            return render_template("marketplace.html", user=session['data']['bname'])
-    return render_template("marketplace.html", msg=msg)
+            return render_template("marketplace.php", user=session['data']['bname'])
+    return render_template("marketplace.php", msg=msg)
 
 
 @app.route("/signup")

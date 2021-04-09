@@ -2,18 +2,19 @@
 <html lang="en">
 
 <head>
-    {% include 'head.html' %}
-
+    <?php include "head.html" ?>
     <title>Marketplace</title>
-    <script
-        src="https://www.paypal.com/sdk/js?client-id=AVL3t_B9WIEb-CdLDHYK1sW8nXEtp7GM8Qk9m29QTvb-OYyb2dxdo_PapsHFT5KI08OyWiWDNtuL9tI0&currency=SGD">
+    <script src="https://www.paypal.com/sdk/js?client-id=AVL3t_B9WIEb-CdLDHYK1sW8nXEtp7GM8Qk9m29QTvb-OYyb2dxdo_PapsHFT5KI08OyWiWDNtuL9tI0&currency=SGD">
         // Required. Replace YOUR_CLIENT_ID with your sandbox client ID.
     </script>
 </head>
 
 <body>
-    {% include 'nav.html' %}
 
+    <?php include "nav.html" ?>
+    <script>
+        console.log(window.sessionStorage);
+    </script>
 
     <section id="Header" class="py-2">
         <!-- <div class="text-center">
@@ -42,8 +43,7 @@
 
             <div id="paymentContainer" class="container text-center">
                 <span style="font-size:150%" id="Quantity">Input quantity (Keep the value to less than 11): &nbsp;
-                </span><input onchange="getQuantity()" id="prodQ" style="width: 4em; text-align:center;" type="number"
-                    v-model="selectedQuantity" @change="checkAmt">
+                </span><input onchange="getQuantity()" id="prodQ" style="width: 4em; text-align:center;" type="number" v-model="selectedQuantity" @change="checkAmt">
                 <br> <br>
                 <!-- Using Vue Paypal Template -->
                 <!-- <div id="container">
@@ -68,7 +68,7 @@
             },
             delimiters: ["((", "))"],
             methods: {
-                checkAmt: function () {
+                checkAmt: function() {
                     let amt = this.selectedQuantity
                     if (amt < 1) {
                         alert("Please have a quantity of more than or equal to 1");
@@ -145,7 +145,7 @@
 
 
         paypal.Buttons({
-            createOrder: function (data, actions) {
+            createOrder: function(data, actions) {
                 var new_q = getQuantity()
                 return actions.order.create({
                     purchase_units: [{
@@ -156,13 +156,13 @@
                     }] //end of purchase units
                 }); //end of return
             },
-            onApprove: function (data, actions) {
+            onApprove: function(data, actions) {
                 // This function captures the funds from the transaction.
-                return actions.order.capture().then(function (details) {
+                return actions.order.capture().then(function(details) {
                     // This function shows a transaction success message to your buyer.
                     alert('Transaction completed by ' + details.payer.name.given_name);
                     console.log(details)
-                    window.location.href = "{{url_for('home')}}";
+                    // window.location.href = "{{url_for('home')}}";
                     //console.log(user)
                     /*send_Request();
                     async function send_Request() {
@@ -249,7 +249,7 @@
     </script>
 
 
-    {% include 'footer.html' %}
+    <?php include "footer.html" ?>
 
 
 

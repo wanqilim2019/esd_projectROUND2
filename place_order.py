@@ -18,6 +18,8 @@ CORS(app)
 order_URL = environ.get('order_URL') or "http://localhost:5002/order" 
 customer_URL = environ.get('customer_URL') or "http://localhost:5003/customer" 
 
+
+
 @app.route("/place_order", methods=['POST'])
 def place_order():
     # Simple check of input format and data of the request are JSON
