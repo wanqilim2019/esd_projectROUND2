@@ -21,6 +21,7 @@ class Order(db.Model):
 
     oid = db.Column(db.Integer, primary_key=True)
     pid = db.Column(db.Integer, nullable=False)
+    group_oid = db.Column(db.Integer, nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
     cid = db.Column(db.Integer, nullable=False)
     datetime = db.Column(db.DateTime, nullable=False, default=datetime.now)
@@ -32,6 +33,7 @@ class Order(db.Model):
 
         return {
             "oid": self.oid,
+            "group_oid": self.group_oid,
             "pid": self.pid,
             "quantity": self.quantity,
             "cid": self.cid,
@@ -128,9 +130,13 @@ def create_order():
     oStatus = 0
     dStatus = "Unfulfilled"
     pResponse = request.json.get('pResponse', None)
+    orderlist = Order.query.all()
+    if len(orderlist) == 0:
+        group_oid = 1
+    else:
+        lastgroupOrder.query.filter_by(oid=oid).first()
 
-
-    order = Order(quantity=quantity, pid=pid, cid=cid, oStatus=oStatus, dStatus=dStatus, pResponse=pResponse)
+    order = Order(quantity=quantity, pid=pid,  group_oid=group_oid, cid=cid, oStatus=oStatus, dStatus=dStatus, pResponse=pResponse)
 
     try:
         db.session.add(order)

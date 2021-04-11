@@ -132,8 +132,8 @@
                     e.preventDefault();
                     var email = document.getElementById('email').value;
                     var confirmemail = document.getElementById('confirmemail').value;
-                    var password = document.getElementById('pwd').value;
-                    var confirmpassword = document.getElementById('cpwd').value;
+                    var password =  sha512(document.getElementById('pwd').value);
+                    var confirmpassword =  sha512(document.getElementById('cpwd').value);
                     accountType = document.querySelector("input[name=acctType]:checked").value;
 
                     if (accountType == 'customer') {
