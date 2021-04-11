@@ -76,8 +76,8 @@ def find_existingby_email(email):
         }
     ), 404
     
-@app.route("/check/customer/", methods=['POST'])
-def find_by_email(email):
+@app.route("/check/customer", methods=['POST'])
+def find_by_email():
     password = request.json.get('password', None)
     email = request.json.get('email', None)
     customer = db.session.query(Customer).filter((Customer.email == email) & (Customer.password == password)).first()

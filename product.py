@@ -1,14 +1,23 @@
-from flask import Flask, request, jsonify
+from flask import Flask, render_template, redirect, url_for, request, jsonify, session
 from flask_sqlalchemy import SQLAlchemy
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
+import requests
+
+import os
+import sys
+from os import environ
+from werkzeug.utils import secure_filename
+import time
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/product'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = 'esdT6thebest'
 
 db = SQLAlchemy(app)
 
 CORS(app)
+uploads_dir = os.path.join( 'static\\images')
 
 
 class Product(db.Model):
@@ -95,35 +104,35 @@ def find_by_bid(bid):
     ), 404
 
 
-@app.route("/product" ,methods=['POST'])
+@app.route("/add/product" ,methods=['POST'])
 def create_product():
-    # pid = request.json.get('pid', None)
-    pname = request.json.get('pname', None)
-    pdesc = request.json.get('pdescription', None)
-    price = request.json.get('price', None)
-    bid = request.json.get('bid', None)
+    pname = request.form.get('pname')
+    price = request.form.get('price')
+    pdesc =request.form.get('pdesc')
+    bid = request.form.get('bid')
     img = request.files['imgfile']
     fileext = img.filename.split('.')[-1]
     timestr = time.strftime("%Y%m%d-%H%M%S")
     imgname = str(timestr)+'.'+fileext 
     img.save(os.path.join(uploads_dir, secure_filename(imgname)))
-    
-    product = Product(pname=pname,price=price,pdescription=pdesc,imgname=imgname, bid=bid)
+    print(imgname)
 
+    product = Product(pname=pname,price=price,pdescription=pdesc,imgname=imgname, bid=bid)
+    print(product)
     try:
         db.session.add(product)
+        print('session added product')
         db.session.commit()
+        print('session committed')
+
     except Exception as e:
+        print(e)
         return jsonify(
             {
                 "code": 500,
                 "message": "An error occurred while creating the product. " + str(e)
             }
         ), 500
-    
-    # print(json.dumps(product.json(), default=str)) # convert a JSON object to a string and print
-    # print()
-
     return jsonify(
         {
             "code": 201,
