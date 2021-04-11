@@ -15,7 +15,17 @@
     <script>
         console.log(window.sessionStorage);
     </script>
-
+    <?php if (isset($_GET['msg'])) { ?>
+    <?php if ($_GET['msg'] == 'loggedin') { ?>
+        <div class="alert alert-success" role="alert">
+            Welcome back 
+        </div>
+    <?php } else if ($_GET['msg'] == 'congratulations'){?>
+        <div class="alert alert-success" role="alert">
+           Congratulations ! You are registered!
+        </div>
+    <?php } ?>
+    <?php } ?>
     <section id="Header" class="py-2">
         <!-- <div class="text-center">
 

@@ -132,8 +132,9 @@
                                     sessionStorage.setItem('acctType', accountType);
                                     for (key in userinfo) {
                                         sessionStorage.setItem(key, userinfo[key]);
-                                        window.location.href = 'marketplace.php?msg=loggedin';
+                                       
                                     }
+                                    window.location.href = 'marketplace.php?msg=loggedin';
 
                                 }
                             } else {

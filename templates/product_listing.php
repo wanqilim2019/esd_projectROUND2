@@ -120,7 +120,7 @@
             console.log(data);
             if (data.code == 200) {
               productinfo = data.data;
-              // window.location.href = 'product_listing.php?pid=';
+              window.location.href = 'product_listing.php?pid='+productinfo['pid'];
             }
           } else {
             alert("There has been an error in listing the product, please refresh and try again");
