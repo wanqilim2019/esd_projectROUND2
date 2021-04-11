@@ -122,9 +122,7 @@ def find_by_cid(cid):
 
 @app.route("/order", methods=['POST'])
 def create_order():
-    # oid = request.json.get('oid', None)
     quantity = request.json.get('quantity', None)
-    # datetime = request.json.get('datetime', None)
     pid = request.json.get('pid', None)
     cid = request.json.get('cid', None)
     oStatus = 0
@@ -134,7 +132,8 @@ def create_order():
     if len(orderlist) == 0:
         group_oid = 1
     else:
-        lastgroupOrder.query.filter_by(oid=oid).first()
+        lastrec= Order.query.order_by(desc(group_oid)).first()
+        group_oid = int(lastrec.json()['group_oid']) + 1
 
     order = Order(quantity=quantity, pid=pid,  group_oid=group_oid, cid=cid, oStatus=oStatus, dStatus=dStatus, pResponse=pResponse)
 

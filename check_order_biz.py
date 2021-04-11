@@ -57,8 +57,8 @@ def processCheckOrderBiz(bid):
 
         # - reply from the invocation is not used;
         # continue even if this invocation fails        
-        # print("\nProduct status ({:d}) published to the RabbitMQ Exchange:".format(
-            # code), product_result)
+        print("\nProduct status ({:d}) published to the RabbitMQ Exchange:".format(
+            code), product_result)
 
         # 7. Return error
         return {
@@ -90,7 +90,7 @@ def processCheckOrderBiz(bid):
         print('pid')
         print(pid)
         order_result = invoke_http(order_URL + '/product/' + str(pid))
-        print('order_result:', order_result)
+        # print('order_result:', order_result)
     
         # Check the order result; if a failure, print error.
         code = order_result["code"]
@@ -106,8 +106,8 @@ def processCheckOrderBiz(bid):
                 amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="order.error", 
                     body=message, properties=pika.BasicProperties(delivery_mode = 2))
 
-                # print("\nOder status ({:d}) published to the RabbitMQ Exchange:".format(
-                #     code), order_result)
+                print("\nOder status ({:d}) published to the RabbitMQ Exchange:".format(
+                    code), order_result)
 
         else:
             # 4. Confirm success

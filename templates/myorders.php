@@ -95,66 +95,67 @@
 
             });
         });
-        var business_url = "http://localhost:5100/check_order_biz";
-        var customer_url = "http://localhost:5300/check_order_cust";
+        console.log('getallorders');
+        var business_url = "http://127.0.0.1:5100/check_order_biz";
+        var customer_url = "http://127.0.0.1:5300/check_order_cust";
         var acctType = sessionStorage.getItem('acctType');
 
+        if (acctType == 'business') {
+            bid = sessionStorage.getItem('bid');
+            getURL = business_url + '/' + bid;
+        } else if (acctType == 'customer') {
+            cid = sessionStorage.getItem('cid');
+            getURL = customer_url + '/' + cid;
+        }
+        console.log(acctType, getURL);
+
         var app = new Vue({
-            el: "#app",
-            computed: {
-                hasOrders: function() {
-                    return this.books.length > 0;
-                }
-            },
-            data: {
-                isbn13: "",
-                books: [],
-                message: "There is a problem retrieving books data, please try again later.",
-                newTitle: "",
-                newISBN13: "",
-                newPrice: "",
-                newAvailability: "",
-                bookAdded: false,
-                addBookError: "",
-                orderedBook: "",
-                orderPlaced: false,
-                orderSuccessful: false,
-            },
-            methods: {
-                getAllOrders: function() {
-                    console.log('getallorders')
-                    if (acctType == 'business') {
-                        bid = sessionStorage.getItem('bid');
-                        getURL = business_url  + '/'+ bid;
-                    } else if (acctType == 'customer') {
-                        cid = sessionStorage.getItem('cid');
-                        getURL = customer_url + '/'+cid;
+                    el: "#app",
+                    computed: {
+                        hasOrders: function() {
+                            return this.books.length > 0;
+                        }
+                    },
+                    data: {
+                        isbn13: "",
+                        books: [],
+                        message: "There is a problem retrieving books data, please try again later.",
+                        newTitle: "",
+                        newISBN13: "",
+                        newPrice: "",
+                        newAvailability: "",
+                        bookAdded: false,
+                        addBookError: "",
+                        orderedBook: "",
+                        orderPlaced: false,
+                        orderSuccessful: false,
+                    },
+                    methods: {},
+                    created: async function() {
+
+                        axios.get(getURL)
+                            .then((response) => {
+                                console.log(response);
+                                data = response.data;
+                                if (data.code === 404) {
+                                    // this.message = data.message;
+                                    console.log('404');
+                                     
+
+                                } else {
+                                    // add codes
+                                    console.log('not 404');
+                                }
+                            })
+                            .catch(error => {
+                                // Errors when calling the service; such as network error, 
+                                // service offline, etc
+                                // console.log(this.message + error);
+                                console.log(error)
+                            });
+
                     }
-                    const response =
-                        fetch(getURL)
-                        .then(response => response.json())
-                        .then(data => {
-                            console.log(response);
-                            if (data.code === 404) {
-                                // no book in db
-                                this.message = data.message;
-                            } else {
-                                // add codes
-                            }
-                        })
-                        .catch(error => {
-                            // Errors when calling the service; such as network error, 
-                            // service offline, etc
-                            console.log(this.message + error);
-
-                        });
-
-                }
-            },
-            created: function() {
-                this.getAllOrders();
-            }
-        });
+                }); //end of app
     </script>
 
 
