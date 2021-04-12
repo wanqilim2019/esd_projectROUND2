@@ -28,6 +28,14 @@
         console.log(window.sessionStorage);
     </script>
     <div class="container">
+        <?php if (isset($_GET['msg'])) { ?>
+            <?php if ($_GET['msg'] == 'notloggedin') { ?>
+                <div class="alert alert-danger" role="alert">
+                    Please login.
+                </div>
+           
+            <?php } ?>
+        <?php } ?>
         <h1>Log In</h1>
         <br>
 
@@ -132,7 +140,7 @@
                                     sessionStorage.setItem('acctType', accountType);
                                     for (key in userinfo) {
                                         sessionStorage.setItem(key, userinfo[key]);
-                                       
+
                                     }
                                     window.location.href = 'marketplace.php?msg=loggedin';
 

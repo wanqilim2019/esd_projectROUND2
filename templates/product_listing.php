@@ -19,7 +19,13 @@
       margin-left: 350px;
     }
   </style>
-  <title>Product Listing</title>
+  <title>List Product</title>
+  <script>
+    if (!sessionStorage.getItem('loggedin')) {
+      console.log('not logged in')
+      window.location.href = 'Loginpage.php?msg=notloggedin';
+    }
+  </script>
 </head>
 
 <body>
@@ -97,35 +103,35 @@
         product_url = "http://127.0.0.1:5001/add/product";
         console.log('before');
         processaddingproducts(product_url);
+
         console.log('done');
       });
 
       async function processaddingproducts(url) {
-          var formData = new FormData(form);
-          formData.append("imgfile", document.getElementById('upload').files[0]);
-          const response = await fetch(url, {
-            body: formData,
-            method: "POST",
-            mode: 'cors', // no-cors, *cors, same-origin
-            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: 'same-origin', // include, *same-origin, omit
-            origin: ["http://localhost:8080", "http://localhost:5001"],
-            redirect: 'follow' // manual, *follow, error
-          });
-          console.log('call');
-          if (response.status >= 200 && response.status < 300) {
+        var formData = new FormData(form);
+        formData.append("imgfile", document.getElementById('upload').files[0]);
+        const response = await fetch(url, {
+          body: formData,
+          method: "POST",
+          mode: 'cors', // no-cors, *cors, same-origin
+          cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: 'same-origin', // include, *same-origin, omit
+          origin: ["http://localhost:8080", "http://localhost:5001"],
+          redirect: 'follow' // manual, *follow, error
+        });
+        console.log('call');
+        if (response.status >= 200 && response.status < 300) {
 
-            console.log('response ok');
-            data = await response.json();
-            console.log(data);
-            if (data.code == 200) {
-              productinfo = data.data;
-              window.location.href = 'product_listing.php?pid='+productinfo['pid'];
-            }
-          } else {
-            alert("There has been an error in listing the product, please refresh and try again");
-          }
-        
+          console.log('response ok');
+          data = await response.json();
+          console.log(data);
+            productinfo = data.data;
+            window.location.href = 'product_listing.php?pid=' + productinfo['pid'];
+          
+        } else {
+          alert("There has been an error in listing the product, please refresh and try again");
+        }
+
       }
     </script>
   </div>

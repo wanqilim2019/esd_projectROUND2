@@ -15,27 +15,23 @@
     <script>
         console.log(window.sessionStorage);
     </script>
-    <?php if (isset($_GET['msg'])) { ?>
-    <?php if ($_GET['msg'] == 'loggedin') { ?>
-        <div class="alert alert-success" role="alert">
-            Welcome back 
-        </div>
-    <?php } else if ($_GET['msg'] == 'congratulations'){?>
-        <div class="alert alert-success" role="alert">
-           Congratulations ! You are registered!
-        </div>
-    <?php } ?>
-    <?php } ?>
-    <section id="Header" class="py-2">
-        <!-- <div class="text-center">
 
-            <p></p><a href="/create/product"> create product</a></p>
-        </div> -->
-    </section>
+
 
     <!-- Implementing search bar with Vue -->
     <div id="app">
         <div class='container'>
+            <?php if (isset($_GET['msg'])) { ?>
+                <?php if ($_GET['msg'] == 'loggedin') { ?>
+                    <div class="alert alert-success" role="alert">
+                        Welcome back
+                    </div>
+                <?php } else if ($_GET['msg'] == 'congratulations') { ?>
+                    <div class="alert alert-success" role="alert">
+                        Congratulations ! You are registered!
+                    </div>
+                <?php } ?>
+            <?php } ?>
             <div class="row">
                 <div class="col-12 text-center">
                     <h1>Homie Marketplace</h1>
