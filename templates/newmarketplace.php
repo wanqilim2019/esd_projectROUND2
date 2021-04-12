@@ -9,6 +9,14 @@
         // Required. Replace YOUR_CLIENT_ID with your sandbox client ID.
     </script>
 
+<style>
+
+.card:hover {opacity: 1;
+background:#F8F4FF;
+color:#800000;
+}
+</style>
+
 </head>
 
 <body>
@@ -64,6 +72,7 @@
         var myCart = [];
 
         function getData() {
+            
             let cart = [];
             // This should retrieve an JSON object of the item selected
             let itemSelected = document.getElementsByName("product");
@@ -73,6 +82,13 @@
 
             for (item of itemSelected) {
                 if (item.checked == true) {
+                    // change color and label of checked item
+                    
+                    let label = item.previousElementSibling;
+                    let parent = item.parentElement;
+                    parent.className = "btn btn-danger";
+                    label.innerText = 'Remove from Cart';
+
                     // Retrieve list of prod info in the following sequence [pid, pname, price]
 
                     let checkedItem = item.value
@@ -88,16 +104,28 @@
                     <td>${checkedItem[1]}</td>
                     <td>${checkedItem[2]}</td>
                     </tr>`
+
                 } else if (item in cart && item.checked == false) {
+                    console.log('else if')
+                    let label = item.previousElementSibling;
+                    let parent = item.parentElement;
+                    parent.className = "btn btn-success";
+                    label.innerText = 'Add to Cart';
                     for ([i, element] of cart) {
                         cart.pop(i)
                     }
+                }else{
+                    console.log('else');
+                    let label = item.previousElementSibling;
+                    let parent = item.parentElement;
+                    parent.className = "btn btn-success";
+                    label.innerText = 'Add to Cart';
                 }
             }
             // This checks if cart is being dynamically updated
             // console.log(cart)
             myCart = cart;
-            console.log(myCart)
+            // console.log(myCart)
         }
 
 
@@ -117,20 +145,25 @@
                         //console.log(prodArr);
 
                         for (item of prodArr) {
-
                             marketSpace.innerHTML += `
-                            <div class="col-lg-4 col-md-6 mb-3 d-flex justify-content-center text-center">
-                                <div class="card w3-hover-shadow" style="width: 20rem; border-radius: 20px;">
-                                    <img src="http://127.0.0.1:5000/static/images/${item.imgname}" class="card-img-top"
+                         
+                            <div class="col-lg-3 col-md-2 mb-2 d-flex justify-content-center text-center w3-animate-opacity">
+                                <div class="card w3-hover-shadow " style="width: 20rem; border-radius: 20px;">
+                                    <img src="../static/images/${item.imgname}" class="card-img-top"
                                         style="border-top-left-radius: 20px;border-top-right-radius: 20px">
                                     <div class="card-body">
                                         <h5 class="card-title">${item.pname}</h5>
                                         <p class="card-text">${item.pdescription}</p>
                                         <p class="card-text">SGD$${item.price.toFixed(2)}</p>
-                                        Select me to purchase <input type="checkbox" name="product" value="${[item.pid, item.pname, item.price]}" onclick="getData()">
+                                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                        <div class="btn btn-success">
+                                        <label >Add to Cart</label>
+                                        <input type="checkbox" name="product" value="${[item.pid, item.pname, item.price]}" onclick="getData()" style='opacity:0.3'>
+                                        </div>
+                                        </div>
+                                
                                         
                                         <br> <br>
-                                    </div>
                                 </div>
                             </div>`
                         }
