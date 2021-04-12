@@ -102,13 +102,21 @@ def find_by_bemail():
 
 @app.route("/business" ,methods=['POST'])
 def create_business():
-    bname = request.json.get('name', None)
-    bdescription = request.json.get('description', None)
-    paypal = request.json.get('paypal', None)
-    address = request.json.get('address', None)
-    email = request.json.get('email', None)
-    password = request.json.get('password', None)
-    
+    bname = request.form.get('name', None)
+    bdescription = request.form.get('description', None)
+    paypal = request.form.get('paypal', None)
+    address = request.form.get('address', None)
+    email = request.form.get('email', None)
+    password = request.form.get('password', None)
+    businessinexist = db.session.query(Business).filter(Business.email == email).first()
+    if businessinexist:
+        return jsonify(
+            {
+                "code": 409,
+                "message": "Account Exist.Please Sign in."
+            }
+        ), 409
+        
     business = Business(bname=bname,email=email,address=address,bdescription=bdescription,paypal=paypal,password=password)
 
     try:
@@ -122,10 +130,12 @@ def create_business():
             }
         ), 500
 
+    result = business.json()
+    del result['password']
     return jsonify(
         {
             "code": 200,
-            "data": business.json()
+            "data": result
         }
     ), 201
 

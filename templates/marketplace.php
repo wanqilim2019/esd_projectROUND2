@@ -15,7 +15,17 @@
     <script>
         console.log(window.sessionStorage);
     </script>
-
+    <?php if (isset($_GET['msg'])) { ?>
+    <?php if ($_GET['msg'] == 'loggedin') { ?>
+        <div class="alert alert-success" role="alert">
+            Welcome back 
+        </div>
+    <?php } else if ($_GET['msg'] == 'congratulations'){?>
+        <div class="alert alert-success" role="alert">
+           Congratulations ! You are registered!
+        </div>
+    <?php } ?>
+    <?php } ?>
     <section id="Header" class="py-2">
         <!-- <div class="text-center">
 
@@ -219,7 +229,7 @@
                             marketSpace.innerHTML += `
                             <div class="col-lg-4 col-md-6 mb-3 d-flex justify-content-center text-center">
                                 <div class="card w3-hover-shadow" style="width: 20rem; border-radius: 20px;">
-                                    <img src="http://127.0.0.1:5000/static/images/${item.imgname}" class="card-img-top"
+                                    <img src="../static/images/${item.imgname}" class="card-img-top"
                                         style="border-top-left-radius: 20px;border-top-right-radius: 20px">
                                     <div class="card-body">
                                         <h5 class="card-title">${item.pname}</h5>

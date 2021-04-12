@@ -55,14 +55,17 @@
             <div class=form-group>
                 <h6>Select Account Type:</h6>
             </div>
-
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="acctType" id="acctType" value="business">
-                <label class="form-check-label" for="acctType">Business Account</label>
+                <label class="form-check-label" for="acctType">
+                    <input class="form-check-input" type="radio" name="acctType" value="customer">
+                    Member Account
+                </label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="acctType" id="acctType2" value="customer">
-                <label class="form-check-label" for="acctType">Member Account</label>
+                <label class="form-check-label" for="acctType">
+                    <input class="form-check-input" type="radio" name="acctType" id="acctType" value="business">
+                    Business Account
+                </label>
             </div>
 
             <div>
@@ -86,19 +89,23 @@
                         password = sha512(document.getElementById('pwd').value);
                         accountType = document.querySelector("input[name=acctType]:checked").value
                         console.log(email, password, accountType)
+
                         if (accountType == 'customer') {
-                            login_url = "http://127.0.0.1:5003/check/customer/";
-                        } else if (accountType == 'business') {
+                            login_url = "http://127.0.0.1:5003/check/customer";
+                            origin_url = "http://localhost:5003";
+                        } else {
                             login_url = "http://127.0.0.1:5004/check/business";
+                            origin_url = "http://localhost:5004";
                         }
-                        retrievelogin(login_url,accountType, {
+
+                        retrievelogin(login_url, accountType, origin_url, {
                             'email': email,
                             'password': password
                         });
 
                         console.log(window.sessionStorage);
                     }
-                    async function retrievelogin(url,accountType, data) {
+                    async function retrievelogin(url, accountType, origin_url, data) {
                         try {
                             const response = await fetch(url, {
                                 method: 'POST', // *GET, POST, PUT, DELETE, etc.
@@ -109,27 +116,32 @@
                                     'Content-Type': 'application/json'
                                     // 'Content-Type': 'application/x-www-form-urlencoded',
                                 },
-                                origin: ["http://localhost:8080", "http://localhost:5003","http://localhost:5004"],
+                                origin: ["http://localhost:8080", origin_url],
                                 redirect: 'follow', // manual, *follow, error
                                 body: JSON.stringify(data) // body data type must match "Content-Type" header
                             });
-                            if (!response.ok) {
-                                alert("There has been an error in logging in, please refresh and try again");
+
+                            if (response.ok) {
+                                data = await response.json();
+                                console.log(data);
+                                if (data.code == 200) {
+                                    sessionStorage.clear();
+                                    console.log(window.sessionStorage);
+                                    userinfo = data.data;
+                                    sessionStorage.setItem('loggedin', true);
+                                    sessionStorage.setItem('acctType', accountType);
+                                    for (key in userinfo) {
+                                        sessionStorage.setItem(key, userinfo[key]);
+                                       
+                                    }
+                                    window.location.href = 'marketplace.php?msg=loggedin';
+
+                                }
                             } else {
                                 data = await response.json();
                                 console.log(data);
-                                if (data.code == 200){
-                                    sessionStorage.clear();
-                                    console.log(window.sessionStorage);
-                                    if (data.code == 200){
-                                        userinfo = data.data;
-                                        sessionStorage.setItem('loggedin',true);
-                                        sessionStorage.setItem('acctType',accountType);
-                                        for (key in userinfo){
-                                            sessionStorage.setItem(key,userinfo[key]);
-                                            window.location.href ='marketplace.php?msg=loggedin';
-                                        }
-                                    }
+                                if (data.code == 404) {
+                                    alert("incorrect password and email.")
                                 }
                             }
                         } catch (error) {
