@@ -51,10 +51,7 @@
                 <span style="font-size:150%" id="Quantity">Input quantity (Keep the value to less than 11): &nbsp;
                 </span><input onchange="getQuantity()" id="prodQ" style="width: 4em; text-align:center;" type="number" v-model="selectedQuantity" @change="checkAmt">
                 <br> <br>
-                <!-- Using Vue Paypal Template -->
-                <!-- <div id="container">
-                    <pay></pay>
-                </div> -->
+                
                 <div style='text-align:center;' id="paypal-button-container"></div>
             </div>
         </div>
