@@ -180,6 +180,10 @@
                         .then((response) => {
                             console.log(response);
                             console.log(orderlist);
+                            for (order of orderlist){
+                                order.dStatus = 'Fulfilled'
+                                this.checkFulfillment[order.group_oid] = false
+                            }
                         })
                         .catch(error => {
                             // Errors when calling the service; such as network error, 
