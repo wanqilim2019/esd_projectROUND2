@@ -18,11 +18,11 @@ USE `activity`;
 
 DROP TABLE IF EXISTS `activity`;
 CREATE TABLE IF NOT EXISTS `activity` (
-    `activity_id` INT(11) NOT NULL AUTO_INCREMENT,
+    `aid` INT(11) NOT NULL AUTO_INCREMENT,
     `datetime` TIMESTAMP,
-    `aDescription` VARCHAR (4000),
+    `description` VARCHAR (256),
     `source` VARCHAR (128),
-    PRIMARY KEY (`activity_id`)
+    PRIMARY KEY (`aid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci; 
 
 

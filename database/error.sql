@@ -18,11 +18,11 @@ USE `error`;
 
 DROP TABLE IF EXISTS `error`;
 CREATE TABLE IF NOT EXISTS `error` (
-    `error_id` INT(11) NOT NULL AUTO_INCREMENT,
+    `eid` INT(11) NOT NULL AUTO_INCREMENT,
     `datetime` TIMESTAMP,
-    `eDescription` VARCHAR (4000),
-    `source` VARCHAR (128)
-    PRIMARY KEY (`error_id`)
+    `description` VARCHAR (4000),
+    `source` VARCHAR (128),
+    PRIMARY KEY (`eid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci; 
 
 

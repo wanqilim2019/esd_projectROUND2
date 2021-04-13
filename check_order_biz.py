@@ -25,18 +25,18 @@ def check_order_biz(bid):
     # do the actual work
     # 1. Send get order info
     result = processCheckOrderBiz(bid)
-    # print('\n------------------------')
-    # print('\nresult: ', result)
+    print('\n------------------------')
+    print('\nresult: ', result)
     return jsonify(result), result["code"]
 
 def processCheckOrderBiz(bid):
 
-    # print('\n\n-----Invoking product microservice-----')
+    print('\n\n-----Invoking product microservice-----')
     # 2. get pid based on bid
 
     product_result = invoke_http(
         (product_URL + '/business/' + bid), method="GET" )
-    # print("product:", product_result, '\n')
+    print("product:", product_result, '\n')
 
     # Check the shipping result;
     # if a failure, send it to the error microservice.
@@ -48,8 +48,8 @@ def processCheckOrderBiz(bid):
     if code not in range(200, 300):
         # Inform the error microservice
         #print('\n\n-----Invoking error microservice as shipping fails-----')
-        # print('\n\n-----Publishing the (product error)')
-
+        #print('\n\n-----Publishing the (product error)')
+        message=str(bid)+'Product microservice fail'
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="product.error", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
         # make message persistent within the matching queues until it is received by some receiver 
@@ -57,8 +57,8 @@ def processCheckOrderBiz(bid):
 
         # - reply from the invocation is not used;
         # continue even if this invocation fails        
-        print("\nProduct status ({:d}) published to the RabbitMQ Exchange:".format(
-            code), product_result)
+        #print("\nProduct status ({:d}) published to the RabbitMQ Exchange:".format(
+        #    code), product_result)
 
         # 7. Return error
         return {
@@ -72,25 +72,23 @@ def processCheckOrderBiz(bid):
         # 4. Record new order
         # record the activity log anyway
         #print('\n\n-----Invoking activity_log microservice-----')
-        # print('\n\n-----Publishing the (product info) message with routing_key=product.info-----')        
-          
+        #print('\n\n-----Publishing the (product info) message with routing_key=product.info-----')        
+        message=str(pid)+'Product microservice success'
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="product.info", body=message)
 
     # 3. Get the order info base on pid
     # Invoke the order microservice
     product_result_list = product_result['data']['products']
     #print(product_result_list)
-    # print('\n-----Invoking order microservice-----')
+    print('\n-----Invoking order microservice-----')
     
 
     final_result_list=list()
     
     for product in product_result_list:
         pid=product['pid']
-        print('pid')
-        print(pid)
         order_result = invoke_http(order_URL + '/product/' + str(pid))
-        # print('order_result:', order_result)
+        #print('order_result:', order_result)
     
         # Check the order result; if a failure, print error.
         code = order_result["code"]
@@ -99,19 +97,21 @@ def processCheckOrderBiz(bid):
             if code != 404:
 
                 #  Return error
-                # print('\n\n-----Publishing the (order error) message with routing_key=order.error-----')
+                print('\n\n-----Publishing the (order error) message with routing_key=order.error-----')
 
                 # invoke_http(error_URL, method="POST", json=shipping_result)
                 message = json.dumps(order_result)
+                message=str(pid)+'Order microservice fail'
                 amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="order.error", 
                     body=message, properties=pika.BasicProperties(delivery_mode = 2))
 
-                print("\nOder status ({:d}) published to the RabbitMQ Exchange:".format(
-                    code), order_result)
+                #print("\nOder status ({:d}) published to the RabbitMQ Exchange:".format(
+                #    code), order_result)
 
         else:
             # 4. Confirm success
-            # print('\n\n-----Publishing the (order info) message-----')
+            #print('\n\n-----Publishing the (order info) message-----')
+            message=str(pid)+'Order microservice success'
             amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="order.info", 
             body=message)
             #print(order_result_list)
@@ -120,31 +120,29 @@ def processCheckOrderBiz(bid):
             # 5. Send PID order to product
             # Invoke the product microservice
 
-            # print('\n\n-----Invoking customer microservice-----')
+            #print('\n\n-----Invoking customer microservice-----')
 
-            # print(product)
+            #print(product)
             orders=order_result['data']['order']
-            # print(2)
-            # print(orders)
+            #print(orders)
             for order in orders:
-                # print(3)
-                # print(order)
+                #print(order)
                 cid=order['cid']
                 customer_result = invoke_http(
                     (customer_URL + '/location/' + str(cid)), method="GET")
-                # print("customer:", customer_result, '\n')
+                #print("customer:", customer_result, '\n')
                 
                 # Check the customer result;
                 # if a failure, send it to the error microservice.
                 code = customer_result["code"]
                 if code not in range(200, 300):
                     # Inform the error microservice
-                    #print('\n\n-----Invoking error microservice as shipping fails-----')
-                    # print('\n\n-----Publishing the (customer error)')
-                    message = json.dumps(customer_result)
+                    #print('\n\n-----Publishing the (customer error)')
+                    #message = json.dumps(customer_result)
+                    message=str(cid)+'Customer microservice fail'
                     amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="customer.error", 
                         body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
-                    # print("\nCustomer status ({:d}) published to the RabbitMQ Exchange:".format(code), customer_result)            
+                    print("\nCustomer status ({:d}) published to the RabbitMQ Exchange:".format(code), customer_result)            
                     # 7. Return error
                     return {
                         "code": 400,
@@ -157,12 +155,13 @@ def processCheckOrderBiz(bid):
                     }
 
                 else:
-                    # print('\n\n-----Publishing the (order info) message-----')
+                    #print('\n\n-----Publishing the (order info) message-----')
+                    message=str(cid)+'Customer microservice success'
                     amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="customer.info", 
                     body=message)
                     final_result_list.append({'pname':product['pname'], 'imgname':product['imgname'], 'dStatus': order['dStatus'], 'oid': order['oid'],'group_oid': order['group_oid'], 'datetime':order['datetime'], 'oStatus': order['oStatus'], 'quantity': order['quantity'], 'dStatus': order['dStatus'], 'address': customer_result['data']['address']})
 
-    sorted_finallist = sorted(final_result_list, key=lambda k: k['group_oid']) 
+sorted_finallist = sorted(final_result_list, key=lambda k: k['group_oid'])
 
     # 7. Return created order, shipping record
     return {
