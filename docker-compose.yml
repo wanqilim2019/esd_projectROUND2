@@ -11,7 +11,7 @@ services:
     build:
       context: ./
       dockerfile: amqp_setup.Dockerfile
-    image: ebenezerphua/amqp_setup:esd
+    image: jianchengzhou/amqp_setup:esd
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://root@localhost:3306/order
@@ -24,7 +24,7 @@ services:
     build:
       context: ./
       dockerfile: order.Dockerfile
-    image: ebenezerphua/order:esd
+    image: jianchengzhou/order:esd
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://root@localhost:3306/order
@@ -37,7 +37,7 @@ services:
     build:
       context: ./
       dockerfile: business.Dockerfile
-    image: ebenezerphua/business:esd
+    image: jianchengzhou/business:esd
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://root@localhost:3306/business
@@ -63,7 +63,7 @@ services:
     build:
       context: ./
       dockerfile: customer.Dockerfile
-    image: ebenezerphua/customer:esd
+    image: jianchengzhou/customer:esd
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://root@localhost:3306/customer
@@ -76,25 +76,12 @@ services:
     build:
       context: ./
       dockerfile: product.Dockerfile
-    image: ebenezerphua/product:esd
+    image: jianchengzhou/product:esd
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://root@localhost:3306/product
       PYTHONUNBUFFERED: 1
 
-  ###################################
-  # Make biz: make biz microservice
-  ###################################
-  #:
-  #  build:
-  #    context: ./
-  #    dockerfile: make_business.Dockerfile
-  #  image: wanqilim2019/make_business:esd
-  #  restart: always
-  #  depends_on:
-  #    - rabbitmq
-  #  environment:
-  #    PYTHONUNBUFFERED: 1
 
   
   #################################################
@@ -104,11 +91,12 @@ services:
     build:
       context: ./
       dockerfile: activity_log.Dockerfile
-    image: ebenezerphua/activity_log:esd
+    image: jianchengzhou/activity_log:esd
     restart: always
     depends_on:
       - rabbitmq
     environment:
+      dbURL: mysql+mysqlconnector://root@localhost:3306/activity
       rabbit_host: rabbitmq
       rabbit_port: 5672
       PYTHONUNBUFFERED: 1
@@ -120,11 +108,12 @@ services:
     build:
       context: ./
       dockerfile: error.Dockerfile
-    image: ebenezerphua/error:esd
+    image: jianchengzhou/error:esd
     restart: always
     depends_on:
       - rabbitmq
     environment:
+      dbURL: mysql+mysqlconnector://root@localhost:3306/error
       rabbit_host: rabbitmq
       rabbit_port: 5672
       PYTHONUNBUFFERED: 1
@@ -136,7 +125,7 @@ services:
     build:
       context: ./
       dockerfile: product_listing.Dockerfile
-    image: ebenezerphua/product_listing:esd
+    image: jianchengzhou/product_listing:esd
     restart: always
     depends_on:
      - order
@@ -163,7 +152,7 @@ services:
     build:
       context: ./
       dockerfile: place_order.Dockerfile
-    image: ebenezerphua/place_order:esd
+    image: jianchengzhou/place_order:esd
     restart: always
     depends_on:
       - order
@@ -189,7 +178,7 @@ services:
     build:
       context: ./
       dockerfile: check_order_cust.Dockerfile
-    image: ebenezerphua/check_order_cust:esd
+    image: jianchengzhou/check_order_cust:esd
     restart: always
     depends_on:
       - order
@@ -216,7 +205,7 @@ services:
     build:
       context: ./
       dockerfile:  check_order_biz.Dockerfile
-    image: ebenezerphua/check_order_biz:esd
+    image: jianchengzhou/check_order_biz:esd
     restart: always
     depends_on:
       - order
@@ -244,7 +233,7 @@ services:
     build:
       context: ./
       dockerfile: fulfill_order.Dockerfile
-    image: ebenezerphua/fulfill_order:esd
+    image: jianchengzhou/fulfill_order:esd
     restart: always
     depends_on:
       - order
@@ -264,29 +253,29 @@ services:
   ###############################################
   # Fulfil Order: Business Fulfill Order microservice
   ###############################################
-  main:
-    build:
-      context: ./
-      dockerfile: main.Dockerfile
-    image: ebenezerphua/main:esd
-    restart: always
-    depends_on:
-      - product
-      - activity_log
-      - error
-      - business
-      - customer
-      - check_order_biz
-      - check_order_cust
-      - rabbitmq
-    environment:
-      rabbit_host: rabbitmq
-      rabbit_port: 5672
-      product_URL: http://localhost:5001/product
-      business_URL: http://localhost:5004/business
-      customer_URL: http://localhost:5003/customer
-      check_order_biz_URL: http://localhost:5100/check_order_biz
-      check_order_cus_URL: http://localhost:5300/check_order_cust
-      PYTHONUNBUFFERED: 1
-    ports:
-      - "5000:5000"   
+#  main:
+#    build:
+#      context: ./
+#      dockerfile: main.Dockerfile
+#    image: jianchengzhou/main:esd
+#    restart: always
+#    depends_on:
+#      - product
+#      - activity_log
+#      - error
+#      - business
+#      - customer
+#      - check_order_biz
+#      - check_order_cust
+#      - rabbitmq
+#    environment:
+#      rabbit_host: rabbitmq
+#      rabbit_port: 5672
+#      product_URL: http://localhost:5001/product
+#      business_URL: http://localhost:5004/business
+#      customer_URL: http://localhost:5003/customer
+#      check_order_biz_URL: http://localhost:5100/check_order_biz
+#      check_order_cus_URL: http://localhost:5300/check_order_cust
+#      PYTHONUNBUFFERED: 1
+#    ports:
+#      - "5000:5000"   
