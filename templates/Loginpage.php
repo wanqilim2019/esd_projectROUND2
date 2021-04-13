@@ -33,7 +33,6 @@
                 <div class="alert alert-danger" role="alert">
                     Please login.
                 </div>
-           
             <?php } ?>
         <?php } ?>
         <h1>Log In</h1>
@@ -142,7 +141,7 @@
                                         sessionStorage.setItem(key, userinfo[key]);
 
                                     }
-                                    window.location.href = 'marketplace.php?msg=loggedin';
+                                    window.location.href = 'newmarketplace.php?msg=loggedin';
 
                                 }
                             } else {
