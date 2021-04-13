@@ -173,7 +173,7 @@
             methods: {
                 fulfillOrder(group_oid,orderlist) {
                     console.log(group_oid);
-                    axios.put('http://localhost:5400/fulfill_order', {
+                    axios.put('http://127.0.0.1:5400/fulfill_order', {
                             'group_oid': group_oid,
                             'dStatus': 'Fulfilled'
                         })
