@@ -29,6 +29,7 @@ class Product(db.Model):
     pdescription = db.Column(db.String(225), nullable=False)
     imgname = db.Column(db.String(225), nullable=False)
     bid = db.Column(db.Integer, nullable=False)
+    stock = db.Column(db.Integer, nullable=False)
     
 
     def json(self):
@@ -42,7 +43,8 @@ class Product(db.Model):
             "price": self.price, 
             "pdescription": self.pdescription,
             "imgname": self.imgname,
-            "bid": self.bid
+            "bid": self.bid,
+            "stock": self.stock
         }
 
 

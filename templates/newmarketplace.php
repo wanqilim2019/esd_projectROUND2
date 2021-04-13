@@ -9,13 +9,13 @@
         // Required. Replace YOUR_CLIENT_ID with your sandbox client ID.
     </script>
 
-<style>
-
-.card:hover {opacity: 1;
-background:#F8F4FF;
-color:#800000;
-}
-</style>
+    <style>
+        .card:hover {
+            opacity: 1;
+            background: #F8F4FF;
+            color: #800000;
+        }
+    </style>
 
 </head>
 
@@ -72,7 +72,7 @@ color:#800000;
         var myCart = [];
 
         function getData() {
-            
+
             let cart = [];
             // This should retrieve an JSON object of the item selected
             let itemSelected = document.getElementsByName("product");
@@ -83,7 +83,7 @@ color:#800000;
             for (item of itemSelected) {
                 if (item.checked == true) {
                     // change color and label of checked item
-                    
+
                     let label = item.previousElementSibling;
                     let parent = item.parentElement;
                     parent.className = "btn btn-danger";
@@ -102,7 +102,7 @@ color:#800000;
                     <tr>
                     <td>${checkedItem[0]}</td>
                     <td>${checkedItem[1]}</td>
-                    <td>${checkedItem[2]}</td>
+                    <td>$${checkedItem[2]}</td>
                     </tr>`
 
                 } else if (item in cart && item.checked == false) {
@@ -114,7 +114,7 @@ color:#800000;
                     for ([i, element] of cart) {
                         cart.pop(i)
                     }
-                }else{
+                } else {
                     console.log('else');
                     let label = item.previousElementSibling;
                     let parent = item.parentElement;
@@ -146,7 +146,6 @@ color:#800000;
 
                         for (item of prodArr) {
                             marketSpace.innerHTML += `
-                         
                             <div class="col-lg-3 col-md-2 mb-2 d-flex justify-content-center text-center w3-animate-opacity">
                                 <div class="card w3-hover-shadow " style="width: 20rem; border-radius: 20px;">
                                     <img src="../static/images/${item.imgname}" class="card-img-top"
@@ -154,7 +153,8 @@ color:#800000;
                                     <div class="card-body">
                                         <h5 class="card-title">${item.pname}</h5>
                                         <p class="card-text">${item.pdescription}</p>
-                                        <p class="card-text">SGD$${item.price.toFixed(2)}</p>
+                                        <p class="card-text" style="font-weight: bold">SGD$${item.price.toFixed(2)}</p>
+                                        <p class="card-text" style="font-weight: bold">Stock: &nbsp ${item.stock}</p>
                                         <div class="btn-group btn-group-toggle" data-toggle="buttons">
                                         <div class="btn btn-success">
                                         <label >Add to Cart</label>
@@ -201,12 +201,18 @@ color:#800000;
                     // This function shows a transaction success message to your buyer.
                     alert('Transaction completed by ' + details.payer.name.given_name);
                     console.log(details)
+
+                    // Pass order info over to order microservice after transaction approves
+
+
                 }); //end of return
 
             } // end of onApprove
 
             // render in the paypal button container
         }).render('#paypal-button-container');
+
+        
     </script>
 
     <?php include "footer.html" ?>
