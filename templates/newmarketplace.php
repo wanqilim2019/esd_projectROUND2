@@ -125,7 +125,7 @@
             // This checks if cart is being dynamically updated
             // console.log(cart)
             myCart = cart;
-            // console.log(myCart)
+            console.log(myCart)
         }
 
 
@@ -203,7 +203,7 @@
                     console.log(details)
 
                     // Pass order info over to order microservice after transaction approves
-
+                    
 
                 }); //end of return
 
@@ -212,7 +212,46 @@
             // render in the paypal button container
         }).render('#paypal-button-container');
 
-        
+        async function addNewOrder(url) {
+            // Retrieve myCart, which consists of the following data, each arr is one new prod [[pid, pname, price], [pid, pname, price]]
+            var myCheckOutArr = myCart
+
+            var pidArr = []
+
+            // Add each PID of the order upon checkout to send over to order MS
+            for (item of myCheckOutArr) {
+                pidArr.push(parseInt(myCheckOutArr[0]))
+            }
+
+            var pidObj = {}
+
+            pidObj["newOrder"] = pidArr
+
+            pidJSON = JSON.stringify(pidObj)
+
+            const response = await fetch(url, {
+                body: pidJSON,
+                method: "POST",
+                mode: 'cors', // no-cors, *cors, same-origin
+                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: 'same-origin', // include, *same-origin, omit
+                origin: ["http://localhost:8080", "http://localhost:5001"],
+                redirect: 'follow' // manual, *follow, error
+            });
+            console.log('call');
+            if (response.status >= 200 && response.status < 300) {
+
+                console.log('response ok');
+                data = await response.json();
+                console.log(data);
+                productinfo = data.data;
+                window.location.href = ;
+
+            } else {
+                alert("There has been an error in listing the product, please refresh and try again");
+            }
+
+        }
     </script>
 
     <?php include "footer.html" ?>

@@ -21,7 +21,9 @@ SET time_zone = "+00:00";
 --
 -- Database: `business`
 --
+CREATE DATABASE IF NOT EXISTS  `business` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 
+USE `business`;
 -- --------------------------------------------------------
 
 --
