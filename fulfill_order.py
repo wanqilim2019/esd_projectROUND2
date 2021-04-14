@@ -7,8 +7,6 @@ from os import environ
 import requests
 from invokes import invoke_http
 
-import amqp_setup
-import pika
 import json
 
 app = Flask(__name__)
@@ -24,7 +22,6 @@ def fulfill_order():
         # Simple check of input format and data of the request are JSON
     # do the actual work
     # 1. Send get order info
-    amqp_setup.check_setup()
 
     if request.is_json:
         try:
@@ -34,8 +31,8 @@ def fulfill_order():
             # do the actual work
             # 1. Send order info {cart items}
             result = processFulfillOrder(order)
-            #print('\n------------------------')
-            #print('\nresult: ', result)
+            print('\n------------------------')
+            print('\nresult: ', result)
             return jsonify(result), result["code"]
 
         except Exception as e:
@@ -60,19 +57,16 @@ def fulfill_order():
 def processFulfillOrder(order):
     # 2. Get the order info
     # Invoke the order microservice
-    #print('\n-----Invoking order microservice-----')
-    oid=order['oid']
-    order_result = invoke_http(order_URL + '/' + str(oid), method='PUT', json=order)
-    #print('order_result:', order_result)
+    print('\n-----Invoking order microservice-----')
+    group_oid=order['group_oid']
+    order_result = invoke_http(order_URL + '/' + str(group_oid), method='PUT', json=order)
+    print('order_result:', order_result)
   
     code = order_result["code"]
 
     if code not in range(200, 300):
         # Inform the error microservice
-        #print('\n\n-----Order microservice fails-----')
-        message=str(oid)+'Order microservice fails'
-        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="product.error", 
-            body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
+        print('\n\n-----Order microservice fails-----')
 
 
         # 7. Return error
@@ -83,9 +77,6 @@ def processFulfillOrder(order):
         }
     else:
         return order_result
-        message=str(oid)+'Order microservice success'
-        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="order.info", 
-            body=message)
 
 # Execute this program if it is run as a main script (not by 'import')
 if __name__ == "__main__":
