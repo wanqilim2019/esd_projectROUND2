@@ -61,8 +61,8 @@ def processFulfillOrder(order):
     # 2. Get the order info
     # Invoke the order microservice
     print('\n-----Invoking order microservice-----')
-    group_oid=order['group_oid']
-    order_result = invoke_http(order_URL + '/' + str(group_oid), method='PUT', json=order)
+    oid=order['oid']
+    order_result = invoke_http(order_URL + '/' + str(oid), method='PUT', json=order)
     print('order_result:', order_result)
     amqp_setup.check_setup()
     
@@ -87,8 +87,9 @@ def processFulfillOrder(order):
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="order.info", 
             body=message)
 
-        
-        product_result = invoke_http(product_URL + '/fulfill/' + str(pid), method='PUT')
+        pid = order_result['data']['pid']
+        product_result = invoke_http(product_URL + '/fulfill/' + str(pid), method='PUT')    
+
         code=product_result["code"]
         if code not in range(200, 300):
             print('\n\n-----Product microservice fails-----')
@@ -110,7 +111,7 @@ def processFulfillOrder(order):
 
 
 
-        return order_result
+        return product_result
 
 # Execute this program if it is run as a main script (not by 'import')
 if __name__ == "__main__":
