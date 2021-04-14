@@ -59,7 +59,7 @@
             <div class="row">
                 <div class="col-4"></div>
                 <div class="col-lg-4 col-md-12 col-sm-12">
-                    <h3 class="text-center">Add things into your cart!</h3>
+                    <h3 id="cartDiv" class="text-center">Add things into your cart!</h3>
                     <table class="table table-hover" id="cartDisplay">
                         <tr>
                             <th>Product ID</th>
@@ -94,9 +94,11 @@
                 button.style.display = "block";
             }
             document.getElementById('cartDisplay').style.display = "block"
+            document.getElementById("cartDiv").style.display = "block"
         } else {
             document.getElementById("paymentContainer").style.display = "none"
             document.getElementById('cartDisplay').style.display = "none"
+            document.getElementById("cartDiv").style.display = "none"
 
         }
         // End login status check
