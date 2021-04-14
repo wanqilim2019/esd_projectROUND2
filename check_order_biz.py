@@ -42,6 +42,7 @@ def processCheckOrderBiz(bid):
     # if a failure, send it to the error microservice.
     code = product_result["code"]
     message = json.dumps(product_result)
+    amqp_setup.check_setup()
 
     #amqp_setup.check_setup()
 
@@ -73,7 +74,7 @@ def processCheckOrderBiz(bid):
         # record the activity log anyway
         #print('\n\n-----Invoking activity_log microservice-----')
         #print('\n\n-----Publishing the (product info) message with routing_key=product.info-----')        
-        message=str(pid)+'Product microservice success'
+        message=str(bid)+'Product microservice success'
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="product.info", body=message)
 
     # 3. Get the order info base on pid
@@ -161,7 +162,7 @@ def processCheckOrderBiz(bid):
                     body=message)
                     final_result_list.append({'pname':product['pname'], 'imgname':product['imgname'], 'dStatus': order['dStatus'], 'oid': order['oid'],'group_oid': order['group_oid'], 'datetime':order['datetime'], 'oStatus': order['oStatus'], 'quantity': order['quantity'], 'dStatus': order['dStatus'], 'address': customer_result['data']['address']})
 
-sorted_finallist = sorted(final_result_list, key=lambda k: k['group_oid'])
+    sorted_finallist = sorted(final_result_list, key=lambda k: k['group_oid'])
 
     # 7. Return created order, shipping record
     return {
