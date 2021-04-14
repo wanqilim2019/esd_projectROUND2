@@ -52,7 +52,7 @@ INSERT INTO `product` (`pid`, `pname`, `price`, `pdescription`, `imgname`, `bid`
 (4, 'Mint soy wax Candle', 12.64, ' Intended to draw prosperity, well-being, and fortune. Created with Eucalyptus Mint Natural Scent', 'img4.jpg', 3, 76),
 (5, 'Lavender Candle ', 23.86, ' Secret Garden top two scents are Lavender and just a hit of Rose', 'img5.jpg', 2, 80),
 (6, 'Lavender Goat Milk Soap All Natural Soap', 7.51, ' Let scent of lavender whisk you away to the french countryside', 'img6.jpg', 1, 61),
-(7, 'Handmade Cold Process Soap', 5.62, ' Love is in the air and what does it smell like? It smells beautiful, sweet & tropical.', 'img7.jpg', 2, 30),
+(7, 'Handmade Cold Process Soap', 5.62, ' Love is in the air and what does it smell like? It smells beautiful, sweet & tropical.', 'img7.jpg', 2, 0),
 (8, 'Personalized Name Wood Puzzle Handmade Toy', 44.86, 'We use special paint and varnish that is 100% safe for the babies! All of the puzzle pieces are raised, making them easy to get out and play with ', 'img8.jpg', 3, 60),
 (9, 'Handmade Dinosaur Crayons', 6.80, ' These Dinosaur Crayons are perfect for your mini Dinosaur enthusiasts!', 'img9.jpg', 4, 18),
 (10, 'Knitted Handmade Bag', 97.86, 'Your unique hand knitted bag that you will never find another same one!', 'img10.jpg', 1, 60);

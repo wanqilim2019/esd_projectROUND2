@@ -22,9 +22,6 @@
 
 <body>
     <?php include "nav.html" ?>
-    <script>
-        console.log(window.sessionStorage);
-    </script>
 
     <section id="Header" class="pb-2">
         <div id="banner" class="container">
@@ -84,6 +81,27 @@
     <script>
         getProducts()
 
+        // Check login status
+        console.log(window.sessionStorage);
+
+        var status = sessionStorage.getItem('loggedin') // Return True or False
+        var user = sessionStorage.getItem('acctType') // Return Str = business or customer
+
+        if (status && user == "customer") {
+            document.getElementById("paymentContainer").style.display = "block"
+            var cartButtons = document.getElementsByClassName("addToCart")
+            for (button of cartButtons) {
+                button.style.display = "block";
+            }
+            document.getElementById('cartDisplay').style.display = "block"
+        } else {
+            document.getElementById("paymentContainer").style.display = "none"
+            document.getElementById('cartDisplay').style.display = "none"
+
+        }
+        // End login status check
+
+
         var myCart = [];
 
         function getData() {
@@ -93,56 +111,70 @@
             let itemSelected = document.getElementsByName("product");
             let cartDisplay = document.getElementById("cartDisplay")
 
-            cartDisplay.innerHTML = ""
-
-            for (item of itemSelected) {
-                if (item.checked == true) {
-                    // change color and label of checked item
-
-                    let label = item.previousElementSibling;
-                    let parent = item.parentElement;
-                    parent.className = "btn btn-danger";
-                    label.innerText = 'Remove from Cart';
-
-                    // Retrieve list of prod info in the following sequence [pid, pname, price]
-
-                    let checkedItem = item.value
-                    // console.log(item.value)
-
-                    checkedItem = checkedItem.split(',')
-
-                    cart.push(checkedItem)
-
-                    cartDisplay.innerHTML += `
-                    <tr>
-                    <td>${checkedItem[0]}</td>
-                    <td>${checkedItem[1]}</td>
-                    <td>$${checkedItem[2]}</td>
-                    </tr>`
-
-                } else if (item in cart && item.checked == false) {
-                    console.log('else if')
-                    let label = item.previousElementSibling;
-                    let parent = item.parentElement;
-                    parent.className = "btn btn-success";
-                    label.innerText = 'Add to Cart';
-                    for ([i, element] of cart) {
-                        cart.pop(i)
+            // Check if customer is logged in, if not not allowed to add item to cart
+            if (!status || user != "customer") {
+                for (item of itemSelected) {
+                    if (item.checked == true) {
+                        alert("Please login as a customer add items to your cart")
                     }
-                } else {
-                    //console.log('else');
-                    let label = item.previousElementSibling;
-                    let parent = item.parentElement;
-                    parent.className = "btn btn-success";
-                    label.innerText = 'Add to Cart';
                 }
-            }
-            // This checks if cart is being dynamically updated
-            // console.log(cart)
-            myCart = cart;
-            console.log(myCart)
-        }
+            } else {
+                cartDisplay.innerHTML = ""
 
+                for (item of itemSelected) {
+                    if (item.checked == true) {
+                        // change color and label of checked item
+
+                        let label = item.previousElementSibling;
+                        let parent = item.parentElement;
+                        parent.className = "btn btn-danger";
+                        label.innerText = 'Remove from Cart';
+
+
+                        // Retrieve list of prod info in the following sequence [pid, pname, price, stock]
+
+                        let checkedItem = item.value
+                        // console.log(item.value)
+
+                        checkedItem = checkedItem.split(',')
+
+                        // Check if selected item has stock of > 0
+
+                        cart.push(checkedItem)
+
+                        cartDisplay.innerHTML += `
+                            <tr>
+                            <td>${checkedItem[0]}</td>
+                            <td>${checkedItem[1]}</td>
+                            <td>$${checkedItem[2]}</td>
+                            </tr>`
+
+
+                    } else if (item in cart && item.checked == false) {
+                        console.log('else if')
+                        let label = item.previousElementSibling;
+                        let parent = item.parentElement;
+                        parent.className = "btn btn-success";
+                        label.innerText = 'Add to Cart';
+                        for ([i, element] of cart) {
+                            cart.pop(i)
+                        }
+                    } else {
+                        //console.log('else');
+                        let label = item.previousElementSibling;
+                        let parent = item.parentElement;
+                        parent.className = "btn btn-success";
+                        label.innerText = 'Add to Cart';
+                    }
+                }
+                // This checks if cart is being dynamically updated
+                // console.log(cart)
+                myCart = cart;
+                console.log(myCart)
+            }
+
+
+        }
 
         async function getProducts() {
             try {
@@ -160,6 +192,11 @@
                         //console.log(prodArr);
 
                         for (item of prodArr) {
+                            let disabled = "disabled"
+
+                            if (parseInt(item.stock) > 0) {
+                                disabled = ""
+                            }
                             marketSpace.innerHTML += `
                             <div class="col-lg-3 col-md-2 mb-2 d-flex justify-content-center text-center w3-animate-opacity">
                                 <div class="card w3-hover-shadow " style="width: 20rem; border-radius: 20px;">
@@ -170,10 +207,10 @@
                                         <p class="card-text">${item.pdescription}</p>
                                         <p class="card-text" style="font-weight: bold">SGD$${item.price.toFixed(2)}</p>
                                         <p class="card-text" style="font-weight: bold">Stock: &nbsp ${item.stock}</p>
-                                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                        <div class="addToCart btn-group btn-group-toggle" data-toggle="buttons">
                                         <div class="btn btn-success">
                                         <label >Add to Cart</label>
-                                        <input type="checkbox" name="product" value="${[item.pid, item.pname, item.price]}" onclick="getData()" style='opacity:0.3'>
+                                        <input type="checkbox" ${disabled} name="product" value="${[item.pid, item.pname, item.price, item.stock]}" onclick="getData()" style='opacity:0.3'>
                                         </div>
                                         </div>
                                 
@@ -181,6 +218,8 @@
                                         <br> <br>
                                 </div>
                             </div>`
+
+
                         }
 
                     }
