@@ -102,9 +102,7 @@ def processPlaceOrder(order):
         # record the activity log anyway
 
         print('\n\n-----Publishing the (order info) message with routing_key=order.info-----')
-        message='Order microservice success'  
-
-        # invoke_http(activity_log_URL, method="POST", json=order_result)            
+        message='Order microservice success'          
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="order.info", 
             body=message)
         #print('\n\n-----Invoking activity_log microservice-----')
