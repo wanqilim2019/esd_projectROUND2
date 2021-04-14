@@ -179,7 +179,7 @@ def update_product(pid):
 def update_stock(pid):
     try:
         product = Product.query.filter_by(pid=pid).first()
-        product.stock=Product.stock-1
+        product.stock=product.stock-1
         db.session.commit()
         return jsonify(
             {
