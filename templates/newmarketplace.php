@@ -235,6 +235,8 @@
         var PAYPAL_SECRET = 'EF1n5ItUXHKwB8qI7HRGzLtN9M5U9omdMKYTRm0BSvUkRgCr5LLyQvThBN4OJMl3a09yGFU8oXVf8Jpb';
         var PAYPAL_ORDER_API = 'https://api-m.paypal.com/v2/checkout/orders/';
 
+        var pStatus = false
+
         paypal.Buttons({
             createOrder: function(data, actions) {
                 var myCheckOutArr = myCart
@@ -278,7 +280,7 @@
             // render in the paypal button container
         }).render('#paypal-button-container');
 
-        var pStatus = false
+        
 
         async function addNewOrder(url) {
             // Retrieve myCart, which consists of the following data, each arr is one new prod [[pid, pname, price, stock]]
