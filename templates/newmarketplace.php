@@ -275,43 +275,66 @@
         }).render('#paypal-button-container');
 
         async function addNewOrder(url) {
-            // Retrieve myCart, which consists of the following data, each arr is one new prod [[pid, pname, price], [pid, pname, price]]
+            // Retrieve myCart, which consists of the following data, each arr is one new prod [[pid, pname, price, stock]]
             var myCheckOutArr = myCart
 
-            var pidArr = []
+            var pidArr = [] // [1,3,4]
 
             // Add each PID of the order upon checkout to send over to order MS
             for (item of myCheckOutArr) {
-                pidArr.push(parseInt(myCheckOutArr[0])) // [1,3,4]
+                pidArr.push(parseInt(myCheckOutArr[0])) 
             }
 
             var pidObj = {}
 
             pidObj["newOrder"] = pidArr
 
+            var cid = sessionStorage.getItem('cid')
+
+            pidObj["cid"] = cid
+
             pidJSON = JSON.stringify(pidObj)
 
-            const response = await fetch(url, {
-                body: pidJSON,
-                method: "POST",
-                mode: 'cors', // no-cors, *cors, same-origin
-                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: 'same-origin', // include, *same-origin, omit
-                origin: ["http://localhost:8080", "http://localhost:5200"],
-                redirect: 'follow' // manual, *follow, error
-            });
-            console.log('call');
-            if (response.status >= 200 && response.status < 300) {
+            // console.log(pidJSON)
 
-                console.log('response ok');
-                data = await response.json();
-                console.log(data);
-                // productinfo = data.data;
-                // window.location.href = ;
+            // console.log(typeof(pidJSON))
 
-            } else {
-                alert("There has been an error in listing the product, please refresh and try again");
+            let xhr = new XMLHttpRequest()
+            let my_url = url
+
+            xhr.open("POST", my_url, true);
+
+            xhr.setRequestHeader("Content-Type", "application/json");
+
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    console.log(this.responseText)
+                }
             }
+
+            xhr.send(pidJSON)
+
+            // const response = await fetch(url, {
+            //     body: pidJSON,
+            //     method: "POST",
+            //     mode: 'cors', // no-cors, *cors, same-origin
+            //     cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            //     credentials: 'same-origin', // include, *same-origin, omit
+            //     origin: ["http://localhost:8080", "http://localhost:5200"],
+            //     redirect: 'follow' // manual, *follow, error
+            // });
+            
+            // if (response.status >= 200 && response.status < 300) {
+
+            //     console.log('response ok');
+            //     data = await response.json();
+            //     console.log(data);
+            //     // productinfo = data.data;
+            //     // window.location.href = ;
+
+            // } else {
+            //     alert("There has been an error in sending order data, please try again");
+            // }
 
         }
     </script>

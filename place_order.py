@@ -18,12 +18,13 @@ CORS(app)
 order_URL = environ.get('order_URL') or "http://localhost:5002/order" 
 
 
-
+# print(request)
 @app.route("/place_order", methods=['POST'])
 def place_order():
     # Simple check of input format and data of the request are JSON
     # do the actual work
     # 1. Send get order info
+    # print(request)
     if request.is_json:
         try:
             order = request.get_json()
@@ -49,6 +50,7 @@ def place_order():
             }), 500
 
     # if reached here, not a JSON request.
+    
     return jsonify({
         "code": 400,
         "message": "Invalid JSON input: " + str(request.get_data())
