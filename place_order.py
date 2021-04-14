@@ -67,6 +67,7 @@ def processPlaceOrder(order):
   
     # Check the order result; if a failure, send it to the error microservice.
     code = order_result["code"]
+    dateTime = order_result["data"]["datetime"]
     
     if code not in range(200, 300):
         # Inform the error microservice
@@ -84,7 +85,7 @@ def processPlaceOrder(order):
         # continue even if this invocation fails        
         print("\nOrder status ({:d}) published to the RabbitMQ Exchange:".format(
             code), order_result)
-       
+            
         # 7. Return error
         return {
             "code": 500,
