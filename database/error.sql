@@ -20,7 +20,7 @@ DROP TABLE IF EXISTS `error`;
 CREATE TABLE IF NOT EXISTS `error` (
     `eid` INT(11) NOT NULL AUTO_INCREMENT,
     `datetime` TIMESTAMP,
-    `description` VARCHAR (4000),
+    `description` VARCHAR (256),
     `source` VARCHAR (128),
     PRIMARY KEY (`eid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci; 
