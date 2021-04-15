@@ -7,7 +7,7 @@ from os import environ
 import requests
 from invokes import invoke_http
 
-import json
+import amqp_setup
 import pika
 import json
 
