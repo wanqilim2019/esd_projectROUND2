@@ -175,7 +175,7 @@
                             console.log(window.sessionStorage);
 
                             if (accountType == 'customer') {
-                                window.location.href = 'newmarketplace.php?msg=congratulations';
+                                window.location.href = 'marketplace.php?msg=congratulations';
                             } else {
                                 window.location.href = 'myorders.php?msg=congratulations';
                             }
