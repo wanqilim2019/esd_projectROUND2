@@ -142,7 +142,7 @@
 
                                     }
                                     if(accountType == 'customer'){
-                                        window.location.href = 'newmarketplace.php?msg=loggedin';
+                                        window.location.href = 'marketplace.php?msg=loggedin';
                                     }else{
                                         window.location.href = 'myorders.php?msg=loggedin';
                                     }
