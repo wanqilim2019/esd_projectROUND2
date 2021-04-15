@@ -133,7 +133,7 @@
                         } else {
                             this.noOrdermsg1 = 'You have not order anything.'
                             this.noOrdermsg2 = 'Shop here now'
-                            this.noOrderlink = 'newmarketplace.php'
+                            this.noOrderlink = 'marketplace.php'
                             this.isbusiness = false
                         }
                         data = response.data;
