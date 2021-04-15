@@ -6,6 +6,9 @@ Starting the application:
 
 	2. Start up WAMP or MAMP and ensure all services are running before proceeding
 
+	If the files are having some problems please refer to https://github.com/wanqilim2019/g8t6project.
+
+
 Setting up the databases:
 
 	1. Enter into the following directory g8t6/database/ to retrieve the following sql files:
