@@ -164,13 +164,13 @@ def processCheckOrderBiz(bid):
 
     sorted_finallist = sorted(final_result_list, key=lambda k: k['group_oid'])
 
-    # 7. Return created order, shipping record
+    # 7. Return order
     return {
         "code": 201,
         "data": {
             "required_info": final_result_list
         }
-    }
+        }
 
 
 

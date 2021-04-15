@@ -247,6 +247,7 @@ services:
       rabbit_port: 5672
       order_URL: http://localhost:5002/order
       business_URL: http://localhost:5004/business
+      product_URL: http://localhost:5001/product
       PYTHONUNBUFFERED: 1
     ports:
       - "5400:5400"
