@@ -2,7 +2,7 @@ Starting the application:
 
 	1. Unpack the team’s project files into the wamp64 or mamp directory 
 
-	Eg. C:\wamp64\www\g8t6 if in windows
+	Eg. C:\wamp64\www\g8t6project-main\ if in windows
 
 	2. Start up WAMP or MAMP and ensure all services are running before proceeding
 
@@ -45,3 +45,41 @@ Sample accounts to use:
 	Paypal Sandbox Account (MUST USE) - To make Payment
 	Username: amy@abc.com
 	Password: X%-;Ip8c 
+	
+
+If docker fails to startup all microservices as a containers:
+
+	1. Start up RABBITMQ using the following command in the terminal
+
+	docker run -d --hostname esd-rabbit --name rabbitmq-mgmt -p 5672:5672 -p 15672:15672 rabbitmq:3-management
+
+	2. After RABBITMQ is started up, boot up the following  microservices in the following sequence
+
+		1.1. product.py
+
+		1.2. customer.py
+
+		1.3. business.py
+
+		1.4. order.py
+
+		1.5. amqp_setup.py (must run before complex microservices)
+
+		1.6. place_order.py
+
+		1.7. fulfill_order.py
+
+		1.8. activity_log.py
+
+		1.9. error.py
+
+		1.10. check_order_biz.py
+
+		1.11. check_order_cust.py
+		
+Using our application:
+
+	1. Enter the following directory and access our application starting from the Loginpage.php page
+		Eg. C:\wamp64\www\g8t6project-main\templates
+
+	2. Sign in into the application using a business/customer account (above or create your own) to begin using their functionalities as per our scenarios
